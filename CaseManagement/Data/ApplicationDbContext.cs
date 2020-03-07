@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CaseManagement.Models;
+﻿using CaseManagement.Models;
+using CaseManagement.Models.CaseModels;
+using CaseManagement.Models.TaskModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,5 +12,16 @@ namespace CaseManagement.Data
             : base(options)
         {
         }
+
+        public DbSet<Case> Cases { get; set; }
+        public DbSet<CaseType> CaseTypes { get; set; }
+        public DbSet<CasePhase> CasePhases { get; set; }
+        public DbSet<CaseStatus> CaseStatuses { get; set; }
+        public DbSet<CasePriority> CasePriorities { get; set; }
+        public DbSet<ServiceArea> ServiceAreas { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<Task> Tasks { get; set; }
+        public DbSet<TaskType> TaskTypes { get; set; }
+        public DbSet<TaskStatus> TaskStatuses { get; set; }
     }
 }

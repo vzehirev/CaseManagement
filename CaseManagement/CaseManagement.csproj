@@ -5,11 +5,19 @@
     <UserSecretsId>aspnet-CaseManagement-77A92E42-D5AC-4DAA-97E3-F60E49D864A8</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200307184008_InitialDatabaseModelsCreation.cs" />
+    <Compile Remove="Data\Migrations\20200307184008_InitialDatabaseModelsCreation.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200307184448_InitialDatabaseModelsCreation.cs" />
+    <Compile Remove="Data\Migrations\20200307184448_InitialDatabaseModelsCreation.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />

@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200307194941_ModifySomeCasePropertiesToNullable")]
+    partial class ModifySomeCasePropertiesToNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,7 +97,7 @@ namespace CaseManagement.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CaseEndTime")
+                    b.Property<DateTime>("CaseEndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CaseNum")
@@ -121,7 +123,7 @@ namespace CaseManagement.Data.Migrations
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime>("LastModified")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("ServiceAreaId")
@@ -174,7 +176,7 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Priority")
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -249,21 +251,12 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CaseEndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CaseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("NextAction")
                         .IsRequired()
@@ -273,10 +266,19 @@ namespace CaseManagement.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TaskStatusId")
+                    b.Property<DateTime>("TaskCreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TaskEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TaskModifiedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TaskTypeId")
+                    b.Property<int>("TaskTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -501,11 +503,15 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasOne("CaseManagement.Models.TaskModels.TaskStatus", "TaskStatus")
                         .WithMany()
-                        .HasForeignKey("TaskStatusId");
+                        .HasForeignKey("TaskStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.TaskModels.TaskType", "TaskType")
                         .WithMany()
-                        .HasForeignKey("TaskTypeId");
+                        .HasForeignKey("TaskTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany("Tasks")

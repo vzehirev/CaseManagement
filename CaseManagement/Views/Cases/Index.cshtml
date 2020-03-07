@@ -1,7 +1,59 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@model CaseManagement.ViewModels.Output.AllCasesOutputModel
 
-<h1>CasesIndex</h1>
+<div class="col-md-4 mx-auto text-center">
+    <section>
+        <h4>Cases</h4>
+        <hr />
+        <a class="btn btn-primary" asp-controller="Cases" asp-action="Create">Create Case</a>
+    </section>
+</div>
+<div id="cases-table" class="text-center">
+    <table class="table table-hover">
+        <thead>
+            <tr class="table-active">
+                <th scope="col">Creation Time</th>
+                <th scope="col">Case Number</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Case Status</th>
+                <th scope="col">Case Priority</th>
+                <th scope="col">Owner</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var caseModel in Model.Cases)
+            {
+                <tr>
+                    <td>@caseModel.CreationTime</td>
+                    <td>@caseModel.CaseNumber</td>
+                    <td>@caseModel.Subject</td>
+                    <td>@caseModel.CaseStatus</td>
+                    <td>@caseModel.CasePriority</td>
+                    <td>@caseModel.Owner</td>
+                    <td><a class="btn btn-outline-primary p-1" asp-controller="Cases" asp-action="ViewEdit" asp-route-id="@caseModel.Id">View/Edit</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.Cases.Length == 0)
+    {
+        <h6>No cases available</h6>
+    }
+</div>
 
+<div>
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#">&laquo;</a>
+        </li>
+        <li class="page-item active">
+            <a class="page-link" href="#">1</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="#">2</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="#">&raquo;</a>
+        </li>
+    </ul>
+</div>

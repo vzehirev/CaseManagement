@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200307184620_InitialDatabaseModelsCreation")]
+    partial class InitialDatabaseModelsCreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,39 +97,39 @@ namespace CaseManagement.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CaseEndTime")
+                    b.Property<DateTime>("CaseEndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CaseNum")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CasePhaseId")
+                    b.Property<int>("CasePhaseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CasePriorityId")
+                    b.Property<int>("CasePriorityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CaseStatusId")
+                    b.Property<int>("CaseStatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("CaseSubject")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CaseTypeId")
+                    b.Property<int>("CaseTypeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LastModified")
+                    b.Property<DateTime>("LastModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ServiceAreaId")
+                    b.Property<int>("ServiceAreaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ServiceId")
+                    b.Property<int>("ServiceId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -174,7 +176,7 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Priority")
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -249,21 +251,12 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("CaseEndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("CaseId")
                         .HasColumnType("int");
 
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("NextAction")
                         .IsRequired()
@@ -273,10 +266,19 @@ namespace CaseManagement.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TaskStatusId")
+                    b.Property<DateTime>("TaskCreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TaskEndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TaskModifiedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TaskStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TaskTypeId")
+                    b.Property<int>("TaskTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -464,27 +466,39 @@ namespace CaseManagement.Data.Migrations
                 {
                     b.HasOne("CaseManagement.Models.CaseModels.CasePhase", "CasePhase")
                         .WithMany()
-                        .HasForeignKey("CasePhaseId");
+                        .HasForeignKey("CasePhaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.CaseModels.CasePriority", "CasePriority")
                         .WithMany()
-                        .HasForeignKey("CasePriorityId");
+                        .HasForeignKey("CasePriorityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.CaseModels.CaseStatus", "CaseStatus")
                         .WithMany()
-                        .HasForeignKey("CaseStatusId");
+                        .HasForeignKey("CaseStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.CaseModels.CaseType", "CaseType")
                         .WithMany()
-                        .HasForeignKey("CaseTypeId");
+                        .HasForeignKey("CaseTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.CaseModels.ServiceArea", "ServiceArea")
                         .WithMany()
-                        .HasForeignKey("ServiceAreaId");
+                        .HasForeignKey("ServiceAreaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.CaseModels.Service", "Service")
                         .WithMany()
-                        .HasForeignKey("ServiceId");
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany("Cases")
@@ -501,11 +515,15 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasOne("CaseManagement.Models.TaskModels.TaskStatus", "TaskStatus")
                         .WithMany()
-                        .HasForeignKey("TaskStatusId");
+                        .HasForeignKey("TaskStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.TaskModels.TaskType", "TaskType")
                         .WithMany()
-                        .HasForeignKey("TaskTypeId");
+                        .HasForeignKey("TaskTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany("Tasks")

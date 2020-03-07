@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CaseManagement.Models;
+using CaseManagement.Services.Cases;
 
 namespace CaseManagement
 {
@@ -35,7 +36,10 @@ namespace CaseManagement
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
+
+            services.AddTransient<ICasesService, CasesService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,61 @@
+﻿@model CaseManagement.ViewModels.ViewEditCaseModel
+
+<div class="row">
+    <div class="col-12 mx-auto text-center">
+        <section>
+            <h4>Create Case</h4>
+            <hr />
+            <form asp-action="Edit" method="post">
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label>Case #</label>
+                        <input asp-for="CaseNum" class="form-control" />
+                        <span asp-validation-for="CaseNum" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Status</label>
+                        <select asp-for="CaseStatus" class="form-control">
+                            <option>Select status</option>
+                        </select>
+                        <span asp-validation-for="CaseStatus" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Priority</label>
+                        <select asp-for="CasePriority" class="form-control">
+                            <option>Select priority</option>
+                        </select>
+                        <span asp-validation-for="CasePriority" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Subject</label>
+                        <input asp-for="CaseSubject" type="text" class="form-control" />
+                        <span asp-validation-for="CaseSubject" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Type</label>
+                        <select asp-for="CaseType" class="form-control">
+                            <option>Select type</option>
+                        </select>
+                        <span asp-validation-for="CaseType" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Phase</label>
+                        <select asp-for="CasePhase" class="form-control">
+                            <option>Select phase</option>
+                        </select>
+                        <span asp-validation-for="CasePhase" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Description</label>
+                        <textarea asp-for="CaseDescription" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="CaseDescription" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Case</button>
+            </form>
+        </section>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
