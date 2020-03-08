@@ -6,11 +6,13 @@ using CaseManagement.Services.Cases;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
 using CaseManagement.ViewModels.Output;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaseManagement.Controllers
 {
+    [Authorize]
     public class CasesController : Controller
     {
         private readonly ICasesService casesService;
@@ -44,11 +46,6 @@ namespace CaseManagement.Controllers
         public IActionResult ViewUpdate(int id)
         {
             var outputModel = this.casesService.GetCaseById(id);
-
-            if (outputModel == null)
-            {
-                return RedirectToAction("Index");
-            }
 
             outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
 

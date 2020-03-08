@@ -15,6 +15,6 @@ namespace CaseManagement.Services.Cases
         public AllCasesOutputModel GetAllCases();
         public AllCasesOutputModel GetCaseByNumber(string caseNumber);
         public ViewUpdateCaseModel GetCaseById(int id);
-        public Task UpdateCaseAsync(ViewUpdateCaseModel caseToUpdate);
+        public Task UpdateCaseAsync(ViewUpdateCaseModel inputModel);
     }
 }
