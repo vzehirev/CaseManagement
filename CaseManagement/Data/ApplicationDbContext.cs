@@ -20,7 +20,7 @@ namespace CaseManagement.Data
         public DbSet<CasePriority> CasePriorities { get; set; }
         public DbSet<ServiceArea> ServiceAreas { get; set; }
         public DbSet<Service> Services { get; set; }
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<CaseTask> Tasks { get; set; }
         public DbSet<TaskType> TaskTypes { get; set; }
         public DbSet<TaskStatus> TaskStatuses { get; set; }
     }

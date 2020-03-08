@@ -8,6 +8,6 @@ namespace CaseManagement.Models
     public class ApplicationUser : IdentityUser
     {
         public ICollection<Case> Cases { get; set; } = new HashSet<Case>();
-        public ICollection<Task> Tasks { get; set; } = new HashSet<Task>();
+        public ICollection<CaseTask> Tasks { get; set; } = new HashSet<CaseTask>();
     }
 }

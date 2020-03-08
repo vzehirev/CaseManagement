@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CaseManagement.Models;
-using CaseManagement.Models.CaseModels;
 using CaseManagement.Services.Cases;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
@@ -26,7 +24,7 @@ namespace CaseManagement.Controllers
         public IActionResult Index()
         {
             var outputModel = this.casesService.GetAllCases();
-            outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreationTime).ToArray();
+            outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
             return View(outputModel);
         }
         public IActionResult Create()
@@ -39,20 +37,11 @@ namespace CaseManagement.Controllers
         {
             var userId = this.userManager.GetUserId(this.User);
 
-            var caseToAdd = new Case
-            {
-                CaseNum = inputModel.CaseNum,
-                CaseSubject = inputModel.CaseSubject,
-                CaseDescription = inputModel.CaseDescription,
-                CreationTime = DateTime.UtcNow,
-                UserId = userId
-            };
-
-            await this.casesService.AddCaseAsync(caseToAdd);
+            await this.casesService.CreateCaseAsync(inputModel, userId);
 
             return RedirectToAction("Index");
         }
-        public IActionResult ViewEdit(int id)
+        public IActionResult ViewUpdate(int id)
         {
             var outputModel = this.casesService.GetCaseById(id);
 
@@ -61,18 +50,30 @@ namespace CaseManagement.Controllers
                 return RedirectToAction("Index");
             }
 
+            outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
+
             return View(outputModel);
         }
-        public IActionResult Edit(ViewEditCaseModel model)
-        {
-            var outputModel = this.casesService.GetCaseById(model.Id);
 
-            if (outputModel == null)
+        [HttpPost]
+        public async Task<IActionResult> Update(ViewUpdateCaseModel inputModel)
+        {
+            await this.casesService.UpdateCaseAsync(inputModel);
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult SearchCase(string caseNumber)
+        {
+            if (string.IsNullOrWhiteSpace(caseNumber))
             {
                 return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Index");
+            var outputModel = this.casesService.GetCaseByNumber(caseNumber);
+            outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
+
+            return View("Index", outputModel);
         }
     }
 }

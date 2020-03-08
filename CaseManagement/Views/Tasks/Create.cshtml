@@ -1,0 +1,47 @@
+﻿@model CaseManagement.ViewModels.Input.CreateTaskInputModel
+
+<div class="row">
+    <div class="col-12 mx-auto text-center">
+        <section>
+            <h4>Create Task</h4>
+            <hr />
+            <form method="post">
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label>Type</label>
+                        <select asp-for="Type" class="form-control">
+                            <option>Select type</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Status</label>
+                        <select asp-for="Status" class="form-control">
+                            <option>Select status</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Action</label>
+                        <input asp-for="Action" type="text" class="form-control" />
+                        <span asp-validation-for="Action" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Next action</label>
+                        <input asp-for="NextAction" class="form-control" />
+                        <span asp-validation-for="NextAction" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-4">
+                        <label>Comments</label>
+                        <textarea asp-for="Comments" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Comments" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-warning">CREATE</button>
+            </form>
+        </section>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

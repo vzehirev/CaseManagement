@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CaseManagement.Models;
 using CaseManagement.Services.Cases;
+using CaseManagement.Services.Tasks;
 
 namespace CaseManagement
 {
@@ -40,6 +41,7 @@ namespace CaseManagement
                 .AddRazorRuntimeCompilation();
 
             services.AddTransient<ICasesService, CasesService>();
+            services.AddTransient<ITasksService, TasksService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

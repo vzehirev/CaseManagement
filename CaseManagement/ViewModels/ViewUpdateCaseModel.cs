@@ -1,13 +1,15 @@
-﻿using System;
+﻿using CaseManagement.ViewModels.Output;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CaseManagement.ViewModels.Input
+namespace CaseManagement.ViewModels
 {
-    public class CreateCaseInputModel
+    public class ViewUpdateCaseModel
     {
+        public int Id { get; set; }
         [Required]
         [Display(Name = "Case Number")]
         public string Number { get; set; }
@@ -25,5 +27,7 @@ namespace CaseManagement.ViewModels.Input
         [Required]
         [Display(Name = "Case Description")]
         public string Description { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public TaskOutputModel[] Tasks { get; set; }
     }
 }

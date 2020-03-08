@@ -9,28 +9,28 @@ namespace CaseManagement.Models.CaseModels
     {
         public int Id { get; set; }
         [Required]
-        public string CaseNum { get; set; }
+        public string Number { get; set; }
         [Required]
-        public string CaseSubject { get; set; }
+        public string Subject { get; set; }
         [Required]
-        public string CaseDescription { get; set; }
-        public DateTime CreationTime { get; set; }
+        public string Description { get; set; }
+        public DateTime CreatedOn { get; set; }
         public DateTime? LastModified { get; set; }
-        public DateTime? CaseEndTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        public int? CaseTypeId { get; set; }
-        public CaseType CaseType { get; set; }
-        public int? CasePhaseId { get; set; }
-        public CasePhase CasePhase { get; set; }
-        public int? CaseStatusId { get; set; }
-        public CaseStatus CaseStatus { get; set; }
-        public int? CasePriorityId { get; set; }
-        public CasePriority CasePriority { get; set; }
+        public int? TypeId { get; set; }
+        public CaseType Type { get; set; }
+        public int? PhaseId { get; set; }
+        public CasePhase Phase { get; set; }
+        public int? StatusId { get; set; }
+        public CaseStatus Status { get; set; }
+        public int? PriorityId { get; set; }
+        public CasePriority Priority { get; set; }
         public int? ServiceAreaId { get; set; }
         public ServiceArea ServiceArea { get; set; }
         public int? ServiceId { get; set; }
         public Service Service { get; set; }
-        public ICollection<Task> Tasks { get; set; } = new HashSet<Task>();
+        public ICollection<CaseTask> Tasks { get; set; } = new HashSet<CaseTask>();
     }
 }
