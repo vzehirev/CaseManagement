@@ -23,12 +23,15 @@ namespace CaseManagement.Controllers
             this.casesService = casesService;
             this.userManager = userManager;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
-            var outputModel = this.casesService.GetAllCases();
+            var outputModel = await this.casesService.GetAllCasesAsync();
             outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
+
             return View(outputModel);
         }
+
         public IActionResult Create()
         {
             return View();
@@ -39,13 +42,14 @@ namespace CaseManagement.Controllers
         {
             var userId = this.userManager.GetUserId(this.User);
 
-            await this.casesService.CreateCaseAsync(inputModel, userId);
+            var createResult = await this.casesService.CreateCaseAsync(inputModel, userId);
 
             return RedirectToAction("Index");
         }
-        public IActionResult ViewUpdate(int id)
+
+        public async Task<IActionResult> ViewUpdate(int id)
         {
-            var outputModel = this.casesService.GetCaseById(id);
+            var outputModel = await this.casesService.GetCaseByIdAsync(id);
 
             outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
 
@@ -55,19 +59,19 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ViewUpdateCaseModel inputModel)
         {
-            await this.casesService.UpdateCaseAsync(inputModel);
+            var updateResult = await this.casesService.UpdateCaseAsync(inputModel);
 
             return RedirectToAction("Index");
         }
 
-        public IActionResult SearchCase(string caseNumber)
+        public async Task<IActionResult> SearchCase(string caseNumber)
         {
             if (string.IsNullOrWhiteSpace(caseNumber))
             {
                 return RedirectToAction("Index");
             }
 
-            var outputModel = this.casesService.GetCaseByNumber(caseNumber);
+            var outputModel = await this.casesService.GetCaseByNumberAsync(caseNumber);
             outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
 
             return View("Index", outputModel);

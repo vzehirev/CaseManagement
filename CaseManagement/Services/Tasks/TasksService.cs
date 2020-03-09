@@ -2,6 +2,7 @@
 using CaseManagement.Models.TaskModels;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace CaseManagement.Services.Tasks
         {
             this.dbContext = dbContext;
         }
-        public async Task CreateTaskAsync(CreateTaskInputModel inputModel, string userId)
+
+        public async Task<int> CreateTaskAsync(CreateTaskInputModel inputModel, string userId)
         {
             var taskToAdd = new CaseTask
             {
@@ -31,13 +33,15 @@ namespace CaseManagement.Services.Tasks
                 Comments = inputModel.Comments
             };
 
-            await this.dbContext.Tasks.AddAsync(taskToAdd);
-            await this.dbContext.SaveChangesAsync();
+            this.dbContext.Tasks.Add(taskToAdd);
+            var saveResult = await this.dbContext.SaveChangesAsync();
+
+            return saveResult;
         }
 
-        public ViewUpdateTaskModel GetTaskById(int id)
+        public async Task<ViewUpdateTaskModel> GetTaskByIdAsync(int id)
         {
-            var outputModel = this.dbContext.Tasks
+            var outputModel = await this.dbContext.Tasks
                 .Select(t => new ViewUpdateTaskModel
                 {
                     Id = t.Id,
@@ -49,15 +53,15 @@ namespace CaseManagement.Services.Tasks
                     Type = t.Type.Type
                 })
                 .Where(t => t.Id == id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return outputModel;
         }
 
         public async Task<int> UpdateTaskAsync(ViewUpdateTaskModel inputModel)
         {
-            var taskRecordToUpdate = this.dbContext.Tasks
-                   .FirstOrDefault(t => t.Id == inputModel.Id);
+            var taskRecordToUpdate = await this.dbContext.Tasks
+                   .FirstOrDefaultAsync(t => t.Id == inputModel.Id);
 
             taskRecordToUpdate.Comments = inputModel.Comments;
             taskRecordToUpdate.TypeId = inputModel.TypeId;
@@ -68,7 +72,7 @@ namespace CaseManagement.Services.Tasks
 
             this.dbContext.Tasks.Update(taskRecordToUpdate);
 
-            await this.dbContext.SaveChangesAsync();
+            var saveResult = await this.dbContext.SaveChangesAsync();
 
             return taskRecordToUpdate.CaseId;
         }

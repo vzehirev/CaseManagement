@@ -9,8 +9,8 @@ namespace CaseManagement.Services.Tasks
 {
     public interface ITasksService
     {
-        public Task CreateTaskAsync(CreateTaskInputModel inputModel, string userId);
-        public ViewUpdateTaskModel GetTaskById(int id);
+        public Task<int> CreateTaskAsync(CreateTaskInputModel inputModel, string userId);
+        public Task<ViewUpdateTaskModel> GetTaskByIdAsync(int id);
         public Task<int> UpdateTaskAsync(ViewUpdateTaskModel caseToUpdate);
     }
 }

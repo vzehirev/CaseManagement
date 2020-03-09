@@ -5,6 +5,7 @@ using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
 using CaseManagement.ViewModels.Output;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,8 @@ namespace CaseManagement.Services.Cases
         {
             this.dbContext = dbContext;
         }
-        public async Task CreateCaseAsync(CreateCaseInputModel inputModel, string userId)
+
+        public async Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId)
         {
             var caseToAdd = new Case
             {
@@ -31,13 +33,15 @@ namespace CaseManagement.Services.Cases
                 UserId = userId
             };
 
-            await this.dbContext.Cases.AddAsync(caseToAdd);
-            await this.dbContext.SaveChangesAsync();
+            this.dbContext.Cases.Add(caseToAdd);
+            var saveResult = await this.dbContext.SaveChangesAsync();
+
+            return saveResult;
         }
 
-        public AllCasesOutputModel GetAllCases()
+        public async Task<AllCasesOutputModel> GetAllCasesAsync()
         {
-            var allCases = this.dbContext.Cases
+            var allCases = await this.dbContext.Cases
                 .Select(c => new CaseOutputModel
                 {
                     Number = c.Number,
@@ -48,7 +52,7 @@ namespace CaseManagement.Services.Cases
                     Owner = c.User.Email,
                     Subject = c.Subject
                 })
-                .ToArray();
+                .ToArrayAsync();
 
             var result = new AllCasesOutputModel
             {
@@ -58,9 +62,9 @@ namespace CaseManagement.Services.Cases
             return result;
         }
 
-        public ViewUpdateCaseModel GetCaseById(int id)
+        public async Task<ViewUpdateCaseModel> GetCaseByIdAsync(int id)
         {
-            var outputModel = this.dbContext.Cases
+            var outputModel = await this.dbContext.Cases
                 .Select(c => new ViewUpdateCaseModel
                 {
                     Id = c.Id,
@@ -82,14 +86,14 @@ namespace CaseManagement.Services.Cases
                     }).ToArray()
                 })
                 .Where(c => c.Id == id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return outputModel;
         }
 
-        public AllCasesOutputModel GetCaseByNumber(string caseNumber)
+        public async Task<AllCasesOutputModel> GetCaseByNumberAsync(string caseNumber)
         {
-            var allCases = this.dbContext.Cases
+            var allCases = await this.dbContext.Cases
                 .Where(c => c.Number == caseNumber)
                 .Select(c => new CaseOutputModel
                 {
@@ -101,7 +105,7 @@ namespace CaseManagement.Services.Cases
                     Owner = c.User.Email,
                     Subject = c.Subject
                 })
-                .ToArray();
+                .ToArrayAsync();
 
             var result = new AllCasesOutputModel
             {
@@ -111,10 +115,10 @@ namespace CaseManagement.Services.Cases
             return result;
         }
 
-        public async Task UpdateCaseAsync(ViewUpdateCaseModel inputModel)
+        public async Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel)
         {
-            var caseRecordToUpdate = this.dbContext.Cases
-                .FirstOrDefault(c => c.Id == inputModel.Id);
+            var caseRecordToUpdate = await this.dbContext.Cases
+                .FirstOrDefaultAsync(c => c.Id == inputModel.Id);
 
             caseRecordToUpdate.Number = inputModel.Number;
             caseRecordToUpdate.Description = inputModel.Description;
@@ -126,8 +130,9 @@ namespace CaseManagement.Services.Cases
             caseRecordToUpdate.PhaseId = inputModel.PhaseId;
 
             this.dbContext.Cases.Update(caseRecordToUpdate);
+            var saveResult = await this.dbContext.SaveChangesAsync();
 
-            await this.dbContext.SaveChangesAsync();
+            return saveResult;
         }
     }
 }

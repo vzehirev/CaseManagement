@@ -23,6 +23,7 @@ namespace CaseManagement.Controllers
             this.tasksService = tasksService;
             this.userManager = userManager;
         }
+
         public IActionResult Create()
         {
             return View();
@@ -33,13 +34,14 @@ namespace CaseManagement.Controllers
         {
             var userId = this.userManager.GetUserId(this.User);
             inputModel.CaseId = id;
-            await this.tasksService.CreateTaskAsync(inputModel, userId);
+            var createResult = await this.tasksService.CreateTaskAsync(inputModel, userId);
 
             return RedirectToAction("ViewUpdate", "Cases", new { id });
         }
-        public IActionResult ViewUpdate(int id)
+
+        public async Task<IActionResult> ViewUpdate(int id)
         {
-            var outputModel = this.tasksService.GetTaskById(id);
+            var outputModel = await this.tasksService.GetTaskByIdAsync(id);
 
             return View(outputModel);
         }
