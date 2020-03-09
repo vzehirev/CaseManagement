@@ -36,6 +36,11 @@ namespace CaseManagement.Services.Cases
             this.dbContext.Cases.Add(caseToAdd);
             var saveResult = await this.dbContext.SaveChangesAsync();
 
+            if (saveResult > 0)
+            {
+                return caseToAdd.Id;
+            }
+
             return saveResult;
         }
 
@@ -109,6 +114,7 @@ namespace CaseManagement.Services.Cases
 
             var result = new AllCasesOutputModel
             {
+                SearchedCaseNumber = caseNumber,
                 Cases = allCases
             };
 

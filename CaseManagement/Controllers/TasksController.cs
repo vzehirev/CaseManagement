@@ -36,7 +36,12 @@ namespace CaseManagement.Controllers
             inputModel.CaseId = id;
             var createResult = await this.tasksService.CreateTaskAsync(inputModel, userId);
 
-            return RedirectToAction("ViewUpdate", "Cases", new { id });
+            if (createResult > 0)
+            {
+                return RedirectToAction("ViewUpdate", "Cases", new { id });
+            }
+
+            return View("Error", new ErrorViewModel());
         }
 
         public async Task<IActionResult> ViewUpdate(int id)

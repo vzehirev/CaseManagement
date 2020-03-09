@@ -44,7 +44,12 @@ namespace CaseManagement.Controllers
 
             var createResult = await this.casesService.CreateCaseAsync(inputModel, userId);
 
-            return RedirectToAction("Index");
+            if (createResult > 0)
+            {
+                return RedirectToAction("ViewUpdate", new { id = createResult });
+            }
+
+            return View("Error", new ErrorViewModel());
         }
 
         public async Task<IActionResult> ViewUpdate(int id)
@@ -61,7 +66,7 @@ namespace CaseManagement.Controllers
         {
             var updateResult = await this.casesService.UpdateCaseAsync(inputModel);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ViewUpdate", new { id = inputModel.Id });
         }
 
         public async Task<IActionResult> SearchCase(string caseNumber)
