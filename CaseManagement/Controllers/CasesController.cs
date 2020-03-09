@@ -41,7 +41,6 @@ namespace CaseManagement.Controllers
         public async Task<IActionResult> Create(CreateCaseInputModel inputModel)
         {
             var userId = this.userManager.GetUserId(this.User);
-
             var createResult = await this.casesService.CreateCaseAsync(inputModel, userId);
 
             if (createResult > 0)
@@ -55,7 +54,6 @@ namespace CaseManagement.Controllers
         public async Task<IActionResult> ViewUpdate(int id)
         {
             var outputModel = await this.casesService.GetCaseByIdAsync(id);
-
             outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
 
             return View(outputModel);

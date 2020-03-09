@@ -21,7 +21,7 @@
 </div>
 
 <div id="cases-table" class="text-center">
-    <table class="table table-hover">
+    <table class="table table-hover border">
         <thead>
             <tr class="table-active">
                 <th scope="col">Created on</th>
@@ -43,7 +43,7 @@
                     <td>@caseModel.Status</td>
                     <td>@caseModel.Priority</td>
                     <td>@caseModel.Owner</td>
-                    <td><a class="btn btn-info p-1" asp-controller="Cases" asp-action="ViewUpdate" asp-route-id="@caseModel.Id">VIEW/UPDATE</a></td>
+                    <td><a class="btn btn-dark p-1" asp-controller="Cases" asp-action="ViewUpdate" asp-route-id="@caseModel.Id">VIEW/UPDATE</a></td>
                 </tr>
             }
         </tbody>

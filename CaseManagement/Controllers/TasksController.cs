@@ -38,7 +38,7 @@ namespace CaseManagement.Controllers
 
             if (createResult > 0)
             {
-                return RedirectToAction("ViewUpdate", "Cases", new { id });
+                return LocalRedirect($"/Cases/ViewUpdate/{inputModel.CaseId}#tasks-table");
             }
 
             return View("Error", new ErrorViewModel());
@@ -56,7 +56,7 @@ namespace CaseManagement.Controllers
         {
             var caseId = await this.tasksService.UpdateTaskAsync(inputModel);
 
-            return RedirectToAction("ViewUpdate", "Cases", new { id = caseId });
+            return LocalRedirect($"/Cases/ViewUpdate/{caseId}#tasks-table");
         }
     }
 }

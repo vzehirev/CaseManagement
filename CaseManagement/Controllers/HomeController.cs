@@ -24,6 +24,7 @@ namespace CaseManagement.Controllers
             {
                 return LocalRedirect("/Identity/Account/Login");
             }
+
             return RedirectToAction("Index", "Cases");
         }
 

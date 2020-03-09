@@ -56,3 +56,12 @@ body {
 #tasks-table {
     margin-top: 3rem;
 }
+
+#site-logo {
+    max-height: 2.4rem;
+}
+
+.btn:focus, .btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}

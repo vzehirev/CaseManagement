@@ -12,9 +12,13 @@ namespace CaseManagement.Services.Cases
     public interface ICasesService
     {
         public Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId);
+
         public Task<AllCasesOutputModel> GetAllCasesAsync();
+
         public Task<AllCasesOutputModel> GetCaseByNumberAsync(string caseNumber);
+
         public Task<ViewUpdateCaseModel> GetCaseByIdAsync(int id);
+
         public Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel);
     }
 }

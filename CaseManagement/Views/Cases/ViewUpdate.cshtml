@@ -60,7 +60,7 @@
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-outline-info">UPDATE</button>
+                <button type="submit" class="btn btn-outline-dark">UPDATE</button>
             </form>
         </section>
     </div>
@@ -70,12 +70,12 @@
     <section>
         <h4>Tasks</h4>
         <hr />
-        <a class="btn btn-warning" asp-controller="Tasks" asp-action="Create" asp-route-id="@Model.Id">Create Task</a>
+        <a class="btn btn-info" asp-controller="Tasks" asp-action="Create" asp-route-id="@Model.Id">Create Task</a>
     </section>
 </div>
 
 <div id="tasks-table" class="text-center">
-    <table class="table table-hover">
+    <table class="table table-hover border">
         <thead>
             <tr class="table-active">
                 <th scope="col">Created on</th>
@@ -93,7 +93,7 @@
                     <td>@taskModel.Type</td>
                     <td>@taskModel.Status</td>
                     <td>@taskModel.Owner</td>
-                    <td><a class="btn btn-info p-1" asp-controller="Tasks" asp-action="ViewUpdate" asp-route-id="@taskModel.Id">VIEW/UPDATE</a></td>
+                    <td><a class="btn btn-warning p-1" asp-controller="Tasks" asp-action="ViewUpdate" asp-route-id="@taskModel.Id">VIEW/UPDATE</a></td>
                 </tr>
             }
         </tbody>
