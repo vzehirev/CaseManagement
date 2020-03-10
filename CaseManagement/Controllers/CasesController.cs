@@ -1,16 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using CaseManagement.Models;
+﻿using CaseManagement.Models;
 using CaseManagement.Services.Cases;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
-using CaseManagement.ViewModels.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CaseManagement.Controllers
 {

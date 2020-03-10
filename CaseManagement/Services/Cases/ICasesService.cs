@@ -1,10 +1,6 @@
-﻿using CaseManagement.Models.CaseModels;
-using CaseManagement.ViewModels;
+﻿using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
 using CaseManagement.ViewModels.Output;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CaseManagement.Services.Cases

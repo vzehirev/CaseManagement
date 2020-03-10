@@ -1,5 +1,3 @@
-using System;
-
 namespace CaseManagement.Models
 {
     public class ErrorViewModel

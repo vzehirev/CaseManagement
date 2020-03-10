@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CaseManagement.ViewModels.Output
 {
@@ -18,7 +15,7 @@ namespace CaseManagement.ViewModels.Output
         public string Status { get; set; }
 
         public string Priority { get; set; }
-        
+
         public string Owner { get; set; }
     }
 }
