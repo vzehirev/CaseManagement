@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CaseManagement.Models;
 using CaseManagement.Services.Cases;
@@ -56,6 +58,12 @@ namespace CaseManagement.Controllers
             var outputModel = await this.casesService.GetCaseByIdAsync(id);
             outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
 
+            outputModel.CaseUpdatedSuccessfully = (bool?)this.TempData["CaseUpdatedSuccessfully"];
+
+            outputModel.TaskCreatedSuccessfully = (bool?)this.TempData["TaskCreatedSuccessfully"];
+
+            outputModel.TaskUpdatedSuccessfully = (bool?)this.TempData["TaskUpdatedSuccessfully"];
+
             return View(outputModel);
         }
 
@@ -63,6 +71,11 @@ namespace CaseManagement.Controllers
         public async Task<IActionResult> Update(ViewUpdateCaseModel inputModel)
         {
             var updateResult = await this.casesService.UpdateCaseAsync(inputModel);
+
+            if (updateResult > 0)
+            {
+                this.TempData["CaseUpdatedSuccessfully"] = true;
+            }
 
             return RedirectToAction("ViewUpdate", new { id = inputModel.Id });
         }

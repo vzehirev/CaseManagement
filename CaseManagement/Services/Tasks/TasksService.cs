@@ -50,7 +50,8 @@ namespace CaseManagement.Services.Tasks
                     CreatedOn = t.CreatedOn,
                     NextAction = t.NextAction,
                     Status = t.Status.Status,
-                    Type = t.Type.Type
+                    Type = t.Type.Type,
+                    CaseId = t.CaseId
                 })
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
@@ -74,7 +75,7 @@ namespace CaseManagement.Services.Tasks
 
             var saveResult = await this.dbContext.SaveChangesAsync();
 
-            return taskRecordToUpdate.CaseId;
+            return saveResult;
         }
     }
 }

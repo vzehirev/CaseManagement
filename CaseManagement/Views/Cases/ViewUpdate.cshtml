@@ -6,6 +6,13 @@
             <div class="col-4 mx-auto text-center">
                 <h4>Case: @Model.Number</h4>
                 <hr />
+                @if (Model.CaseUpdatedSuccessfully == true)
+                {
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Case updated successfully.</strong>
+                    </div>
+                }
             </div>
             <form asp-action="Update" method="post">
                 <input type="hidden" asp-for="Id" />
@@ -70,6 +77,20 @@
     <section>
         <h4>Tasks</h4>
         <hr />
+        @if (Model.TaskCreatedSuccessfully == true)
+        {
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Task created successfully.</strong>
+            </div>
+        }
+        @if (Model.TaskUpdatedSuccessfully == true)
+        {
+            <div class="alert alert-dismissible alert-success">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Task updated successfully.</strong>
+            </div>
+        }
         <a class="btn btn-info" asp-controller="Tasks" asp-action="Create" asp-route-id="@Model.Id">Create Task</a>
     </section>
 </div>

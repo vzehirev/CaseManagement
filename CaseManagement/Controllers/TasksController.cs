@@ -38,6 +38,8 @@ namespace CaseManagement.Controllers
 
             if (createResult > 0)
             {
+                this.TempData["TaskCreatedSuccessfully"] = true;
+
                 return LocalRedirect($"/Cases/ViewUpdate/{inputModel.CaseId}#tasks-table");
             }
 
@@ -54,9 +56,14 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ViewUpdateTaskModel inputModel)
         {
-            var caseId = await this.tasksService.UpdateTaskAsync(inputModel);
+            var updateResult = await this.tasksService.UpdateTaskAsync(inputModel);
 
-            return LocalRedirect($"/Cases/ViewUpdate/{caseId}#tasks-table");
+            if (updateResult > 0)
+            {
+                this.TempData["TaskUpdatedSuccessfully"] = true;
+            }
+
+            return LocalRedirect($"/Cases/ViewUpdate/{inputModel.CaseId}#tasks-table");
         }
     }
 }

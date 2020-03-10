@@ -42,5 +42,8 @@ namespace CaseManagement.ViewModels
         public DateTime CreatedOn { get; set; }
 
         public TaskOutputModel[] Tasks { get; set; }
+        public bool? CaseUpdatedSuccessfully { get; set; }
+        public bool? TaskUpdatedSuccessfully { get; set; }
+        public bool? TaskCreatedSuccessfully { get; set; }
     }
 }

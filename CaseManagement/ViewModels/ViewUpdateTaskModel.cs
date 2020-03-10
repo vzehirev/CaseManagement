@@ -30,5 +30,7 @@ namespace CaseManagement.ViewModels
         public string Comments { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public int CaseId { get; set; }
     }
 }
