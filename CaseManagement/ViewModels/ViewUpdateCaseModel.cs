@@ -1,5 +1,7 @@
-﻿using CaseManagement.ViewModels.Output;
+﻿using CaseManagement.Models.CaseModels;
+using CaseManagement.ViewModels.Output;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CaseManagement.ViewModels
@@ -14,11 +16,7 @@ namespace CaseManagement.ViewModels
 
         public int? StatusId { get; set; }
 
-        public string Status { get; set; }
-
         public int? PriorityId { get; set; }
-
-        public string Priority { get; set; }
 
         [Required]
         [Display(Name = "Case Subject")]
@@ -26,11 +24,9 @@ namespace CaseManagement.ViewModels
 
         public int? TypeId { get; set; }
 
-        public string Type { get; set; }
-
         public int? PhaseId { get; set; }
 
-        public string Phase { get; set; }
+        public int? ServiceId { get; set; }
 
         [Required]
         [Display(Name = "Case Description")]
@@ -38,9 +34,20 @@ namespace CaseManagement.ViewModels
 
         public DateTime CreatedOn { get; set; }
 
+        public IEnumerable<CaseStatus> CaseStatuses { get; set; }
+
+        public IEnumerable<CasePriority> CasePriorities { get; set; }
+
+        public IEnumerable<CaseType> CaseTypes { get; set; }
+
+        public IEnumerable<Service> CaseServices { get; set; }
+
         public TaskOutputModel[] Tasks { get; set; }
+
         public bool? CaseUpdatedSuccessfully { get; set; }
+
         public bool? TaskUpdatedSuccessfully { get; set; }
+
         public bool? TaskCreatedSuccessfully { get; set; }
     }
 }

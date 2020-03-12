@@ -14,17 +14,25 @@
                     </div>
                     <div class="form-group col-4">
                         <label>Status</label>
-                        <select asp-for="Status" class="form-control">
+                        <select asp-for="StatusId" class="form-control">
                             <option>Select status</option>
+                            @foreach (var status in Model.CaseStatuses)
+                            {
+                                <option value="@status.Id">@status.Status</option>
+                            }
                         </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
+                        <span asp-validation-for="StatusId" class="text-danger"></span>
                     </div>
                     <div class="form-group col-4">
                         <label>Priority</label>
-                        <select asp-for="Priority" class="form-control">
+                        <select asp-for="PriorityId" class="form-control">
                             <option>Select priority</option>
+                            @foreach (var priority in Model.CasePriorities)
+                            {
+                                <option value="@priority.Id">@priority.Priority</option>
+                            }
                         </select>
-                        <span asp-validation-for="Priority" class="text-danger"></span>
+                        <span asp-validation-for="PriorityId" class="text-danger"></span>
                     </div>
                     <div class="form-group col-4">
                         <label>Subject</label>
@@ -33,18 +41,26 @@
                     </div>
                     <div class="form-group col-4">
                         <label>Type</label>
-                        <select asp-for="Type" class="form-control">
+                        <select asp-for="TypeId" class="form-control">
                             <option>Select type</option>
+                            @foreach (var type in Model.CaseTypes)
+                            {
+                                <option value="@type.Id">@type.Type</option>
+                            }
                         </select>
-                        <span asp-validation-for="Type" class="text-danger"></span>
+                        <span asp-validation-for="TypeId" class="text-danger"></span>
                     </div>
                     <div class="form-group col-4">
-                        <label>Phase</label>
-                        <select asp-for="Phase" class="form-control">
-                            <option>Select phase</option>
-                        </select>
-                        <span asp-validation-for="Phase" class="text-danger"></span>
-                    </div>
+                            <label>Service</label>
+                            <select asp-for="ServiceId" class="form-control">
+                                <option>Select service</option>
+                                @foreach (var service in Model.CaseServices)
+                                {
+                                    <option value="@service.Id">@service.ServiceName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="ServiceId" class="text-danger"></span>
+                        </div>
                     <div class="form-group col-4">
                         <label>Description</label>
                         <textarea asp-for="Description" class="form-control" rows="1"></textarea>

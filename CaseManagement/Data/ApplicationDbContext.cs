@@ -33,5 +33,11 @@ namespace CaseManagement.Data
         public DbSet<TaskType> TaskTypes { get; set; }
 
         public DbSet<TaskStatus> TaskStatuses { get; set; }
+
+        public DbSet<FieldModification> FieldModifications { get; set; }
+
+        public DbSet<CaseModificationLogRecord> CaseModificationLogRecords { get; set; }
+
+        public DbSet<TaskModificationLogRecord> TaskModificationLogRecords { get; set; }
     }
 }

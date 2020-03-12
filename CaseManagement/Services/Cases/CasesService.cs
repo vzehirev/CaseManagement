@@ -1,10 +1,12 @@
 ﻿using CaseManagement.Data;
+using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
 using CaseManagement.ViewModels.Output;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,7 +29,11 @@ namespace CaseManagement.Services.Cases
                 Subject = inputModel.Subject,
                 Description = inputModel.Description,
                 CreatedOn = DateTime.UtcNow,
-                UserId = userId
+                UserId = userId,
+                PriorityId = inputModel.PriorityId,
+                StatusId = inputModel.StatusId,
+                TypeId = inputModel.TypeId,
+                ServiceId = inputModel.ServiceId,
             };
 
             this.dbContext.Cases.Add(caseToAdd);
@@ -39,6 +45,11 @@ namespace CaseManagement.Services.Cases
             }
 
             return saveResult;
+        }
+
+        public async Task<ICollection<CasePriority>> GetAllCasePrioritiesAsync()
+        {
+            return await this.dbContext.CasePriorities.ToArrayAsync();
         }
 
         public async Task<AllCasesOutputModel> GetAllCasesAsync()
@@ -64,6 +75,21 @@ namespace CaseManagement.Services.Cases
             return result;
         }
 
+        public async Task<ICollection<Service>> GetAllCaseServicesAsync()
+        {
+            return await this.dbContext.Services.ToArrayAsync();
+        }
+
+        public async Task<ICollection<CaseStatus>> GetAllCaseStatusesAsync()
+        {
+            return await this.dbContext.CaseStatuses.ToArrayAsync();
+        }
+
+        public async Task<ICollection<CaseType>> GetAllCaseTypesAsync()
+        {
+            return await this.dbContext.CaseTypes.ToArrayAsync();
+        }
+
         public async Task<ViewUpdateCaseModel> GetCaseByIdAsync(int id)
         {
             var outputModel = await this.dbContext.Cases
@@ -71,13 +97,14 @@ namespace CaseManagement.Services.Cases
                 {
                     Id = c.Id,
                     Number = c.Number,
-                    Priority = c.Priority.Priority,
-                    Status = c.Status.Status,
+                    PriorityId = c.Priority.Id,
+                    StatusId = c.Status.Id,
                     CreatedOn = c.CreatedOn,
                     Subject = c.Subject,
                     Description = c.Description,
-                    Type = c.Type.Type,
-                    Phase = c.Phase.Phase,
+                    TypeId = c.Type.Id,
+                    PhaseId = c.Phase.Id,
+                    ServiceId = c.Service.Id,
                     Tasks = c.Tasks.Select(t => new TaskOutputModel
                     {
                         Id = t.Id,
@@ -89,6 +116,11 @@ namespace CaseManagement.Services.Cases
                 })
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
+
+            outputModel.CaseStatuses = await this.GetAllCaseStatusesAsync();
+            outputModel.CasePriorities = await this.GetAllCasePrioritiesAsync();
+            outputModel.CaseTypes = await this.GetAllCaseTypesAsync();
+            outputModel.CaseServices = await this.GetAllCaseServicesAsync();
 
             return outputModel;
         }
@@ -118,10 +150,92 @@ namespace CaseManagement.Services.Cases
             return result;
         }
 
-        public async Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel)
+        public async Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel, string userId)
         {
             var caseRecordToUpdate = await this.dbContext.Cases
                 .FirstOrDefaultAsync(c => c.Id == inputModel.Id);
+
+            List<FieldModification> fieldModifications = new List<FieldModification>();
+
+            if (caseRecordToUpdate.Number != inputModel.Number)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Number",
+                    OldValue = caseRecordToUpdate.Number,
+                    NewValue = inputModel.Number,
+                });
+            }
+
+            if (caseRecordToUpdate.Description != inputModel.Description)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Description",
+                    OldValue = caseRecordToUpdate.Description,
+                    NewValue = inputModel.Description,
+                });
+            }
+
+            if (caseRecordToUpdate.Subject != inputModel.Subject)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Subject",
+                    OldValue = caseRecordToUpdate.Subject,
+                    NewValue = inputModel.Subject,
+                });
+            }
+
+            if (caseRecordToUpdate.StatusId != inputModel.StatusId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Status",
+                    OldValue = await this.dbContext.CaseStatuses.Where(cs => cs.Id == caseRecordToUpdate.StatusId).Select(cs => cs.Status).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.CaseStatuses.Where(cs => cs.Id == inputModel.StatusId).Select(cs => cs.Status).FirstOrDefaultAsync(),
+                });
+            }
+
+            if (caseRecordToUpdate.TypeId != inputModel.TypeId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Type",
+                    OldValue = await this.dbContext.CaseTypes.Where(ct => ct.Id == caseRecordToUpdate.TypeId).Select(ct => ct.Type).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.CaseTypes.Where(ct => ct.Id == inputModel.TypeId).Select(ct => ct.Type).FirstOrDefaultAsync(),
+                });
+            }
+
+            if (caseRecordToUpdate.PriorityId != inputModel.PriorityId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Priority",
+                    OldValue = await this.dbContext.CasePriorities.Where(cp => cp.Id == caseRecordToUpdate.PriorityId).Select(cp => cp.Priority).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.CasePriorities.Where(cp => cp.Id == inputModel.PriorityId).Select(cp => cp.Priority).FirstOrDefaultAsync(),
+                });
+            }
+
+            if (caseRecordToUpdate.PhaseId != inputModel.PhaseId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Phase",
+                    OldValue = await this.dbContext.CasePhases.Where(cp => cp.Id == caseRecordToUpdate.PhaseId).Select(cp => cp.Phase).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.CasePhases.Where(cp => cp.Id == inputModel.PhaseId).Select(cp => cp.Phase).FirstOrDefaultAsync(),
+                });
+            }
+
+            if (caseRecordToUpdate.ServiceId != inputModel.ServiceId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Service",
+                    OldValue = await this.dbContext.Services.Where(s => s.Id == caseRecordToUpdate.ServiceId).Select(s => s.ServiceName).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.Services.Where(s => s.Id == inputModel.ServiceId).Select(s => s.ServiceName).FirstOrDefaultAsync(),
+                });
+            }
 
             caseRecordToUpdate.Number = inputModel.Number;
             caseRecordToUpdate.Description = inputModel.Description;
@@ -131,6 +245,20 @@ namespace CaseManagement.Services.Cases
             caseRecordToUpdate.TypeId = inputModel.TypeId;
             caseRecordToUpdate.PriorityId = inputModel.PriorityId;
             caseRecordToUpdate.PhaseId = inputModel.PhaseId;
+            caseRecordToUpdate.ServiceId = inputModel.ServiceId;
+
+            if (fieldModifications.Count > 0)
+            {
+                var modificationLogRecord = new CaseModificationLogRecord
+                {
+                    ModificationTime = DateTime.UtcNow,
+                    UserId = userId,
+                    CaseId = caseRecordToUpdate.Id,
+                    ModifiedFields = fieldModifications,
+                };
+
+                this.dbContext.CaseModificationLogRecords.Add(modificationLogRecord);
+            }
 
             this.dbContext.Cases.Update(caseRecordToUpdate);
             var saveResult = await this.dbContext.SaveChangesAsync();

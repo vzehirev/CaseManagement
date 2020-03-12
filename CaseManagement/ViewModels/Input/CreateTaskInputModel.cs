@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CaseManagement.Models.CaseModels;
+using CaseManagement.Models.TaskModels;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CaseManagement.ViewModels.Input
 {
@@ -6,11 +9,7 @@ namespace CaseManagement.ViewModels.Input
     {
         public int? TypeId { get; set; }
 
-        public string Type { get; set; }
-
         public int? StatusId { get; set; }
-
-        public string Status { get; set; }
 
         [Required]
         public string Action { get; set; }
@@ -21,6 +20,10 @@ namespace CaseManagement.ViewModels.Input
 
         [Required]
         public string Comments { get; set; }
+
+        public IEnumerable<TaskType> TaskTypes { get; set; }
+
+        public IEnumerable<TaskStatus> TaskStatuses { get; set; }
 
         public int CaseId { get; set; }
     }

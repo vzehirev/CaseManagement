@@ -21,9 +21,15 @@ namespace CaseManagement.Controllers
             this.userManager = userManager;
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new CreateTaskInputModel
+            {
+                TaskStatuses = await this.tasksService.GetAllTaskStatusesAsync(),
+                TaskTypes = await this.tasksService.GetAllTaskTypesAsync(),
+            };
+            
+            return View(model);
         }
 
         [HttpPost]
@@ -53,7 +59,9 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ViewUpdateTaskModel inputModel)
         {
-            var updateResult = await this.tasksService.UpdateTaskAsync(inputModel);
+            var userId = this.userManager.GetUserId(this.User);
+
+            var updateResult = await this.tasksService.UpdateTaskAsync(inputModel, userId);
 
             if (updateResult > 0)
             {

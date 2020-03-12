@@ -1,5 +1,7 @@
-﻿using CaseManagement.ViewModels;
+﻿using CaseManagement.Models.TaskModels;
+using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CaseManagement.Services.Tasks
@@ -10,6 +12,10 @@ namespace CaseManagement.Services.Tasks
 
         public Task<ViewUpdateTaskModel> GetTaskByIdAsync(int id);
 
-        public Task<int> UpdateTaskAsync(ViewUpdateTaskModel caseToUpdate);
+        public Task<int> UpdateTaskAsync(ViewUpdateTaskModel caseToUpdate, string userId);
+
+        public Task<ICollection<TaskType>> GetAllTaskTypesAsync();
+
+        public Task<ICollection<Models.TaskModels.TaskStatus>> GetAllTaskStatusesAsync();
     }
 }

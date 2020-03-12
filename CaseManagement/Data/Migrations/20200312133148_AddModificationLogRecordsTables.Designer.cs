@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200312133148_AddModificationLogRecordsTables")]
+    partial class AddModificationLogRecordsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,15 +244,41 @@ namespace CaseManagement.Data.Migrations
                     b.ToTable("ServiceAreas");
                 });
 
-            modelBuilder.Entity("CaseManagement.Models.CaseModificationLogRecord", b =>
+            modelBuilder.Entity("CaseManagement.Models.FieldModification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CaseId")
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ModificationLogRecordId")
                         .HasColumnType("int");
+
+                    b.Property<string>("NewValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModificationLogRecordId");
+
+                    b.ToTable("FieldModifications");
+                });
+
+            modelBuilder.Entity("CaseManagement.Models.ModificationLogRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("datetime2");
@@ -261,45 +289,9 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CaseId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("CaseModificationLogRecords");
-                });
-
-            modelBuilder.Entity("CaseManagement.Models.FieldModification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CaseModificationLogRecordId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FieldName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NewValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OldValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("TaskModificationLogRecordId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseModificationLogRecordId");
-
-                    b.HasIndex("TaskModificationLogRecordId");
-
-                    b.ToTable("FieldModifications");
+                    b.ToTable("ModificationLogRecords");
                 });
 
             modelBuilder.Entity("CaseManagement.Models.TaskModels.CaseTask", b =>
@@ -383,35 +375,6 @@ namespace CaseManagement.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TaskTypes");
-                });
-
-            modelBuilder.Entity("CaseManagement.Models.TaskModificationLogRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CaseTaskId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ModificationTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CaseTaskId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TaskModificationLogRecords");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -580,30 +543,20 @@ namespace CaseManagement.Data.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("CaseManagement.Models.CaseModificationLogRecord", b =>
+            modelBuilder.Entity("CaseManagement.Models.FieldModification", b =>
                 {
-                    b.HasOne("CaseManagement.Models.CaseModels.Case", null)
-                        .WithMany("CaseModificationLogRecords")
-                        .HasForeignKey("CaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("CaseManagement.Models.ModificationLogRecord", null)
+                        .WithMany("ModifiedFields")
+                        .HasForeignKey("ModificationLogRecordId");
+                });
 
+            modelBuilder.Entity("CaseManagement.Models.ModificationLogRecord", b =>
+                {
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("CaseManagement.Models.FieldModification", b =>
-                {
-                    b.HasOne("CaseManagement.Models.CaseModificationLogRecord", null)
-                        .WithMany("ModifiedFields")
-                        .HasForeignKey("CaseModificationLogRecordId");
-
-                    b.HasOne("CaseManagement.Models.TaskModificationLogRecord", null)
-                        .WithMany("ModifiedFields")
-                        .HasForeignKey("TaskModificationLogRecordId");
                 });
 
             modelBuilder.Entity("CaseManagement.Models.TaskModels.CaseTask", b =>
@@ -625,19 +578,6 @@ namespace CaseManagement.Data.Migrations
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany("Tasks")
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("CaseManagement.Models.TaskModificationLogRecord", b =>
-                {
-                    b.HasOne("CaseManagement.Models.TaskModels.CaseTask", null)
-                        .WithMany("TaskModificationLogRecords")
-                        .HasForeignKey("CaseTaskId");
-
-                    b.HasOne("CaseManagement.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

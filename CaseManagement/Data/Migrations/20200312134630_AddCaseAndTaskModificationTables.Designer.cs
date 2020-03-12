@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200312134630_AddCaseAndTaskModificationTables")]
+    partial class AddCaseAndTaskModificationTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -392,9 +394,6 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CaseTaskId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ModificationTime")
                         .HasColumnType("datetime2");
 
@@ -406,8 +405,6 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CaseTaskId");
 
                     b.HasIndex("UserId");
 
@@ -629,10 +626,6 @@ namespace CaseManagement.Data.Migrations
 
             modelBuilder.Entity("CaseManagement.Models.TaskModificationLogRecord", b =>
                 {
-                    b.HasOne("CaseManagement.Models.TaskModels.CaseTask", null)
-                        .WithMany("TaskModificationLogRecords")
-                        .HasForeignKey("CaseTaskId");
-
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")

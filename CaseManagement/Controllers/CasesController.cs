@@ -2,6 +2,7 @@
 using CaseManagement.Services.Cases;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
+using CaseManagement.ViewModels.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,9 +31,17 @@ namespace CaseManagement.Controllers
             return View(outputModel);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var model = new CreateCaseInputModel
+            {
+                CasePriorities = await this.casesService.GetAllCasePrioritiesAsync(),
+                CaseStatuses = await this.casesService.GetAllCaseStatusesAsync(),
+                CaseTypes = await this.casesService.GetAllCaseTypesAsync(),
+                CaseServices = await this.casesService.GetAllCaseServicesAsync(),
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -66,7 +75,9 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ViewUpdateCaseModel inputModel)
         {
-            var updateResult = await this.casesService.UpdateCaseAsync(inputModel);
+            var userId = this.userManager.GetUserId(this.User);
+
+            var updateResult = await this.casesService.UpdateCaseAsync(inputModel, userId);
 
             if (updateResult > 0)
             {

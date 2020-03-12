@@ -53,5 +53,7 @@ namespace CaseManagement.Models.CaseModels
         public Service Service { get; set; }
 
         public ICollection<CaseTask> Tasks { get; set; } = new HashSet<CaseTask>();
+
+        public ICollection<CaseModificationLogRecord> CaseModificationLogRecords { get; set; } = new HashSet<CaseModificationLogRecord>();
     }
 }

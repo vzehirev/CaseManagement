@@ -1,5 +1,6 @@
 ﻿using CaseManagement.Models.CaseModels;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace CaseManagement.Models.TaskModels
@@ -38,5 +39,7 @@ namespace CaseManagement.Models.TaskModels
         public int? StatusId { get; set; }
 
         public TaskStatus Status { get; set; }
+
+        public ICollection<TaskModificationLogRecord> TaskModificationLogRecords { get; set; } = new HashSet<TaskModificationLogRecord>();
     }
 }

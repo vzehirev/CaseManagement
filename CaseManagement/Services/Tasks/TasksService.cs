@@ -1,9 +1,11 @@
 ﻿using CaseManagement.Data;
+using CaseManagement.Models;
 using CaseManagement.Models.TaskModels;
 using CaseManagement.ViewModels;
 using CaseManagement.ViewModels.Input;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,13 +31,23 @@ namespace CaseManagement.Services.Tasks
                 StatusId = inputModel.StatusId,
                 Action = inputModel.Action,
                 NextAction = inputModel.NextAction,
-                Comments = inputModel.Comments
+                Comments = inputModel.Comments,
             };
 
             this.dbContext.Tasks.Add(taskToAdd);
             var saveResult = await this.dbContext.SaveChangesAsync();
 
             return saveResult;
+        }
+
+        public async Task<ICollection<Models.TaskModels.TaskStatus>> GetAllTaskStatusesAsync()
+        {
+            return await this.dbContext.TaskStatuses.ToArrayAsync();
+        }
+
+        public async Task<ICollection<TaskType>> GetAllTaskTypesAsync()
+        {
+            return await this.dbContext.TaskTypes.ToArrayAsync();
         }
 
         public async Task<ViewUpdateTaskModel> GetTaskByIdAsync(int id)
@@ -48,20 +60,75 @@ namespace CaseManagement.Services.Tasks
                     Comments = t.Comments,
                     CreatedOn = t.CreatedOn,
                     NextAction = t.NextAction,
-                    Status = t.Status.Status,
-                    Type = t.Type.Type,
+                    StatusId = t.Status.Id,
+                    TypeId = t.Type.Id,
                     CaseId = t.CaseId
                 })
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
 
+            outputModel.TaskTypes = await this.GetAllTaskTypesAsync();
+            outputModel.TaskStatuses = await this.GetAllTaskStatusesAsync();
+
             return outputModel;
         }
 
-        public async Task<int> UpdateTaskAsync(ViewUpdateTaskModel inputModel)
+        public async Task<int> UpdateTaskAsync(ViewUpdateTaskModel inputModel, string userId)
         {
             var taskRecordToUpdate = await this.dbContext.Tasks
                    .FirstOrDefaultAsync(t => t.Id == inputModel.Id);
+
+            List<FieldModification> fieldModifications = new List<FieldModification>();
+
+            if (taskRecordToUpdate.Comments != inputModel.Comments)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Comments",
+                    OldValue = taskRecordToUpdate.Comments,
+                    NewValue = inputModel.Comments,
+                });
+            }
+
+            if (taskRecordToUpdate.TypeId != inputModel.TypeId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Type",
+                    OldValue = await this.dbContext.TaskTypes.Where(tt => tt.Id == taskRecordToUpdate.TypeId).Select(tt => tt.Type).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.TaskTypes.Where(tt => tt.Id == inputModel.TypeId).Select(tt => tt.Type).FirstOrDefaultAsync(),
+                });
+            }
+
+            if (taskRecordToUpdate.StatusId != inputModel.StatusId)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Status",
+                    OldValue = await this.dbContext.TaskStatuses.Where(ts => ts.Id == taskRecordToUpdate.StatusId).Select(ts => ts.Status).FirstOrDefaultAsync(),
+                    NewValue = await this.dbContext.TaskStatuses.Where(ts => ts.Id == inputModel.StatusId).Select(ts => ts.Status).FirstOrDefaultAsync(),
+                });
+            }
+
+            if (taskRecordToUpdate.Action != inputModel.Action)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Action",
+                    OldValue = taskRecordToUpdate.Action,
+                    NewValue = inputModel.Action,
+                });
+            }
+
+            if (taskRecordToUpdate.NextAction != inputModel.NextAction)
+            {
+                fieldModifications.Add(new FieldModification
+                {
+                    FieldName = "Next action",
+                    OldValue = taskRecordToUpdate.NextAction,
+                    NewValue = inputModel.NextAction,
+                });
+            }
 
             taskRecordToUpdate.Comments = inputModel.Comments;
             taskRecordToUpdate.TypeId = inputModel.TypeId;
@@ -69,6 +136,19 @@ namespace CaseManagement.Services.Tasks
             taskRecordToUpdate.StatusId = inputModel.StatusId;
             taskRecordToUpdate.Action = inputModel.Action;
             taskRecordToUpdate.NextAction = inputModel.NextAction;
+
+            if (fieldModifications.Count > 0)
+            {
+                var modificationLogRecord = new TaskModificationLogRecord
+                {
+                    ModificationTime = DateTime.UtcNow,
+                    UserId = userId,
+                    TaskId = taskRecordToUpdate.Id,
+                    ModifiedFields = fieldModifications,
+                };
+
+                this.dbContext.TaskModificationLogRecords.Add(modificationLogRecord);
+            }
 
             this.dbContext.Tasks.Update(taskRecordToUpdate);
 

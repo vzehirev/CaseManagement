@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CaseManagement.Models.CaseModels;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace CaseManagement.ViewModels.Input
 {
@@ -10,11 +12,7 @@ namespace CaseManagement.ViewModels.Input
 
         public int? StatusId { get; set; }
 
-        public string Status { get; set; }
-
         public int? PriorityId { get; set; }
-
-        public string Priority { get; set; }
 
         [Required]
         [Display(Name = "Case Subject")]
@@ -22,14 +20,20 @@ namespace CaseManagement.ViewModels.Input
 
         public int? TypeId { get; set; }
 
-        public string Type { get; set; }
-
         public int? PhaseId { get; set; }
 
-        public string Phase { get; set; }
+        public int? ServiceId { get; set; }
 
         [Required]
         [Display(Name = "Case Description")]
         public string Description { get; set; }
+
+        public IEnumerable<CaseStatus> CaseStatuses { get; set; }
+
+        public IEnumerable<CasePriority> CasePriorities { get; set; }
+
+        public IEnumerable<CaseType> CaseTypes { get; set; }
+
+        public IEnumerable<Service> CaseServices { get; set; }
     }
 }
