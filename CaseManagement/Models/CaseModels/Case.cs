@@ -15,7 +15,6 @@ namespace CaseManagement.Models.CaseModels
         [Required]
         public string Subject { get; set; }
 
-        [Required]
         public string Description { get; set; }
 
         public DateTime CreatedOn { get; set; }

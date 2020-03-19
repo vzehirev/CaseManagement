@@ -14,6 +14,23 @@ namespace CaseManagement.Data
 
         }
 
+        //protected override void OnModelCreating(ModelBuilder builder)
+        //{
+        //    builder.Entity<CaseType>().HasData(
+        //        new CaseType { Type = "DCM Regional Ticket" },
+        //        new CaseType { Type = "Server Maintenance Break and Fix (B+F)" },
+        //        new CaseType { Type = "Time Critical Request (Incident)" },
+        //        new CaseType { Type = "Time Critical Request (Request)" },
+        //        new CaseType { Type = "Requesting DC access" },
+        //        new CaseType { Type = "Requesting Goods Delivery to DCs" },
+        //        new CaseType { Type = "Requesting the announcement of System News" },
+        //        new CaseType { Type = "Requesting different kinds of onsite support activities" },
+        //        new CaseType { Type = "Other" }
+        //        );
+
+        //    base.OnModelCreating(builder);
+        //}
+
         public DbSet<Case> Cases { get; set; }
 
         public DbSet<CaseType> CaseTypes { get; set; }

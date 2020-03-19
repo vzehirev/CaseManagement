@@ -20,7 +20,6 @@ namespace CaseManagement.ViewModels
 
         public int? TypeId { get; set; }
 
-        [Required]
         public string Comments { get; set; }
 
         public DateTime CreatedOn { get; set; }

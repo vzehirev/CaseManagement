@@ -8,6 +8,10 @@ namespace CaseManagement.ViewModels.Output
 
         public DateTime CreatedOn { get; set; }
 
+        public string Action { get; set; }
+
+        public string NextAction { get; set; }
+
         public string Type { get; set; }
 
         public string Status { get; set; }

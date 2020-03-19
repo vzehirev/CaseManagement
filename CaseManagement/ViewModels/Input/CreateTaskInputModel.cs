@@ -18,7 +18,6 @@ namespace CaseManagement.ViewModels.Input
         [Display(Name = "Next action")]
         public string NextAction { get; set; }
 
-        [Required]
         public string Comments { get; set; }
 
         public IEnumerable<TaskType> TaskTypes { get; set; }

@@ -13,10 +13,8 @@ namespace CaseManagement.Models
         [Required]
         public string FieldName { get; set; }
 
-        [Required]
         public string OldValue { get; set; }
 
-        [Required]
         public string NewValue { get; set; }
     }
 }

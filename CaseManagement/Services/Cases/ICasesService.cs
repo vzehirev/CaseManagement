@@ -26,5 +26,9 @@ namespace CaseManagement.Services.Cases
         public Task<ICollection<CasePriority>> GetAllCasePrioritiesAsync();
 
         public Task<ICollection<Service>> GetAllCaseServicesAsync();
+
+        public Task<CaseUpdatesOutputModel> GetCaseUpdatesAsync(int caseId);
+
+        public Task<string> GetCaseNumberByIdAsync(int caseId);
     }
 }

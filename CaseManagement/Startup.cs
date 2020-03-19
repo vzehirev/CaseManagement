@@ -37,11 +37,10 @@ namespace CaseManagement
 
             services.AddTransient<ICasesService, CasesService>();
             services.AddTransient<ITasksService, TasksService>();
-            services.AddTransient<DbMigrateAndSeed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbMigrateAndSeed dbMigrateAndSeed)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext dbContext)
         {
             if (env.IsDevelopment())
             {
@@ -70,7 +69,7 @@ namespace CaseManagement
                 endpoints.MapRazorPages();
             });
 
-            // dbMigrateAndSeed.MigrateAndSeed();
+            dbContext.Database.Migrate();
         }
     }
 }

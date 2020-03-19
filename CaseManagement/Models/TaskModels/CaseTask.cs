@@ -15,7 +15,6 @@ namespace CaseManagement.Models.TaskModels
         [Required]
         public string NextAction { get; set; }
 
-        [Required]
         public string Comments { get; set; }
 
         public DateTime CreatedOn { get; set; }

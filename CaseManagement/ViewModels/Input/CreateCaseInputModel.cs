@@ -24,7 +24,6 @@ namespace CaseManagement.ViewModels.Input
 
         public int? ServiceId { get; set; }
 
-        [Required]
         [Display(Name = "Case Description")]
         public string Description { get; set; }
 

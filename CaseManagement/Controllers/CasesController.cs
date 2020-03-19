@@ -89,15 +89,24 @@ namespace CaseManagement.Controllers
 
         public async Task<IActionResult> SearchCase(string caseNumber)
         {
+
             if (string.IsNullOrWhiteSpace(caseNumber))
             {
                 return RedirectToAction("Index");
             }
 
+            caseNumber = caseNumber.Trim();
+
             var outputModel = await this.casesService.GetCaseByNumberAsync(caseNumber);
             outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
 
             return View("Index", outputModel);
+        }
+        public async Task<IActionResult> CaseUpdates(int caseId)
+        {
+            var outputModel = await this.casesService.GetCaseUpdatesAsync(caseId);
+
+            return View(outputModel);
         }
     }
 }

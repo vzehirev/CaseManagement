@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CaseManagement.Services.Cases
@@ -109,6 +110,8 @@ namespace CaseManagement.Services.Cases
                     {
                         Id = t.Id,
                         CreatedOn = t.CreatedOn,
+                        Action = t.Action,
+                        NextAction = t.NextAction,
                         Type = t.Type.Type,
                         Status = t.Status.Status,
                         Owner = t.User.Email
@@ -148,6 +151,43 @@ namespace CaseManagement.Services.Cases
             };
 
             return result;
+        }
+
+        public Task<string> GetCaseNumberByIdAsync(int caseId)
+        {
+            return this.dbContext.Cases
+                .Where(c => c.Id == caseId)
+                .Select(c => c.Number)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<CaseUpdatesOutputModel> GetCaseUpdatesAsync(int caseId)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var caseUpdates = await this.dbContext.CaseModificationLogRecords
+                .Where(c => c.CaseId == caseId)
+                .FirstOrDefaultAsync();
+
+            if (caseUpdates == null)
+            {
+                return null;
+            }
+
+            foreach (var update in caseUpdates.ModifiedFields)
+            {
+                sb.AppendLine($"{update.FieldName}: {update.OldValue} -> {update.NewValue}");
+            }
+
+            var outputModel = new CaseUpdatesOutputModel
+            {
+                CaseNumber = await this.GetCaseNumberByIdAsync(caseId),
+                TimeOfUpdate = caseUpdates.ModificationTime,
+                User = caseUpdates.User.Email,
+                Updates = sb.ToString().Trim(),
+            };
+
+            return outputModel;
         }
 
         public async Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel, string userId)
