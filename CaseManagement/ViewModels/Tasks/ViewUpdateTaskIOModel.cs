@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaseManagement.ViewModels
+namespace CaseManagement.ViewModels.Tasks
 {
-    public class ViewUpdateTaskModel
+    public class ViewUpdateTaskIOModel
     {
         public int Id { get; set; }
 

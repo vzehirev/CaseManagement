@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaseManagement.ViewModels.Input
+namespace CaseManagement.ViewModels.Cases.Input
 {
     public class CreateCaseInputModel
     {

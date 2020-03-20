@@ -1,4 +1,4 @@
-﻿@model CaseManagement.ViewModels.ViewUpdateTaskModel
+﻿@model CaseManagement.ViewModels.Tasks.ViewUpdateTaskIOModel
 
 <div class="row">
     <div class="col-8 mx-auto text-center">
@@ -20,10 +20,12 @@
                     <div class="form-group col-4">
                         <label>Type</label>
                         <select asp-for="TypeId" class="form-control">
+
                             @if (Model.TypeId == null)
                             {
-                                <option>Select type</option>
+                                <option value="">Select type</option>
                             }
+
                             @foreach (var type in Model.TaskTypes)
                             {
                                 if (Model.TypeId == type.Id)
@@ -35,16 +37,19 @@
                                     <option value="@type.Id">@type.Type</option>
                                 }
                             }
+
                         </select>
                         <span asp-validation-for="TypeId" class="text-danger"></span>
                     </div>
                     <div class="form-group col-4">
                         <label>Status</label>
                         <select asp-for="StatusId" class="form-control">
+
                             @if (Model.StatusId == null)
                             {
-                                <option>Select status</option>
+                                <option value="">Select status</option>
                             }
+
                             @foreach (var status in Model.TaskStatuses)
                             {
                                 if (Model.StatusId == status.Id)
@@ -56,6 +61,7 @@
                                     <option value="@status.Id">@status.Status</option>
                                 }
                             }
+
                         </select>
                         <span asp-validation-for="StatusId" class="text-danger"></span>
                     </div>

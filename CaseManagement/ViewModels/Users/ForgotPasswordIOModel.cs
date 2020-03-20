@@ -11,7 +11,5 @@ namespace CaseManagement.ViewModels.Users
         [Required]
         [Display(Name = "Email")]
         public string UserEmail { get; set; }
-
-        public bool? ResetSuccessful { get; set; }
     }
 }

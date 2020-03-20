@@ -3,6 +3,7 @@
 @inject UserManager<ApplicationUser> UserManager
 
     <ul class="navbar-nav ml-auto">
+
         @if (SignInManager.IsSignedIn(User))
         {
             <li class="nav-item">
@@ -20,10 +21,11 @@
         else
         {
             <li class="nav-item">
-                <a class="nav-link" asp-controller="Home" asp-action="Index">HOME</a>
+                <a class="nav-link" asp-controller="Home" asp-action="Index">LOG IN</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">REGISTER</a>
             </li>
         }
+
     </ul>

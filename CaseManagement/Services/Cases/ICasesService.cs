@@ -1,7 +1,7 @@
 ﻿using CaseManagement.Models.CaseModels;
-using CaseManagement.ViewModels;
-using CaseManagement.ViewModels.Input;
-using CaseManagement.ViewModels.Output;
+using CaseManagement.ViewModels.Cases;
+using CaseManagement.ViewModels.Cases.Input;
+using CaseManagement.ViewModels.Cases.Output;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -13,11 +13,11 @@ namespace CaseManagement.Services.Cases
 
         public Task<AllCasesOutputModel> GetAllCasesAsync();
 
-        public Task<AllCasesOutputModel> GetCaseByNumberAsync(string caseNumber);
+        public Task<SearchCaseResultsOutputModel> GetCasesByNumberAsync(string caseNumber);
 
-        public Task<ViewUpdateCaseModel> GetCaseByIdAsync(int id);
+        public Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id);
 
-        public Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel, string userId);
+        public Task<int> UpdateCaseAsync(ViewUpdateCaseIOModel inputModel, string userId);
 
         public Task<ICollection<CaseType>> GetAllCaseTypesAsync();
 
@@ -26,8 +26,6 @@ namespace CaseManagement.Services.Cases
         public Task<ICollection<CasePriority>> GetAllCasePrioritiesAsync();
 
         public Task<ICollection<Service>> GetAllCaseServicesAsync();
-
-        public Task<CaseUpdatesOutputModel> GetCaseUpdatesAsync(int caseId);
 
         public Task<string> GetCaseNumberByIdAsync(int caseId);
     }

@@ -7,6 +7,16 @@
             <form id="account" method="post">
                 <h4>Use a local account to log in.</h4>
                 <hr />
+
+                @*Set in Users controller's ForgotPassword action with post method in case of successfull password reset*@
+                @if (this.TempData["PasswordResetSuccessful"] as bool? == true)
+                {
+                    <div class="alert alert-dismissible alert-success">
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <strong>Successful password reset.</strong>
+                    </div>
+                }
+
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>

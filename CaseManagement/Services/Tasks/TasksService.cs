@@ -1,8 +1,8 @@
 ﻿using CaseManagement.Data;
 using CaseManagement.Models;
 using CaseManagement.Models.TaskModels;
-using CaseManagement.ViewModels;
-using CaseManagement.ViewModels.Input;
+using CaseManagement.ViewModels.Tasks;
+using CaseManagement.ViewModels.Tasks.Input;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -50,10 +50,10 @@ namespace CaseManagement.Services.Tasks
             return await this.dbContext.TaskTypes.ToArrayAsync();
         }
 
-        public async Task<ViewUpdateTaskModel> GetTaskByIdAsync(int id)
+        public async Task<ViewUpdateTaskIOModel> GetTaskByIdAsync(int id)
         {
             var outputModel = await this.dbContext.Tasks
-                .Select(t => new ViewUpdateTaskModel
+                .Select(t => new ViewUpdateTaskIOModel
                 {
                     Id = t.Id,
                     Action = t.Action,
@@ -62,18 +62,17 @@ namespace CaseManagement.Services.Tasks
                     NextAction = t.NextAction,
                     StatusId = t.Status.Id,
                     TypeId = t.Type.Id,
-                    CaseId = t.CaseId
+                    CaseId = t.CaseId,
+                    TaskTypes = this.dbContext.TaskTypes.ToArray(),
+                    TaskStatuses = this.dbContext.TaskStatuses.ToArray(),
                 })
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
 
-            outputModel.TaskTypes = await this.GetAllTaskTypesAsync();
-            outputModel.TaskStatuses = await this.GetAllTaskStatusesAsync();
-
             return outputModel;
         }
 
-        public async Task<int> UpdateTaskAsync(ViewUpdateTaskModel inputModel, string userId)
+        public async Task<int> UpdateTaskAsync(ViewUpdateTaskIOModel inputModel, string userId)
         {
             var taskRecordToUpdate = await this.dbContext.Tasks
                    .FirstOrDefaultAsync(t => t.Id == inputModel.Id);

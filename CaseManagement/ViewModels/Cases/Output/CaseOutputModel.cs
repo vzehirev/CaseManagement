@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaseManagement.ViewModels.Output
+namespace CaseManagement.ViewModels.Cases.Output
 {
     public class CaseOutputModel
     {
@@ -16,6 +16,6 @@ namespace CaseManagement.ViewModels.Output
 
         public string Priority { get; set; }
 
-        public string Owner { get; set; }
+        public string Agent { get; set; }
     }
 }

@@ -1,55 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CaseManagement.Models;
 using CaseManagement.ViewModels.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace CaseManagement.Controllers
 {
     public class UsersController : Controller
     {
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IConfiguration configuration;
 
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.configuration = configuration;
         }
 
-        public IActionResult ForgotPassword(ForgotPasswordIOModel outputModel)
+        public IActionResult ForgotPassword()
         {
-            outputModel.ResetSuccessful = (bool?)this.TempData["ResetSuccessful"];
-
-            return View(outputModel);
+            return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string userEmail)
         {
-            if (string.IsNullOrWhiteSpace(userEmail))
-            {
-                this.TempData["ResetSuccessful"] = false;
-
-                return RedirectToAction("ForgotPassword");
-            }
-
             var user = await this.userManager.FindByEmailAsync(userEmail.Trim());
 
-            if (user == null)
-            {
-                this.TempData["ResetSuccessful"] = false;
+            await this.userManager.RemovePasswordAsync(user);
+            await this.userManager.AddPasswordAsync(user, this.configuration["DefaultResetPassword"]);
 
-                return RedirectToAction("ForgotPassword");
-            }
+            this.TempData["PasswordResetSuccessful"] = true;
 
-            await userManager.RemovePasswordAsync(user);
-            await this.userManager.AddPasswordAsync(user, "P@55word");
-
-            this.TempData["ResetSuccessful"] = true;
-
-            return RedirectToAction("ForgotPassword");
+            return LocalRedirect("/");
         }
     }
 }

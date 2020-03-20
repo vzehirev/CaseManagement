@@ -1,12 +1,12 @@
 ﻿using CaseManagement.Models.CaseModels;
-using CaseManagement.ViewModels.Output;
+using CaseManagement.ViewModels.Tasks.Output;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaseManagement.ViewModels
+namespace CaseManagement.ViewModels.Cases
 {
-    public class ViewUpdateCaseModel
+    public class ViewUpdateCaseIOModel
     {
         public int Id { get; set; }
 
@@ -42,11 +42,5 @@ namespace CaseManagement.ViewModels
         public IEnumerable<Service> CaseServices { get; set; }
 
         public TaskOutputModel[] Tasks { get; set; }
-
-        public bool? CaseUpdatedSuccessfully { get; set; }
-
-        public bool? TaskUpdatedSuccessfully { get; set; }
-
-        public bool? TaskCreatedSuccessfully { get; set; }
     }
 }

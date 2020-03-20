@@ -3,7 +3,7 @@ using CaseManagement.Models.TaskModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CaseManagement.ViewModels.Input
+namespace CaseManagement.ViewModels.Tasks.Input
 {
     public class CreateTaskInputModel
     {

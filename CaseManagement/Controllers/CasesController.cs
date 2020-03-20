@@ -1,8 +1,7 @@
 ﻿using CaseManagement.Models;
 using CaseManagement.Services.Cases;
-using CaseManagement.ViewModels;
-using CaseManagement.ViewModels.Input;
-using CaseManagement.ViewModels.Output;
+using CaseManagement.ViewModels.Cases;
+using CaseManagement.ViewModels.Cases.Input;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +13,13 @@ namespace CaseManagement.Controllers
     [Authorize]
     public class CasesController : Controller
     {
-        private readonly ICasesService casesService;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICasesService casesService;
 
-        public CasesController(ICasesService casesService, UserManager<ApplicationUser> userManager)
+        public CasesController(UserManager<ApplicationUser> userManager, ICasesService casesService)
         {
-            this.casesService = casesService;
             this.userManager = userManager;
+            this.casesService = casesService;
         }
 
         public async Task<IActionResult> Index()
@@ -35,9 +34,10 @@ namespace CaseManagement.Controllers
         {
             var model = new CreateCaseInputModel
             {
-                CasePriorities = await this.casesService.GetAllCasePrioritiesAsync(),
-                CaseStatuses = await this.casesService.GetAllCaseStatusesAsync(),
+                // Populate drop-down menus' options
                 CaseTypes = await this.casesService.GetAllCaseTypesAsync(),
+                CaseStatuses = await this.casesService.GetAllCaseStatusesAsync(),
+                CasePriorities = await this.casesService.GetAllCasePrioritiesAsync(),
                 CaseServices = await this.casesService.GetAllCaseServicesAsync(),
             };
 
@@ -47,11 +47,24 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateCaseInputModel inputModel)
         {
+            if (!this.ModelState.IsValid)
+            {
+                // Populate drop-down menus' options and return create page to edit data and re-submit
+                inputModel.CaseTypes = await this.casesService.GetAllCaseTypesAsync();
+                inputModel.CaseStatuses = await this.casesService.GetAllCaseStatusesAsync();
+                inputModel.CasePriorities = await this.casesService.GetAllCasePrioritiesAsync();
+                inputModel.CaseServices = await this.casesService.GetAllCaseServicesAsync();
+
+                return this.View(inputModel);
+            }
+
             var userId = this.userManager.GetUserId(this.User);
             var createResult = await this.casesService.CreateCaseAsync(inputModel, userId);
 
             if (createResult > 0)
             {
+                this.TempData["CaseCreatedSuccesffully"] = true;
+
                 return RedirectToAction("ViewUpdate", new { id = createResult });
             }
 
@@ -63,20 +76,18 @@ namespace CaseManagement.Controllers
             var outputModel = await this.casesService.GetCaseByIdAsync(id);
             outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
 
-            outputModel.CaseUpdatedSuccessfully = (bool?)this.TempData["CaseUpdatedSuccessfully"];
-
-            outputModel.TaskCreatedSuccessfully = (bool?)this.TempData["TaskCreatedSuccessfully"];
-
-            outputModel.TaskUpdatedSuccessfully = (bool?)this.TempData["TaskUpdatedSuccessfully"];
-
             return View(outputModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(ViewUpdateCaseModel inputModel)
+        public async Task<IActionResult> Update(ViewUpdateCaseIOModel inputModel)
         {
-            var userId = this.userManager.GetUserId(this.User);
+            if (!this.ModelState.IsValid)
+            {
+                return this.View("Error", new ErrorViewModel());
+            }
 
+            var userId = this.userManager.GetUserId(this.User);
             var updateResult = await this.casesService.UpdateCaseAsync(inputModel, userId);
 
             if (updateResult > 0)
@@ -95,18 +106,10 @@ namespace CaseManagement.Controllers
                 return RedirectToAction("Index");
             }
 
-            caseNumber = caseNumber.Trim();
+            var outputModel = await this.casesService.GetCasesByNumberAsync(caseNumber.Trim());
+            outputModel.Results = outputModel.Results.OrderByDescending(c => c.CreatedOn).ToArray();
 
-            var outputModel = await this.casesService.GetCaseByNumberAsync(caseNumber);
-            outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
-
-            return View("Index", outputModel);
-        }
-        public async Task<IActionResult> CaseUpdates(int caseId)
-        {
-            var outputModel = await this.casesService.GetCaseUpdatesAsync(caseId);
-
-            return View(outputModel);
+            return View("SearchCaseResults", outputModel);
         }
     }
 }

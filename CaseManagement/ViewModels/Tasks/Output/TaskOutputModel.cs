@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CaseManagement.ViewModels.Output
+namespace CaseManagement.ViewModels.Tasks.Output
 {
     public class TaskOutputModel
     {
@@ -16,6 +16,6 @@ namespace CaseManagement.ViewModels.Output
 
         public string Status { get; set; }
 
-        public string Owner { get; set; }
+        public string Agent { get; set; }
     }
 }

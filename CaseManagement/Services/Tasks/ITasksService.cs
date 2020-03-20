@@ -1,6 +1,6 @@
 ﻿using CaseManagement.Models.TaskModels;
-using CaseManagement.ViewModels;
-using CaseManagement.ViewModels.Input;
+using CaseManagement.ViewModels.Tasks;
+using CaseManagement.ViewModels.Tasks.Input;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,9 +10,9 @@ namespace CaseManagement.Services.Tasks
     {
         public Task<int> CreateTaskAsync(CreateTaskInputModel inputModel, string userId);
 
-        public Task<ViewUpdateTaskModel> GetTaskByIdAsync(int id);
+        public Task<ViewUpdateTaskIOModel> GetTaskByIdAsync(int id);
 
-        public Task<int> UpdateTaskAsync(ViewUpdateTaskModel caseToUpdate, string userId);
+        public Task<int> UpdateTaskAsync(ViewUpdateTaskIOModel taskToUpdate, string userId);
 
         public Task<ICollection<TaskType>> GetAllTaskTypesAsync();
 

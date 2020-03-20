@@ -1,9 +1,7 @@
-﻿namespace CaseManagement.ViewModels.Output
+﻿namespace CaseManagement.ViewModels.Cases.Output
 {
     public class AllCasesOutputModel
     {
-        public string SearchedCaseNumber { get; set; }
-
         public CaseOutputModel[] Cases { get; set; }
     }
 }

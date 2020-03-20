@@ -25,20 +25,20 @@ namespace CaseManagement.Models.TaskModels
 
         public string UserId { get; set; }
 
-        public ApplicationUser User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         public int CaseId { get; set; }
 
-        public Case Case { get; set; }
+        public virtual Case Case { get; set; }
 
         public int? TypeId { get; set; }
 
-        public TaskType Type { get; set; }
+        public virtual TaskType Type { get; set; }
 
         public int? StatusId { get; set; }
 
-        public TaskStatus Status { get; set; }
+        public virtual TaskStatus Status { get; set; }
 
-        public ICollection<TaskModificationLogRecord> TaskModificationLogRecords { get; set; } = new HashSet<TaskModificationLogRecord>();
+        public virtual ICollection<TaskModificationLogRecord> TaskModificationLogRecords { get; set; } = new HashSet<TaskModificationLogRecord>();
     }
 }

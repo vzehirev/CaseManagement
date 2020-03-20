@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CaseManagement.ViewModels.Output
+namespace CaseManagement.ViewModels.Cases.Output
 {
     public class CaseUpdatesOutputModel
     {

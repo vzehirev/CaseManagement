@@ -1,9 +1,10 @@
 ﻿using CaseManagement.Data;
 using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
-using CaseManagement.ViewModels;
-using CaseManagement.ViewModels.Input;
-using CaseManagement.ViewModels.Output;
+using CaseManagement.ViewModels.Cases;
+using CaseManagement.ViewModels.Cases.Input;
+using CaseManagement.ViewModels.Cases.Output;
+using CaseManagement.ViewModels.Tasks.Output;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -31,9 +32,9 @@ namespace CaseManagement.Services.Cases
                 Description = inputModel.Description,
                 CreatedOn = DateTime.UtcNow,
                 UserId = userId,
-                PriorityId = inputModel.PriorityId,
-                StatusId = inputModel.StatusId,
                 TypeId = inputModel.TypeId,
+                StatusId = inputModel.StatusId,
+                PriorityId = inputModel.PriorityId,
                 ServiceId = inputModel.ServiceId,
             };
 
@@ -55,22 +56,20 @@ namespace CaseManagement.Services.Cases
 
         public async Task<AllCasesOutputModel> GetAllCasesAsync()
         {
-            var allCases = await this.dbContext.Cases
-                .Select(c => new CaseOutputModel
-                {
-                    Number = c.Number,
-                    Priority = c.Priority.Priority,
-                    Status = c.Status.Status,
-                    CreatedOn = c.CreatedOn,
-                    Id = c.Id,
-                    Owner = c.User.Email,
-                    Subject = c.Subject
-                })
-                .ToArrayAsync();
-
             var result = new AllCasesOutputModel
             {
-                Cases = allCases
+                Cases = await this.dbContext.Cases
+                .Select(c => new CaseOutputModel
+                {
+                    Id = c.Id,
+                    Number = c.Number,
+                    CreatedOn = c.CreatedOn,
+                    Status = c.Status.Status,
+                    Priority = c.Priority.Priority,
+                    Subject = c.Subject,
+                    Agent = c.User.Email,
+                })
+                .ToArrayAsync(),
             };
 
             return result;
@@ -91,21 +90,21 @@ namespace CaseManagement.Services.Cases
             return await this.dbContext.CaseTypes.ToArrayAsync();
         }
 
-        public async Task<ViewUpdateCaseModel> GetCaseByIdAsync(int id)
+        public async Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id)
         {
             var outputModel = await this.dbContext.Cases
-                .Select(c => new ViewUpdateCaseModel
+                .Select(c => new ViewUpdateCaseIOModel
                 {
                     Id = c.Id,
                     Number = c.Number,
-                    PriorityId = c.Priority.Id,
-                    StatusId = c.Status.Id,
                     CreatedOn = c.CreatedOn,
-                    Subject = c.Subject,
-                    Description = c.Description,
                     TypeId = c.Type.Id,
+                    StatusId = c.Status.Id,
+                    PriorityId = c.Priority.Id,
                     PhaseId = c.Phase.Id,
                     ServiceId = c.Service.Id,
+                    Subject = c.Subject,
+                    Description = c.Description,
                     Tasks = c.Tasks.Select(t => new TaskOutputModel
                     {
                         Id = t.Id,
@@ -114,23 +113,25 @@ namespace CaseManagement.Services.Cases
                         NextAction = t.NextAction,
                         Type = t.Type.Type,
                         Status = t.Status.Status,
-                        Owner = t.User.Email
-                    }).ToArray()
+                        Agent = t.User.Email
+                    }).ToArray(),
+                    CaseStatuses = this.dbContext.CaseStatuses.ToArray(),
+                    CasePriorities = this.dbContext.CasePriorities.ToArray(),
+                    CaseTypes = this.dbContext.CaseTypes.ToArray(),
+                    CaseServices = this.dbContext.Services.ToArray(),
                 })
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
 
-            outputModel.CaseStatuses = await this.GetAllCaseStatusesAsync();
-            outputModel.CasePriorities = await this.GetAllCasePrioritiesAsync();
-            outputModel.CaseTypes = await this.GetAllCaseTypesAsync();
-            outputModel.CaseServices = await this.GetAllCaseServicesAsync();
-
             return outputModel;
         }
 
-        public async Task<AllCasesOutputModel> GetCaseByNumberAsync(string caseNumber)
+        public async Task<SearchCaseResultsOutputModel> GetCasesByNumberAsync(string caseNumber)
         {
-            var allCases = await this.dbContext.Cases
+            var result = new SearchCaseResultsOutputModel
+            {
+                SearchedCaseNumber = caseNumber,
+                Results = await this.dbContext.Cases
                 .Where(c => c.Number == caseNumber)
                 .Select(c => new CaseOutputModel
                 {
@@ -139,58 +140,24 @@ namespace CaseManagement.Services.Cases
                     Status = c.Status.Status,
                     CreatedOn = c.CreatedOn,
                     Id = c.Id,
-                    Owner = c.User.Email,
+                    Agent = c.User.Email,
                     Subject = c.Subject
                 })
-                .ToArrayAsync();
-
-            var result = new AllCasesOutputModel
-            {
-                SearchedCaseNumber = caseNumber,
-                Cases = allCases
+                .ToArrayAsync()
             };
 
             return result;
         }
 
-        public Task<string> GetCaseNumberByIdAsync(int caseId)
+        public async Task<string> GetCaseNumberByIdAsync(int caseId)
         {
-            return this.dbContext.Cases
+            return await this.dbContext.Cases
                 .Where(c => c.Id == caseId)
                 .Select(c => c.Number)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<CaseUpdatesOutputModel> GetCaseUpdatesAsync(int caseId)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            var caseUpdates = await this.dbContext.CaseModificationLogRecords
-                .Where(c => c.CaseId == caseId)
-                .FirstOrDefaultAsync();
-
-            if (caseUpdates == null)
-            {
-                return null;
-            }
-
-            foreach (var update in caseUpdates.ModifiedFields)
-            {
-                sb.AppendLine($"{update.FieldName}: {update.OldValue} -> {update.NewValue}");
-            }
-
-            var outputModel = new CaseUpdatesOutputModel
-            {
-                CaseNumber = await this.GetCaseNumberByIdAsync(caseId),
-                TimeOfUpdate = caseUpdates.ModificationTime,
-                User = caseUpdates.User.Email,
-                Updates = sb.ToString().Trim(),
-            };
-
-            return outputModel;
-        }
-
-        public async Task<int> UpdateCaseAsync(ViewUpdateCaseModel inputModel, string userId)
+        public async Task<int> UpdateCaseAsync(ViewUpdateCaseIOModel inputModel, string userId)
         {
             var caseRecordToUpdate = await this.dbContext.Cases
                 .FirstOrDefaultAsync(c => c.Id == inputModel.Id);
