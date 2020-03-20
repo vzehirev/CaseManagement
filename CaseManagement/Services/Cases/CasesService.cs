@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CaseManagement.Services.Cases
@@ -54,11 +53,15 @@ namespace CaseManagement.Services.Cases
             return await this.dbContext.CasePriorities.ToArrayAsync();
         }
 
-        public async Task<AllCasesOutputModel> GetAllCasesAsync()
+        public async Task<AllCasesOutputModel> GetCasesAsync(int skip, int take)
         {
             var result = new AllCasesOutputModel
             {
+                AllCases = await this.dbContext.Cases.CountAsync(),
                 Cases = await this.dbContext.Cases
+                .OrderByDescending(c => c.CreatedOn)
+                .Skip(skip)
+                .Take(take)
                 .Select(c => new CaseOutputModel
                 {
                     Id = c.Id,
@@ -90,7 +93,7 @@ namespace CaseManagement.Services.Cases
             return await this.dbContext.CaseTypes.ToArrayAsync();
         }
 
-        public async Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id)
+        public async Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id, int skipTasks, int takeTasks)
         {
             var outputModel = await this.dbContext.Cases
                 .Select(c => new ViewUpdateCaseIOModel
@@ -105,16 +108,7 @@ namespace CaseManagement.Services.Cases
                     ServiceId = c.Service.Id,
                     Subject = c.Subject,
                     Description = c.Description,
-                    Tasks = c.Tasks.Select(t => new TaskOutputModel
-                    {
-                        Id = t.Id,
-                        CreatedOn = t.CreatedOn,
-                        Action = t.Action,
-                        NextAction = t.NextAction,
-                        Type = t.Type.Type,
-                        Status = t.Status.Status,
-                        Agent = t.User.Email
-                    }).ToArray(),
+                    AllTasks = c.Tasks.Count(),
                     CaseStatuses = this.dbContext.CaseStatuses.ToArray(),
                     CasePriorities = this.dbContext.CasePriorities.ToArray(),
                     CaseTypes = this.dbContext.CaseTypes.ToArray(),
@@ -122,6 +116,22 @@ namespace CaseManagement.Services.Cases
                 })
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
+
+            outputModel.Tasks = await this.dbContext.Tasks
+                .Where(t => t.CaseId == id)
+                .OrderByDescending(t => t.CreatedOn)
+                .Skip(skipTasks)
+                .Take(takeTasks)
+                .Select(t => new TaskOutputModel
+                {
+                    Id = t.Id,
+                    CreatedOn = t.CreatedOn,
+                    Action = t.Action,
+                    NextAction = t.NextAction,
+                    Type = t.Type.Type,
+                    Status = t.Status.Status,
+                    Agent = t.User.Email
+                }).ToArrayAsync();
 
             return outputModel;
         }

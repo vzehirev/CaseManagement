@@ -11,11 +11,11 @@ namespace CaseManagement.Services.Cases
     {
         public Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId);
 
-        public Task<AllCasesOutputModel> GetAllCasesAsync();
+        public Task<AllCasesOutputModel> GetCasesAsync(int skip, int take);
 
         public Task<SearchCaseResultsOutputModel> GetCasesByNumberAsync(string caseNumber);
 
-        public Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id);
+        public Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id, int skipTasks, int takeTasks);
 
         public Task<int> UpdateCaseAsync(ViewUpdateCaseIOModel inputModel, string userId);
 

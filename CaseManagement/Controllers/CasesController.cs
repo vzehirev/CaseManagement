@@ -5,6 +5,7 @@ using CaseManagement.ViewModels.Cases.Input;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,10 +23,33 @@ namespace CaseManagement.Controllers
             this.casesService = casesService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var outputModel = await this.casesService.GetAllCasesAsync();
-            outputModel.Cases = outputModel.Cases.OrderByDescending(c => c.CreatedOn).ToArray();
+            if (page < 1)
+            {
+                return this.RedirectToAction("Index", new { page = 1 });
+            }
+
+            const int casesPerPage = 10;
+
+            int skip = (page - 1) * casesPerPage;
+
+            var outputModel = await this.casesService.GetCasesAsync(skip, casesPerPage);
+
+            // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
+            if (outputModel.AllCases == 0)
+            {
+                return this.View(outputModel);
+            }
+
+            outputModel.LastPage = (int)Math.Ceiling((decimal)outputModel.AllCases / casesPerPage);
+
+            if (page > outputModel.LastPage)
+            {
+                return this.RedirectToAction("Index", new { page = outputModel.LastPage });
+            }
+
+            outputModel.CurrentPage = page;
 
             return View(outputModel);
         }
@@ -71,10 +95,33 @@ namespace CaseManagement.Controllers
             return View("Error", new ErrorViewModel());
         }
 
-        public async Task<IActionResult> ViewUpdate(int id)
+        public async Task<IActionResult> ViewUpdate(int id, int page = 1)
         {
-            var outputModel = await this.casesService.GetCaseByIdAsync(id);
-            outputModel.Tasks = outputModel.Tasks.OrderByDescending(t => t.CreatedOn).ToArray();
+            if (page < 1)
+            {
+                return this.RedirectToAction("ViewUpdate", new { id, page = 1 });
+            }
+
+            const int tasksPerPage = 10;
+
+            int skip = (page - 1) * tasksPerPage;
+
+            var outputModel = await this.casesService.GetCaseByIdAsync(id, skip, tasksPerPage);
+
+            // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
+            if (outputModel.AllTasks == 0)
+            {
+                return this.View(outputModel);
+            }
+
+            outputModel.LastTasksPage = (int)Math.Ceiling((decimal)outputModel.AllTasks / tasksPerPage);
+
+            if (page > outputModel.LastTasksPage)
+            {
+                return this.RedirectToAction("ViewUpdate", new { id, page = outputModel.LastTasksPage });
+            }
+
+            outputModel.CurrentTasksPage = page;
 
             return View(outputModel);
         }

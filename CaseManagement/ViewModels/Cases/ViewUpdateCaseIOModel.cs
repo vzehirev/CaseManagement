@@ -41,6 +41,12 @@ namespace CaseManagement.ViewModels.Cases
 
         public IEnumerable<Service> CaseServices { get; set; }
 
+        public int AllTasks { get; set; }
+
+        public int CurrentTasksPage { get; set; }
+
+        public int LastTasksPage { get; set; }
+
         public TaskOutputModel[] Tasks { get; set; }
     }
 }

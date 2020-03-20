@@ -1,5 +1,4 @@
-﻿using CaseManagement.Models.CaseModels;
-using CaseManagement.Models.TaskModels;
+﻿using CaseManagement.Models.TaskModels;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

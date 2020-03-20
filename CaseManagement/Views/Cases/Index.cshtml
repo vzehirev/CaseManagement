@@ -49,11 +49,70 @@
         </tbody>
     </table>
 
-    @if (Model.Cases.Length == 0)
-    {
-        <h6>No cases available.</h6>
-    }
+@if (Model.Cases.Length == 0)
+{
+    <h6>No cases available.</h6>
+}
 
+</div>
+
+@* pagination *@
+
+<div>
+    <ul class="pagination justify-content-center">
+
+        @if (Model.CurrentPage == 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&laquo;</a>
+            </li>
+        }
+        else if (Model.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-page="1">&laquo;</a>
+            </li>
+        }
+
+        @* -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one *@
+        @for (int i = Model.CurrentPage - 5; i <= Model.CurrentPage + 5; i++)
+        {
+            if (i < 1)
+            {
+                continue;
+            }
+            if (i > Model.LastPage)
+            {
+                break;
+            }
+            if (Model.CurrentPage == i)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="">@i</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-route-page="@i">@i</a>
+                </li>
+            }
+        }
+
+        @if (Model.CurrentPage < Model.LastPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-page="@Model.LastPage">&raquo;</a>
+            </li>
+        }
+        else if (Model.AllCases > 0)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="">&raquo;</a>
+            </li>
+        }
+
+    </ul>
 </div>
 
 @section Scripts {

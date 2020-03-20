@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using CaseManagement.Models;
-using CaseManagement.ViewModels.Users;
+﻿using CaseManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace CaseManagement.Controllers
 {

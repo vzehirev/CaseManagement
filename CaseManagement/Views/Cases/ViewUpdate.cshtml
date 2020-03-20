@@ -196,14 +196,14 @@
 
             @foreach (var taskModel in Model.Tasks)
             {
-            <tr>
-                <td>@taskModel.CreatedOn</td>
-                <td>@taskModel.Action</td>
-                <td>@taskModel.NextAction</td>
-                <td>@taskModel.Status</td>
-                <td>@taskModel.Agent</td>
-                <td><a class="btn btn-warning p-1" asp-controller="Tasks" asp-action="ViewUpdate" asp-route-id="@taskModel.Id">VIEW/UPDATE</a></td>
-            </tr>
+                <tr>
+                    <td>@taskModel.CreatedOn</td>
+                    <td>@taskModel.Action</td>
+                    <td>@taskModel.NextAction</td>
+                    <td>@taskModel.Status</td>
+                    <td>@taskModel.Agent</td>
+                    <td><a class="btn btn-warning p-1" asp-controller="Tasks" asp-action="ViewUpdate" asp-route-id="@taskModel.Id">VIEW/UPDATE</a></td>
+                </tr>
             }
 
         </tbody>
@@ -214,6 +214,65 @@
         <h6>No tasks available.</h6>
     }
 
+</div>
+
+@* pagination *@
+
+<div>
+    <ul class="pagination justify-content-center">
+
+        @if (Model.CurrentTasksPage == 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&laquo;</a>
+            </li>
+        }
+        else if (Model.CurrentTasksPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-id="@Model.Id" asp-route-page="1" asp-fragment="tasks-table">&laquo;</a>
+            </li>
+        }
+
+        @* -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one *@
+        @for (int i = Model.CurrentTasksPage - 5; i <= Model.CurrentTasksPage + 5; i++)
+        {
+            if (i < 1)
+            {
+                continue;
+            }
+            if (i > Model.LastTasksPage)
+            {
+                break;
+            }
+            if (Model.CurrentTasksPage == i)
+            {
+                <li class="page-item active">
+                    <a class="page-link" href="#tasks-table">@i</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-route-id="@Model.Id" asp-route-page="@i" asp-fragment="tasks-table">@i</a>
+                </li>
+            }
+        }
+
+        @if (Model.CurrentTasksPage < Model.LastTasksPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-id="@Model.Id" asp-route-page="@Model.LastTasksPage" asp-fragment="tasks-table">&raquo;</a>
+            </li>
+        }
+        else if (Model.AllTasks > 0)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="">&raquo;</a>
+            </li>
+        }
+
+    </ul>
 </div>
 
 @section Scripts {
