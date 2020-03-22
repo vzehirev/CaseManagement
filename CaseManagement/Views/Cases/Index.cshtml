@@ -49,10 +49,10 @@
         </tbody>
     </table>
 
-@if (Model.Cases.Length == 0)
-{
-    <h6>No cases available.</h6>
-}
+    @if (Model.Cases.Length == 0)
+    {
+        <h6>No cases available.</h6>
+    }
 
 </div>
 
@@ -74,28 +74,25 @@
             </li>
         }
 
-        @* -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one *@
-        @for (int i = Model.CurrentPage - 5; i <= Model.CurrentPage + 5; i++)
-        {
-            if (i < 1)
+        @{
+            // -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one
+            int firstPageToShow = Model.CurrentPage - 5 < 1 ? 1 : Model.CurrentPage - 5;
+            int lastPageToShow = Model.CurrentPage + 5 > Model.LastPage ? Model.LastPage : Model.CurrentPage + 5;
+
+            for (int i = firstPageToShow; i <= lastPageToShow; i++)
             {
-                continue;
-            }
-            if (i > Model.LastPage)
-            {
-                break;
-            }
-            if (Model.CurrentPage == i)
-            {
-                <li class="page-item active">
-                    <a class="page-link" href="">@i</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-route-page="@i">@i</a>
-                </li>
+                if (Model.CurrentPage == i)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" href="">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-route-page="@i">@i</a>
+                    </li>
+                }
             }
         }
 

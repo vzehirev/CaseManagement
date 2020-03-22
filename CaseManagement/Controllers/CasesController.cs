@@ -102,7 +102,7 @@ namespace CaseManagement.Controllers
                 return this.RedirectToAction("ViewUpdate", new { id, page = 1 });
             }
 
-            const int tasksPerPage = 10;
+            const int tasksPerPage = 1;
 
             int skip = (page - 1) * tasksPerPage;
 

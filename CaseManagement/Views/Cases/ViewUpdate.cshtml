@@ -234,28 +234,34 @@
             </li>
         }
 
-        @* -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one *@
-        @for (int i = Model.CurrentTasksPage - 5; i <= Model.CurrentTasksPage + 5; i++)
-        {
-            if (i < 1)
+        @{
+
+            // -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one
+            int firstPageToShow = Model.CurrentTasksPage - 5 < 1 ? 1 : Model.CurrentTasksPage - 5;
+            int lastPageToShow = Model.CurrentTasksPage + 5 > Model.LastTasksPage ? Model.LastTasksPage : Model.CurrentTasksPage + 5;
+
+            for (int i = firstPageToShow; i <= lastPageToShow; i++)
             {
-                continue;
-            }
-            if (i > Model.LastTasksPage)
-            {
-                break;
-            }
-            if (Model.CurrentTasksPage == i)
-            {
-                <li class="page-item active">
-                    <a class="page-link" href="#tasks-table">@i</a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-route-id="@Model.Id" asp-route-page="@i" asp-fragment="tasks-table">@i</a>
-                </li>
+                if (i < 1)
+                {
+                    continue;
+                }
+                if (i > Model.LastTasksPage)
+                {
+                    break;
+                }
+                if (Model.CurrentTasksPage == i)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" href="#tasks-table">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-route-id="@Model.Id" asp-route-page="@i" asp-fragment="tasks-table">@i</a>
+                    </li>
+                }
             }
         }
 
