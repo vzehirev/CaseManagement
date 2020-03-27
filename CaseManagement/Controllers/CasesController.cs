@@ -23,18 +23,29 @@ namespace CaseManagement.Controllers
             this.casesService = casesService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string orderBy = "")
         {
-            if (page < 1)
+            page = page >= 1 ? page : 1;
+
+            string[] possibleOrders = new[]
             {
-                return this.RedirectToAction("Index", new { page = 1 });
-            }
+                "CreatedOn-desc",
+                "CreatedOn-asc",
+                "Status-desc",
+                "Status-asc",
+                "Priority-desc",
+                "Priority-asc",
+            };
+
+            orderBy = possibleOrders.Contains(orderBy) ? orderBy : possibleOrders.First();
 
             const int casesPerPage = 10;
 
             int skip = (page - 1) * casesPerPage;
 
-            var outputModel = await this.casesService.GetCasesAsync(skip, casesPerPage);
+            var outputModel = await this.casesService.GetCasesAsync(skip, casesPerPage, orderBy);
+
+            outputModel.OrderedBy = orderBy;
 
             // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
             if (outputModel.AllCases == 0)

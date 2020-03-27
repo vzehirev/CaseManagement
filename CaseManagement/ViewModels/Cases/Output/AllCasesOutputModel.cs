@@ -9,5 +9,7 @@
         public int LastPage { get; set; }
 
         public CaseOutputModel[] Cases { get; set; }
+
+        public string OrderedBy { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CaseManagement.Data;
+using CaseManagement.Data.Extensions;
 using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
 using CaseManagement.ViewModels.Cases;
@@ -53,13 +54,13 @@ namespace CaseManagement.Services.Cases
             return await this.dbContext.CasePriorities.ToArrayAsync();
         }
 
-        public async Task<AllCasesOutputModel> GetCasesAsync(int skip, int take)
+        public async Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy)
         {
             var result = new AllCasesOutputModel
             {
                 AllCases = await this.dbContext.Cases.CountAsync(),
                 Cases = await this.dbContext.Cases
-                .OrderByDescending(c => c.CreatedOn)
+                .CustomCasesOrder(orderBy)
                 .Skip(skip)
                 .Take(take)
                 .Select(c => new CaseOutputModel

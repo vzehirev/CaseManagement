@@ -1,0 +1,50 @@
+﻿<script>
+
+    let copyToClipboardBtn = document.getElementById("copy-to-clipboard-btn");
+    copyToClipboardBtn.addEventListener("click", copyToClipboardBtnHandler);
+    // Dictionary-like object in the format: "id": "id in more human readable format",
+    // set here, so it can be accessed within the handler function.
+    copyToClipboardBtn.idsToCopy = {
+        "created-on": "Created on",
+        "type": "Type",
+        "status": "Status",
+        "action": "Action",
+        "next-action": "Next action",
+        "comments": "Comments",
+    }
+
+    function copyToClipboardBtnHandler(e) {
+        // Create text area to collect the content, which will be copied to clipboard.
+        let textarea = document.createElement("textarea");
+
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'absolute';
+        textarea.style.left = '-9999px';
+
+        let idsToCopy = e.currentTarget.idsToCopy;
+
+        for (id in idsToCopy) {
+            let element = document.getElementById(id);
+
+            textarea.value += idsToCopy[id] + ":\n";
+
+            if (element) {
+                // If the element is of type input or textarea get its value, else its textContent.
+                textarea.value += element.tagName.toLowerCase() == "input" || "textarea" ? element.value : element.textContent;
+                textarea.value += "\n";
+            }
+            textarea.value += "\n";
+        }
+        // Trim and add exactly 2 new lines just for aesthetics
+        textarea.value = textarea.value.trim();
+        textarea.value += "\n\n";
+
+        document.body.appendChild(textarea);
+        // Select the text aggregated in the text area.
+        textarea.select();
+        // Copy to clipboard.
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+    }
+
+</script>

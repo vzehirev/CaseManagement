@@ -65,3 +65,7 @@ body {
     outline: none !important;
     box-shadow: none !important;
 }
+
+.order-by-icon {
+    max-height: 1.3rem;
+}
