@@ -5,9 +5,6 @@
     // Dictionary-like object in the format: "id": "id in more human readable format",
     // set here, so it can be accessed within the handler function.
     copyToClipboardBtn.idsToCopy = {
-        "created-on": "Created on",
-        "type": "Type",
-        "status": "Status",
         "action": "Action",
         "next-action": "Next action",
         "comments": "Comments",
@@ -28,20 +25,19 @@
 
             textarea.value += idsToCopy[id] + ":\n";
 
-            if (element) {
-                // If the element is of type input or textarea get its value, else its textContent.
-                textarea.value += element.tagName.toLowerCase() == "input" || "textarea" ? element.value : element.textContent;
-                textarea.value += "\n";
+            if (element && element.value && element.value !== "") {
+                textarea.value += element.value;
+                textarea.value += "\n\n";
+            } else {
+                textarea.value += "N/A";
+                textarea.value += "\n\n";
             }
-            textarea.value += "\n";
         }
-        // Trim and add exactly 2 new lines just for aesthetics
-        textarea.value = textarea.value.trim();
-        textarea.value += "\n\n";
-
         document.body.appendChild(textarea);
+
         // Select the text aggregated in the text area.
         textarea.select();
+
         // Copy to clipboard.
         document.execCommand("copy");
         document.body.removeChild(textarea);
