@@ -22,7 +22,7 @@ namespace CaseManagement.Services.Tasks
 
         public async Task<int> CreateTaskAsync(CreateTaskInputModel inputModel, string userId)
         {
-            var taskToAdd = new CaseTask
+            CaseTask taskToAdd = new CaseTask
             {
                 CreatedOn = DateTime.UtcNow,
                 UserId = userId,
@@ -34,25 +34,25 @@ namespace CaseManagement.Services.Tasks
                 Comments = inputModel.Comments,
             };
 
-            this.dbContext.Tasks.Add(taskToAdd);
-            var saveResult = await this.dbContext.SaveChangesAsync();
+            dbContext.Tasks.Add(taskToAdd);
+            int saveResult = await dbContext.SaveChangesAsync();
 
             return saveResult;
         }
 
         public async Task<ICollection<Models.TaskModels.TaskStatus>> GetAllTaskStatusesAsync()
         {
-            return await this.dbContext.TaskStatuses.ToArrayAsync();
+            return await dbContext.TaskStatuses.ToArrayAsync();
         }
 
         public async Task<ICollection<TaskType>> GetAllTaskTypesAsync()
         {
-            return await this.dbContext.TaskTypes.ToArrayAsync();
+            return await dbContext.TaskTypes.ToArrayAsync();
         }
 
         public async Task<ViewUpdateTaskIOModel> GetTaskByIdAsync(int id)
         {
-            var outputModel = await this.dbContext.Tasks
+            ViewUpdateTaskIOModel outputModel = await dbContext.Tasks
                 .Select(t => new ViewUpdateTaskIOModel
                 {
                     Id = t.Id,
@@ -63,8 +63,8 @@ namespace CaseManagement.Services.Tasks
                     StatusId = t.Status.Id,
                     TypeId = t.Type.Id,
                     CaseId = t.CaseId,
-                    TaskTypes = this.dbContext.TaskTypes.ToArray(),
-                    TaskStatuses = this.dbContext.TaskStatuses.ToArray(),
+                    TaskTypes = dbContext.TaskTypes.ToArray(),
+                    TaskStatuses = dbContext.TaskStatuses.ToArray(),
                 })
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
@@ -74,7 +74,7 @@ namespace CaseManagement.Services.Tasks
 
         public async Task<int> UpdateTaskAsync(ViewUpdateTaskIOModel inputModel, string userId)
         {
-            var taskRecordToUpdate = await this.dbContext.Tasks
+            CaseTask taskRecordToUpdate = await dbContext.Tasks
                    .FirstOrDefaultAsync(t => t.Id == inputModel.Id);
 
             List<FieldModification> fieldModifications = new List<FieldModification>();
@@ -94,8 +94,8 @@ namespace CaseManagement.Services.Tasks
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Type",
-                    OldValue = await this.dbContext.TaskTypes.Where(tt => tt.Id == taskRecordToUpdate.TypeId).Select(tt => tt.Type).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.TaskTypes.Where(tt => tt.Id == inputModel.TypeId).Select(tt => tt.Type).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.TaskTypes.Where(tt => tt.Id == taskRecordToUpdate.TypeId).Select(tt => tt.Type).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.TaskTypes.Where(tt => tt.Id == inputModel.TypeId).Select(tt => tt.Type).FirstOrDefaultAsync(),
                 });
             }
 
@@ -104,8 +104,8 @@ namespace CaseManagement.Services.Tasks
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Status",
-                    OldValue = await this.dbContext.TaskStatuses.Where(ts => ts.Id == taskRecordToUpdate.StatusId).Select(ts => ts.Status).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.TaskStatuses.Where(ts => ts.Id == inputModel.StatusId).Select(ts => ts.Status).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.TaskStatuses.Where(ts => ts.Id == taskRecordToUpdate.StatusId).Select(ts => ts.Status).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.TaskStatuses.Where(ts => ts.Id == inputModel.StatusId).Select(ts => ts.Status).FirstOrDefaultAsync(),
                 });
             }
 
@@ -138,7 +138,7 @@ namespace CaseManagement.Services.Tasks
 
             if (fieldModifications.Count > 0)
             {
-                var modificationLogRecord = new TaskModificationLogRecord
+                TaskModificationLogRecord modificationLogRecord = new TaskModificationLogRecord
                 {
                     ModificationTime = DateTime.UtcNow,
                     UserId = userId,
@@ -146,12 +146,12 @@ namespace CaseManagement.Services.Tasks
                     ModifiedFields = fieldModifications,
                 };
 
-                this.dbContext.TaskModificationLogRecords.Add(modificationLogRecord);
+                dbContext.TaskModificationLogRecords.Add(modificationLogRecord);
             }
 
-            this.dbContext.Tasks.Update(taskRecordToUpdate);
+            dbContext.Tasks.Update(taskRecordToUpdate);
 
-            var saveResult = await this.dbContext.SaveChangesAsync();
+            int saveResult = await dbContext.SaveChangesAsync();
 
             return saveResult;
         }

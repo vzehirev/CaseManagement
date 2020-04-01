@@ -25,12 +25,12 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string userEmail)
         {
-            var user = await this.userManager.FindByEmailAsync(userEmail.Trim());
+            ApplicationUser user = await userManager.FindByEmailAsync(userEmail.Trim());
 
-            await this.userManager.RemovePasswordAsync(user);
-            await this.userManager.AddPasswordAsync(user, this.configuration["DefaultResetPassword"]);
+            await userManager.RemovePasswordAsync(user);
+            await userManager.AddPasswordAsync(user, configuration["DefaultResetPassword"]);
 
-            this.TempData["PasswordResetSuccessful"] = true;
+            TempData["PasswordResetSuccessful"] = true;
 
             return LocalRedirect("/");
         }

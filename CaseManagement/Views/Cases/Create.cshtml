@@ -1,62 +1,64 @@
 ﻿@model CaseManagement.ViewModels.Cases.Input.CreateCaseInputModel
 
-<div class="row">
+<div class="row mt-5">
     <div class="col-12 mx-auto text-center">
         <section>
-            <h4>Create Case</h4>
-            <hr />
-            <form method="post">
-                <div class="row">
-                    <div class="form-group col-4">
-                        <label>Case number*</label>
-                        <input asp-for="Number" placeholder="Required field" class="form-control" />
-                        <span asp-validation-for="Number" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-4">
-                        <label>Status</label>
-                        <select asp-for="StatusId" class="form-control">
-                            <option value="">Select status</option>
+            <div class="col-4 mx-auto text-center">
+                <h4>Create Case</h4>
+                <hr />
+                </div>
+                <form method="post">
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label>Case number*</label>
+                            <input asp-for="Number" placeholder="Required field" class="form-control" />
+                            <span asp-validation-for="Number" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Status</label>
+                            <select asp-for="StatusId" class="form-control">
+                                <option value="">Select status</option>
 
-                            @foreach (var status in Model.CaseStatuses)
-                            {
-                                <option value="@status.Id">@status.Status</option>
-                            }
+                                @foreach (var status in Model.CaseStatuses)
+                                {
+                                    <option value="@status.Id">@status.Status</option>
+                                }
 
-                        </select>
-                        <span asp-validation-for="StatusId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-4">
-                        <label>Priority</label>
-                        <select asp-for="PriorityId" class="form-control">
-                            <option value="">Select priority</option>
+                            </select>
+                            <span asp-validation-for="StatusId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Priority</label>
+                            <select asp-for="PriorityId" class="form-control">
+                                <option value="">Select priority</option>
 
-                            @foreach (var priority in Model.CasePriorities)
-                            {
-                                <option value="@priority.Id">@priority.Priority</option>
-                            }
+                                @foreach (var priority in Model.CasePriorities)
+                                {
+                                    <option value="@priority.Id">@priority.Priority</option>
+                                }
 
-                        </select>
-                        <span asp-validation-for="PriorityId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-4">
-                        <label>Subject*</label>
-                        <input asp-for="Subject" type="text" placeholder="Required field" class="form-control" />
-                        <span asp-validation-for="Subject" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-4">
-                        <label>Type</label>
-                        <select asp-for="TypeId" class="form-control">
-                            <option value="">Select type</option>
+                            </select>
+                            <span asp-validation-for="PriorityId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Subject*</label>
+                            <input asp-for="Subject" type="text" placeholder="Required field" class="form-control" />
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
+                            <label>Type</label>
+                            <select asp-for="TypeId" class="form-control">
+                                <option value="">Select type</option>
 
-                            @foreach (var type in Model.CaseTypes)
-                            {
-                                <option value="@type.Id">@type.Type</option>
-                            }
+                                @foreach (var type in Model.CaseTypes)
+                                {
+                                    <option value="@type.Id">@type.Type</option>
+                                }
 
-                        </select>
-                        <span asp-validation-for="TypeId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-4">
+                            </select>
+                            <span asp-validation-for="TypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
                             <label>Service</label>
                             <select asp-for="ServiceId" class="form-control">
                                 <option value="">Select service</option>
@@ -69,14 +71,14 @@
                             </select>
                             <span asp-validation-for="ServiceId" class="text-danger"></span>
                         </div>
-                    <div class="form-group col-4">
-                        <label>Description</label>
-                        <textarea asp-for="Description" class="form-control" rows="11"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <div class="form-group col-4">
+                            <label>Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="11"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
-                <button type="submit" class="btn btn-outline-primary">CREATE</button>
-            </form>
+                    <button type="submit" class="btn btn-outline-primary">CREATE</button>
+                </form>
         </section>
     </div>
 </div>

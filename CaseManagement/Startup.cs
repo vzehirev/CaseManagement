@@ -1,5 +1,6 @@
 using CaseManagement.Data;
 using CaseManagement.Models;
+using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
 using CaseManagement.Services.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -34,8 +35,10 @@ namespace CaseManagement
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
 
+            // Application services
             services.AddTransient<ICasesService, CasesService>();
             services.AddTransient<ITasksService, TasksService>();
+            services.AddTransient<IAnnouncementsService, AnnouncementsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

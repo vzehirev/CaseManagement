@@ -45,7 +45,6 @@ body {
 }
 
 #main_container {
-    margin-top: 3rem;
     max-width: 100%;
 }
 
@@ -68,4 +67,17 @@ body {
 
 .order-by-icon {
     max-height: 1.3rem;
+}
+
+.marquee3k {
+    overflow: hidden;
+    background-color: white;
+    z-index: 1;
+    position: sticky;
+    top: 0;
+    height: 2rem;
+}
+
+#marquee-content {
+    font-size: 1.1rem;
 }

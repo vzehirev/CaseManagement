@@ -11,5 +11,7 @@
         public CaseOutputModel[] Cases { get; set; }
 
         public string OrderedBy { get; set; }
+
+        public string Announcements { get; set; }
     }
 }

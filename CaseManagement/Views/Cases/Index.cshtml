@@ -1,6 +1,12 @@
 ﻿@model CaseManagement.ViewModels.Cases.Output.AllCasesOutputModel
 
-<div class="col-md-4 mx-auto text-center">
+<div class="marquee3k p-1"
+     data-speed="0.9"
+     data-pausable="true">
+    <div id="marquee-content">@Html.Raw(Model.Announcements)</div>
+</div>
+
+<div class="col-md-4 mx-auto text-center mt-5">
     <section>
         <h4>Cases</h4>
         <hr />
@@ -151,4 +157,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/marquee3k.js"></script>
+    <script>Marquee3k.init();</script>
 }

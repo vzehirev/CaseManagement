@@ -17,10 +17,10 @@ namespace CaseManagement.Data.Extensions
         //     String in the format: PropertyName-asc or PropertyName-desc.
         public static IOrderedQueryable<Case> CustomCasesOrder(this IQueryable<Case> source, string orderBy)
         {
-            var orderByPropertyName = orderBy.Split('-').FirstOrDefault();
+            string orderByPropertyName = orderBy.Split('-').FirstOrDefault();
 
-            var orderByDescOrAsc = orderBy.Split('-').LastOrDefault();
-            var ascending = orderByDescOrAsc == "asc" ? true : false;
+            string orderByDescOrAsc = orderBy.Split('-').LastOrDefault();
+            bool ascending = orderByDescOrAsc == "asc" ? true : false;
 
             if (orderByPropertyName == "Status")
             {
@@ -37,12 +37,12 @@ namespace CaseManagement.Data.Extensions
             else
             {
                 // Default order for every other property dynamically at runtime
-                var caseParam = Expression.Parameter(typeof(Case), "caseObj");
-                var prop = Expression.Property(caseParam, orderByPropertyName);
+                ParameterExpression caseParam = Expression.Parameter(typeof(Case), "caseObj");
+                MemberExpression prop = Expression.Property(caseParam, orderByPropertyName);
 
-                var converted = Expression.Convert(prop, typeof(object));
+                UnaryExpression converted = Expression.Convert(prop, typeof(object));
 
-                var lamba = Expression.Lambda<Func<Case, object>>(converted, caseParam);
+                Expression<Func<Case, object>> lamba = Expression.Lambda<Func<Case, object>>(converted, caseParam);
 
                 return ascending ? Queryable.OrderBy(source, lamba)
                     : Queryable.OrderByDescending(source, lamba);
@@ -50,7 +50,7 @@ namespace CaseManagement.Data.Extensions
         }
 
         // The numbers returned correspond to the order/importance of the values
-        private static Expression<Func<Case, int>> orderByStatus = (caseObj) =>
+        private static readonly Expression<Func<Case, int>> orderByStatus = (caseObj) =>
             caseObj.Status.Status == "Other" ? 1 :
             caseObj.Status.Status == "Closed" ? 2 :
             caseObj.Status.Status == "On-hold" ? 3 :
@@ -60,7 +60,7 @@ namespace CaseManagement.Data.Extensions
             caseObj.Status.Status == "New" ? 7 :
             8;
 
-        private static Expression<Func<Case, int>> orderByPriority = (caseObj) =>
+        private static readonly Expression<Func<Case, int>> orderByPriority = (caseObj) =>
             caseObj.Priority.Priority == "Low" ? 1 :
             caseObj.Priority.Priority == "Normal" ? 2 :
             caseObj.Priority.Priority == "Urgent" ? 3 :

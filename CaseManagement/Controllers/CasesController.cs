@@ -23,9 +23,9 @@ namespace CaseManagement.Controllers
             this.casesService = casesService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, string orderBy = "")
+        public async Task<IActionResult> Index(CasesIndexInputModel inputModel)
         {
-            page = page >= 1 ? page : 1;
+            inputModel.Page = inputModel.Page >= 1 ? inputModel.Page : 1;
 
             string[] possibleOrders = new[]
             {
@@ -37,43 +37,43 @@ namespace CaseManagement.Controllers
                 "Priority-asc",
             };
 
-            orderBy = possibleOrders.Contains(orderBy) ? orderBy : possibleOrders.First();
+            inputModel.OrderBy = possibleOrders.Contains(inputModel.OrderBy) ? inputModel.OrderBy : possibleOrders.First();
 
             const int casesPerPage = 10;
 
-            int skip = (page - 1) * casesPerPage;
+            int skip = (inputModel.Page - 1) * casesPerPage;
 
-            var outputModel = await this.casesService.GetCasesAsync(skip, casesPerPage, orderBy);
+            ViewModels.Cases.Output.AllCasesOutputModel outputModel = await casesService.GetCasesAsync(skip, casesPerPage, inputModel.OrderBy);
 
-            outputModel.OrderedBy = orderBy;
+            outputModel.OrderedBy = inputModel.OrderBy;
 
             // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
             if (outputModel.AllCases == 0)
             {
-                return this.View(outputModel);
+                return View(outputModel);
             }
 
             outputModel.LastPage = (int)Math.Ceiling((decimal)outputModel.AllCases / casesPerPage);
 
-            if (page > outputModel.LastPage)
+            if (inputModel.Page > outputModel.LastPage)
             {
-                return this.RedirectToAction("Index", new { page = outputModel.LastPage });
+                return RedirectToAction("Index", new { page = outputModel.LastPage });
             }
 
-            outputModel.CurrentPage = page;
+            outputModel.CurrentPage = inputModel.Page;
 
             return View(outputModel);
         }
 
         public async Task<IActionResult> Create()
         {
-            var model = new CreateCaseInputModel
+            CreateCaseInputModel model = new CreateCaseInputModel
             {
                 // Populate drop-down menus' options
-                CaseTypes = await this.casesService.GetAllCaseTypesAsync(),
-                CaseStatuses = await this.casesService.GetAllCaseStatusesAsync(),
-                CasePriorities = await this.casesService.GetAllCasePrioritiesAsync(),
-                CaseServices = await this.casesService.GetAllCaseServicesAsync(),
+                CaseTypes = await casesService.GetAllCaseTypesAsync(),
+                CaseStatuses = await casesService.GetAllCaseStatusesAsync(),
+                CasePriorities = await casesService.GetAllCasePrioritiesAsync(),
+                CaseServices = await casesService.GetAllCaseServicesAsync(),
             };
 
             return View(model);
@@ -82,23 +82,23 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateCaseInputModel inputModel)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 // Populate drop-down menus' options and return create page to edit data and re-submit
-                inputModel.CaseTypes = await this.casesService.GetAllCaseTypesAsync();
-                inputModel.CaseStatuses = await this.casesService.GetAllCaseStatusesAsync();
-                inputModel.CasePriorities = await this.casesService.GetAllCasePrioritiesAsync();
-                inputModel.CaseServices = await this.casesService.GetAllCaseServicesAsync();
+                inputModel.CaseTypes = await casesService.GetAllCaseTypesAsync();
+                inputModel.CaseStatuses = await casesService.GetAllCaseStatusesAsync();
+                inputModel.CasePriorities = await casesService.GetAllCasePrioritiesAsync();
+                inputModel.CaseServices = await casesService.GetAllCaseServicesAsync();
 
-                return this.View(inputModel);
+                return View(inputModel);
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-            var createResult = await this.casesService.CreateCaseAsync(inputModel, userId);
+            string userId = userManager.GetUserId(User);
+            int createResult = await casesService.CreateCaseAsync(inputModel, userId);
 
             if (createResult > 0)
             {
-                this.TempData["CaseCreatedSuccesffully"] = true;
+                TempData["CaseCreatedSuccesffully"] = true;
 
                 return RedirectToAction("ViewUpdate", new { id = createResult });
             }
@@ -108,28 +108,25 @@ namespace CaseManagement.Controllers
 
         public async Task<IActionResult> ViewUpdate(int id, int page = 1)
         {
-            if (page < 1)
-            {
-                return this.RedirectToAction("ViewUpdate", new { id, page = 1 });
-            }
+            page = page >= 1 ? page : 1;
 
             const int tasksPerPage = 10;
 
             int skip = (page - 1) * tasksPerPage;
 
-            var outputModel = await this.casesService.GetCaseByIdAsync(id, skip, tasksPerPage);
+            ViewUpdateCaseIOModel outputModel = await casesService.GetCaseByIdAsync(id, skip, tasksPerPage);
 
             // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
             if (outputModel.AllTasks == 0)
             {
-                return this.View(outputModel);
+                return View(outputModel);
             }
 
             outputModel.LastTasksPage = (int)Math.Ceiling((decimal)outputModel.AllTasks / tasksPerPage);
 
             if (page > outputModel.LastTasksPage)
             {
-                return this.RedirectToAction("ViewUpdate", new { id, page = outputModel.LastTasksPage });
+                return RedirectToAction("ViewUpdate", new { id, page = outputModel.LastTasksPage });
             }
 
             outputModel.CurrentTasksPage = page;
@@ -140,17 +137,17 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ViewUpdateCaseIOModel inputModel)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.View("Error", new ErrorViewModel());
+                return View("Error", new ErrorViewModel());
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-            var updateResult = await this.casesService.UpdateCaseAsync(inputModel, userId);
+            string userId = userManager.GetUserId(User);
+            int updateResult = await casesService.UpdateCaseAsync(inputModel, userId);
 
             if (updateResult > 0)
             {
-                this.TempData["CaseUpdatedSuccessfully"] = true;
+                TempData["CaseUpdatedSuccessfully"] = true;
             }
 
             return RedirectToAction("ViewUpdate", new { id = inputModel.Id });
@@ -164,7 +161,7 @@ namespace CaseManagement.Controllers
                 return RedirectToAction("Index");
             }
 
-            var outputModel = await this.casesService.GetCasesByNumberAsync(caseNumber.Trim());
+            ViewModels.Cases.Output.SearchCaseResultsOutputModel outputModel = await casesService.GetCasesByNumberAsync(caseNumber.Trim());
             outputModel.Results = outputModel.Results.OrderByDescending(c => c.CreatedOn).ToArray();
 
             return View("SearchCaseResults", outputModel);

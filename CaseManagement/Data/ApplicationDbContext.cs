@@ -39,5 +39,7 @@ namespace CaseManagement.Data
         public DbSet<CaseModificationLogRecord> CaseModificationLogRecords { get; set; }
 
         public DbSet<TaskModificationLogRecord> TaskModificationLogRecords { get; set; }
+
+        public DbSet<Announcement> Announcements { get; set; }
     }
 }

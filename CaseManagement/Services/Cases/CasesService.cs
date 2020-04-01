@@ -2,6 +2,7 @@
 using CaseManagement.Data.Extensions;
 using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
+using CaseManagement.Services.Announcements;
 using CaseManagement.ViewModels.Cases;
 using CaseManagement.ViewModels.Cases.Input;
 using CaseManagement.ViewModels.Cases.Output;
@@ -17,15 +18,17 @@ namespace CaseManagement.Services.Cases
     public class CasesService : ICasesService
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IAnnouncementsService announcementsService;
 
-        public CasesService(ApplicationDbContext dbContext)
+        public CasesService(ApplicationDbContext dbContext, IAnnouncementsService announcementsService)
         {
             this.dbContext = dbContext;
+            this.announcementsService = announcementsService;
         }
 
         public async Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId)
         {
-            var caseToAdd = new Case
+            Case caseToAdd = new Case
             {
                 Number = inputModel.Number,
                 Subject = inputModel.Subject,
@@ -38,8 +41,8 @@ namespace CaseManagement.Services.Cases
                 ServiceId = inputModel.ServiceId,
             };
 
-            this.dbContext.Cases.Add(caseToAdd);
-            var saveResult = await this.dbContext.SaveChangesAsync();
+            dbContext.Cases.Add(caseToAdd);
+            int saveResult = await dbContext.SaveChangesAsync();
 
             if (saveResult > 0)
             {
@@ -51,15 +54,17 @@ namespace CaseManagement.Services.Cases
 
         public async Task<ICollection<CasePriority>> GetAllCasePrioritiesAsync()
         {
-            return await this.dbContext.CasePriorities.ToArrayAsync();
+            return await dbContext.CasePriorities.ToArrayAsync();
         }
 
         public async Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy)
         {
-            var result = new AllCasesOutputModel
+            const int announcementsToTake = 5;
+
+            AllCasesOutputModel result = new AllCasesOutputModel
             {
-                AllCases = await this.dbContext.Cases.CountAsync(),
-                Cases = await this.dbContext.Cases
+                AllCases = await dbContext.Cases.CountAsync(),
+                Cases = await dbContext.Cases
                 .CustomCasesOrder(orderBy)
                 .Skip(skip)
                 .Take(take)
@@ -74,6 +79,7 @@ namespace CaseManagement.Services.Cases
                     Agent = c.User.Email,
                 })
                 .ToArrayAsync(),
+                Announcements = await announcementsService.GetAnnouncementsAsync(announcementsToTake),
             };
 
             return result;
@@ -81,22 +87,22 @@ namespace CaseManagement.Services.Cases
 
         public async Task<ICollection<Service>> GetAllCaseServicesAsync()
         {
-            return await this.dbContext.Services.ToArrayAsync();
+            return await dbContext.Services.ToArrayAsync();
         }
 
         public async Task<ICollection<CaseStatus>> GetAllCaseStatusesAsync()
         {
-            return await this.dbContext.CaseStatuses.ToArrayAsync();
+            return await dbContext.CaseStatuses.ToArrayAsync();
         }
 
         public async Task<ICollection<CaseType>> GetAllCaseTypesAsync()
         {
-            return await this.dbContext.CaseTypes.ToArrayAsync();
+            return await dbContext.CaseTypes.ToArrayAsync();
         }
 
         public async Task<ViewUpdateCaseIOModel> GetCaseByIdAsync(int id, int skipTasks, int takeTasks)
         {
-            var outputModel = await this.dbContext.Cases
+            ViewUpdateCaseIOModel outputModel = await dbContext.Cases
                 .Select(c => new ViewUpdateCaseIOModel
                 {
                     Id = c.Id,
@@ -110,15 +116,15 @@ namespace CaseManagement.Services.Cases
                     Subject = c.Subject,
                     Description = c.Description,
                     AllTasks = c.Tasks.Count(),
-                    CaseStatuses = this.dbContext.CaseStatuses.ToArray(),
-                    CasePriorities = this.dbContext.CasePriorities.ToArray(),
-                    CaseTypes = this.dbContext.CaseTypes.ToArray(),
-                    CaseServices = this.dbContext.Services.ToArray(),
+                    CaseStatuses = dbContext.CaseStatuses.ToArray(),
+                    CasePriorities = dbContext.CasePriorities.ToArray(),
+                    CaseTypes = dbContext.CaseTypes.ToArray(),
+                    CaseServices = dbContext.Services.ToArray(),
                 })
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync();
 
-            outputModel.Tasks = await this.dbContext.Tasks
+            outputModel.Tasks = await dbContext.Tasks
                 .Where(t => t.CaseId == id)
                 .OrderByDescending(t => t.CreatedOn)
                 .Skip(skipTasks)
@@ -139,10 +145,10 @@ namespace CaseManagement.Services.Cases
 
         public async Task<SearchCaseResultsOutputModel> GetCasesByNumberAsync(string caseNumber)
         {
-            var result = new SearchCaseResultsOutputModel
+            SearchCaseResultsOutputModel result = new SearchCaseResultsOutputModel
             {
                 SearchedCaseNumber = caseNumber,
-                Results = await this.dbContext.Cases
+                Results = await dbContext.Cases
                 .Where(c => c.Number == caseNumber)
                 .Select(c => new CaseOutputModel
                 {
@@ -162,7 +168,7 @@ namespace CaseManagement.Services.Cases
 
         public async Task<string> GetCaseNumberByIdAsync(int caseId)
         {
-            return await this.dbContext.Cases
+            return await dbContext.Cases
                 .Where(c => c.Id == caseId)
                 .Select(c => c.Number)
                 .FirstOrDefaultAsync();
@@ -170,7 +176,7 @@ namespace CaseManagement.Services.Cases
 
         public async Task<int> UpdateCaseAsync(ViewUpdateCaseIOModel inputModel, string userId)
         {
-            var caseRecordToUpdate = await this.dbContext.Cases
+            Case caseRecordToUpdate = await dbContext.Cases
                 .FirstOrDefaultAsync(c => c.Id == inputModel.Id);
 
             List<FieldModification> fieldModifications = new List<FieldModification>();
@@ -210,8 +216,8 @@ namespace CaseManagement.Services.Cases
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Status",
-                    OldValue = await this.dbContext.CaseStatuses.Where(cs => cs.Id == caseRecordToUpdate.StatusId).Select(cs => cs.Status).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.CaseStatuses.Where(cs => cs.Id == inputModel.StatusId).Select(cs => cs.Status).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.CaseStatuses.Where(cs => cs.Id == caseRecordToUpdate.StatusId).Select(cs => cs.Status).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.CaseStatuses.Where(cs => cs.Id == inputModel.StatusId).Select(cs => cs.Status).FirstOrDefaultAsync(),
                 });
             }
 
@@ -220,8 +226,8 @@ namespace CaseManagement.Services.Cases
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Type",
-                    OldValue = await this.dbContext.CaseTypes.Where(ct => ct.Id == caseRecordToUpdate.TypeId).Select(ct => ct.Type).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.CaseTypes.Where(ct => ct.Id == inputModel.TypeId).Select(ct => ct.Type).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.CaseTypes.Where(ct => ct.Id == caseRecordToUpdate.TypeId).Select(ct => ct.Type).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.CaseTypes.Where(ct => ct.Id == inputModel.TypeId).Select(ct => ct.Type).FirstOrDefaultAsync(),
                 });
             }
 
@@ -230,8 +236,8 @@ namespace CaseManagement.Services.Cases
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Priority",
-                    OldValue = await this.dbContext.CasePriorities.Where(cp => cp.Id == caseRecordToUpdate.PriorityId).Select(cp => cp.Priority).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.CasePriorities.Where(cp => cp.Id == inputModel.PriorityId).Select(cp => cp.Priority).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.CasePriorities.Where(cp => cp.Id == caseRecordToUpdate.PriorityId).Select(cp => cp.Priority).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.CasePriorities.Where(cp => cp.Id == inputModel.PriorityId).Select(cp => cp.Priority).FirstOrDefaultAsync(),
                 });
             }
 
@@ -240,8 +246,8 @@ namespace CaseManagement.Services.Cases
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Phase",
-                    OldValue = await this.dbContext.CasePhases.Where(cp => cp.Id == caseRecordToUpdate.PhaseId).Select(cp => cp.Phase).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.CasePhases.Where(cp => cp.Id == inputModel.PhaseId).Select(cp => cp.Phase).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.CasePhases.Where(cp => cp.Id == caseRecordToUpdate.PhaseId).Select(cp => cp.Phase).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.CasePhases.Where(cp => cp.Id == inputModel.PhaseId).Select(cp => cp.Phase).FirstOrDefaultAsync(),
                 });
             }
 
@@ -250,8 +256,8 @@ namespace CaseManagement.Services.Cases
                 fieldModifications.Add(new FieldModification
                 {
                     FieldName = "Service",
-                    OldValue = await this.dbContext.Services.Where(s => s.Id == caseRecordToUpdate.ServiceId).Select(s => s.ServiceName).FirstOrDefaultAsync(),
-                    NewValue = await this.dbContext.Services.Where(s => s.Id == inputModel.ServiceId).Select(s => s.ServiceName).FirstOrDefaultAsync(),
+                    OldValue = await dbContext.Services.Where(s => s.Id == caseRecordToUpdate.ServiceId).Select(s => s.ServiceName).FirstOrDefaultAsync(),
+                    NewValue = await dbContext.Services.Where(s => s.Id == inputModel.ServiceId).Select(s => s.ServiceName).FirstOrDefaultAsync(),
                 });
             }
 
@@ -267,7 +273,7 @@ namespace CaseManagement.Services.Cases
 
             if (fieldModifications.Count > 0)
             {
-                var modificationLogRecord = new CaseModificationLogRecord
+                CaseModificationLogRecord modificationLogRecord = new CaseModificationLogRecord
                 {
                     ModificationTime = DateTime.UtcNow,
                     UserId = userId,
@@ -275,11 +281,11 @@ namespace CaseManagement.Services.Cases
                     ModifiedFields = fieldModifications,
                 };
 
-                this.dbContext.CaseModificationLogRecords.Add(modificationLogRecord);
+                dbContext.CaseModificationLogRecords.Add(modificationLogRecord);
             }
 
-            this.dbContext.Cases.Update(caseRecordToUpdate);
-            var saveResult = await this.dbContext.SaveChangesAsync();
+            dbContext.Cases.Update(caseRecordToUpdate);
+            int saveResult = await dbContext.SaveChangesAsync();
 
             return saveResult;
         }

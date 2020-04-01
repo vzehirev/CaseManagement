@@ -23,11 +23,11 @@ namespace CaseManagement.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var model = new CreateTaskInputModel
+            CreateTaskInputModel model = new CreateTaskInputModel
             {
                 // Populate drop-down menus' options
-                TaskTypes = await this.tasksService.GetAllTaskTypesAsync(),
-                TaskStatuses = await this.tasksService.GetAllTaskStatusesAsync(),
+                TaskTypes = await tasksService.GetAllTaskTypesAsync(),
+                TaskStatuses = await tasksService.GetAllTaskStatusesAsync(),
             };
 
             return View(model);
@@ -38,21 +38,21 @@ namespace CaseManagement.Controllers
         {
             inputModel.CaseId = id;
 
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 // Populate drop-down menus' options and return create page to edit data and re-submit
-                inputModel.TaskTypes = await this.tasksService.GetAllTaskTypesAsync();
-                inputModel.TaskStatuses = await this.tasksService.GetAllTaskStatusesAsync();
+                inputModel.TaskTypes = await tasksService.GetAllTaskTypesAsync();
+                inputModel.TaskStatuses = await tasksService.GetAllTaskStatusesAsync();
 
-                return this.View(inputModel);
+                return View(inputModel);
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-            var createResult = await this.tasksService.CreateTaskAsync(inputModel, userId);
+            string userId = userManager.GetUserId(User);
+            int createResult = await tasksService.CreateTaskAsync(inputModel, userId);
 
             if (createResult > 0)
             {
-                this.TempData["TaskCreatedSuccessfully"] = true;
+                TempData["TaskCreatedSuccessfully"] = true;
 
                 return LocalRedirect($"/Cases/ViewUpdate/{inputModel.CaseId}#tasks-table");
             }
@@ -62,7 +62,7 @@ namespace CaseManagement.Controllers
 
         public async Task<IActionResult> ViewUpdate(int id)
         {
-            var outputModel = await this.tasksService.GetTaskByIdAsync(id);
+            ViewUpdateTaskIOModel outputModel = await tasksService.GetTaskByIdAsync(id);
 
             return View(outputModel);
         }
@@ -70,17 +70,17 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(ViewUpdateTaskIOModel inputModel)
         {
-            if (!this.ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return this.View("Error", new ErrorViewModel());
+                return View("Error", new ErrorViewModel());
             }
 
-            var userId = this.userManager.GetUserId(this.User);
-            var updateResult = await this.tasksService.UpdateTaskAsync(inputModel, userId);
+            string userId = userManager.GetUserId(User);
+            int updateResult = await tasksService.UpdateTaskAsync(inputModel, userId);
 
             if (updateResult > 0)
             {
-                this.TempData["TaskUpdatedSuccessfully"] = true;
+                TempData["TaskUpdatedSuccessfully"] = true;
 
             }
 
