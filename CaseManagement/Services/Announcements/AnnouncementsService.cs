@@ -56,8 +56,13 @@ namespace CaseManagement.Services.Announcements
                 .Take(count)
                 .ToArrayAsync();
 
+            if (announcements.Length == 0)
+            {
+                return string.Empty;
+            }
+
             // Wrap all the announcements in one p tag, so they can be shown on one line and put some dividers inbetween them
-            string result = "<p>" + string.Join("&nbsp;&nbsp;&#10148;&nbsp;&nbsp;", announcements) + "&nbsp;&nbsp;&#10148;&nbsp;&nbsp;</p>";
+            string result = "<p>" + string.Join("&nbsp;&nbsp;&nbsp;&#10148;&nbsp;", announcements) + "&nbsp;&nbsp;&nbsp;&#10148;&nbsp;</p>";
 
             return result;
         }

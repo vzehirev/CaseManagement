@@ -1,10 +1,13 @@
 ﻿@model CaseManagement.ViewModels.Cases.Output.AllCasesOutputModel
 
-<div class="marquee3k p-1"
-     data-speed="0.9"
-     data-pausable="true">
-    <div id="marquee-content">@Html.Raw(Model.Announcements)</div>
-</div>
+@if (Model.Announcements.Length > 0)
+{
+    <div class="marquee3k p-1"
+         data-speed="0.9"
+         data-pausable="true">
+        <div id="marquee-content">@Html.Raw(Model.Announcements)</div>
+    </div>
+}
 
 <div class="col-md-4 mx-auto text-center mt-5">
     <section>
