@@ -50,25 +50,25 @@
 <div class="row">
     @foreach (var announcement in Model.Input.AvailableAnnouncements)
     {
-    <div class="card bg-secondary col-3 mx-1 mt-3 p-0" style="max-width: 20rem;">
-        <div class="card-header">
-            @announcement.PublishedOn
-            <form class="float-right" method="post">
-                <input type="hidden" name="id" value="@announcement.Id" />
-                <button class="btn btn-sm btn-danger px-2 py-1" type="submit">X</button>
-            </form>
+        <div class="card bg-secondary col-3 mx-1 mt-3 p-0" style="max-width: 20rem;">
+            <div class="card-header">
+                @announcement.PublishedOn
+                <form class="float-right" method="post">
+                    <input type="hidden" name="id" value="@announcement.Id" />
+                    <button class="btn btn-sm btn-danger px-2 py-1" type="submit">X</button>
+                </form>
             </div>
-        <div class="card-body p-2">
-            @Html.Raw(announcement.Content)
+            <div class="card-body p-2">
+                @Html.Raw(announcement.Content)
+            </div>
         </div>
-    </div>
     }
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="https://cdn.tiny.cloud/1/ek0cww80ig7yp0n3ydsqzsuhywxmo1onbnccr5slbtfd6w27/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
+    @*<script src="https://cdn.tiny.cloud/1/ek0cww80ig7yp0n3ydsqzsuhywxmo1onbnccr5slbtfd6w27/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>*@
+    <script src="~/js/tinymce.min.js"></script>
     <script>
         tinymce.init({
             selector: 'textarea',

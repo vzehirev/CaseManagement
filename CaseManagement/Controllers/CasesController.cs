@@ -2,6 +2,7 @@
 using CaseManagement.Services.Cases;
 using CaseManagement.ViewModels.Cases;
 using CaseManagement.ViewModels.Cases.Input;
+using CaseManagement.ViewModels.Cases.Output;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,10 @@ namespace CaseManagement.Controllers
 
         public async Task<IActionResult> Index(CasesIndexInputModel inputModel)
         {
-            inputModel.Page = inputModel.Page >= 1 ? inputModel.Page : 1;
+            if (inputModel.Page < 1)
+            {
+                inputModel.Page = 1;
+            }
 
             string[] possibleOrders = new[]
             {
@@ -37,15 +41,31 @@ namespace CaseManagement.Controllers
                 "Priority-asc",
             };
 
-            inputModel.OrderBy = possibleOrders.Contains(inputModel.OrderBy) ? inputModel.OrderBy : possibleOrders.First();
+            if (!possibleOrders.Contains(inputModel.OrderBy))
+            {
+                inputModel.OrderBy = possibleOrders.First();
+            }
 
             const int casesPerPage = 10;
 
             int skip = (inputModel.Page - 1) * casesPerPage;
 
-            ViewModels.Cases.Output.AllCasesOutputModel outputModel = await casesService.GetCasesAsync(skip, casesPerPage, inputModel.OrderBy);
+            if (inputModel.SelectedStatuses == null)
+            {
+                inputModel.SelectedStatuses = await casesService.GetAllCaseStatusesIdsAsync();
+            }
+
+            if (inputModel.SelectedPriorities == null)
+            {
+                inputModel.SelectedPriorities = await casesService.GetAllCasePrioritiesIdsAsync();
+            }
+
+            AllCasesOutputModel outputModel = await casesService
+                .GetCasesAsync(skip, casesPerPage, inputModel.OrderBy, inputModel.SelectedStatuses, inputModel.SelectedPriorities);
 
             outputModel.OrderedBy = inputModel.OrderBy;
+            outputModel.SelectedStatuses = inputModel.SelectedStatuses;
+            outputModel.SelectedPriorities = inputModel.SelectedPriorities;
 
             // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
             if (outputModel.AllCases == 0)
@@ -53,7 +73,7 @@ namespace CaseManagement.Controllers
                 return View(outputModel);
             }
 
-            outputModel.LastPage = (int)Math.Ceiling((decimal)outputModel.AllCases / casesPerPage);
+            outputModel.LastPage = (int)Math.Ceiling((double)outputModel.AllCases / casesPerPage);
 
             if (inputModel.Page > outputModel.LastPage)
             {

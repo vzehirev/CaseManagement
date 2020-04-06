@@ -14,7 +14,7 @@
         <h4>Cases</h4>
         <hr />
         <a class="btn btn-primary" asp-controller="Cases" asp-action="Create">Create Case</a>
-        <form asp-action="SearchCase" id="search-case" method="get" class="m-5">
+        <form asp-controller="Cases" asp-action="SearchCase" id="search-case" method="get" class="m-5">
             <div class="row mx-auto">
                 <div class="form-group mx-auto my-auto">
                     <input name="caseNumber" placeholder="Case number" class="form-control" />
@@ -27,7 +27,7 @@
     </section>
 </div>
 
-@* Order by logic for showing the order icon in the table's header *@
+@* Order by logic for showing the order icon in the table's headers *@
 @{
     string PutOrderByIcon(string value)
     {
@@ -48,32 +48,86 @@
 }
 
 <div id="cases-table" class="text-center">
+
+    <button type="button" id="orderAndFilterBtn" class="btn btn-info btn-sm mb-2">Order & filter</button>
+
+    <div id="orderAndFilterModal" class="modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Order and filter table data</h6>
+                    <button type="button" class="close closeModalBtn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="get">
+                        <div class="row mx-auto mb-3">
+                            <div class="my-auto mr-2">Order by:</div>
+                            <div class="my-auto">
+                                <select asp-for="@Model.OrderedBy" name="orderBy" class="form-control p-0">
+                                    <option value="CreatedOn-desc">Newest first</option>
+                                    <option value="CreatedOn-asc">Oldest first</option>
+                                    <option value="Status-desc">Status descending</option>
+                                    <option value="Status-asc">Status ascending</option>
+                                    <option value="Priority-desc">Highest priority first</option>
+                                    <option value="Priority-asc">Lowest priority first</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mx-auto">
+                            <div class="my-auto mr-2 mx-auto">Status:</div>
+                            <div class="my-auto mr-2 mx-auto">Priority:</div>
+                        </div>
+                        <div class="row mx-auto">
+                            <div class="mx-auto">
+
+                                @foreach (var caseStatus in Model.AllAvailableCaseStatuses)
+                                {
+                                    var isCaseStatusChecked = Model.SelectedStatuses.Contains(caseStatus.Id) ? "checked" : string.Empty;
+
+                                    <div class="form-check ml-4">
+                                        <label class="form-check-label d-flex">
+                                            <input class="form-check-input" type="checkbox" name="selectedStatuses" value="@caseStatus.Id" @isCaseStatusChecked>
+                                            @caseStatus.Status
+                                        </label>
+                                    </div>
+                                }
+
+                            </div>
+                            <div class="mx-auto">
+
+                                @foreach (var casePriority in Model.AllAvailableCasePriorities)
+                                {
+                                    var isCasePriorityChecked = Model.SelectedPriorities.Contains(casePriority.Id) ? "checked" : string.Empty;
+
+                                    <div class="form-check ml-4">
+                                        <label class="form-check-label d-flex">
+                                            <input class="form-check-input" type="checkbox" name="selectedPriorities" value="@casePriority.Id" @isCasePriorityChecked>
+                                            @casePriority.Priority
+                                        </label>
+                                    </div>
+                                }
+
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary py-1 px-2 mr-1">OK</button>
+                        <button type="button" class="btn btn-secondary py-1 px-2 closeModalBtn ml-1">Close</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <table class="table table-hover border">
         <thead>
             <tr class="table-active">
-                <th scope="col">
-                    <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Created on @Html.Raw(PutOrderByIcon("CreatedOn"))</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" asp-controller="Cases" asp-action="Index" asp-route-orderBy="CreatedOn-asc">Ascending</a>
-                        <a class="dropdown-item" asp-controller="Cases" asp-action="Index" asp-route-orderBy="CreatedOn-desc">Descending</a>
-                    </div>
-                </th>
+
+                <th scope="col">Created on @Html.Raw(PutOrderByIcon("CreatedOn"))</th>
                 <th scope="col">Case number</th>
                 <th scope="col">Subject</th>
-                <th scope="col">
-                    <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Status @Html.Raw(PutOrderByIcon("Status"))</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" asp-controller="Cases" asp-action="Index" asp-route-orderBy="Status-asc">Ascending</a>
-                        <a class="dropdown-item" asp-controller="Cases" asp-action="Index" asp-route-orderBy="Status-desc">Descending</a>
-                    </div>
-                </th>
-                <th scope="col">
-                    <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Priority @Html.Raw(PutOrderByIcon("Priority"))</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" asp-controller="Cases" asp-action="Index" asp-route-orderBy="Priority-asc">Ascending</a>
-                        <a class="dropdown-item" asp-controller="Cases" asp-action="Index" asp-route-orderBy="Priority-desc">Descending</a>
-                    </div>
-                </th>
+                <th scope="col">Status @Html.Raw(PutOrderByIcon("Status"))</th>
+                <th scope="col">Priority @Html.Raw(PutOrderByIcon("Priority"))</th>
                 <th scope="col">Agent</th>
                 <th scope="col"></th>
             </tr>
@@ -103,6 +157,17 @@
 
     @* pagination *@
 
+    @{
+        // Needed query string parameters for proper ordering and filtering when navigating through pages
+        // Note that, when this is used the page number is also passed after it in the format: &page=X
+        var parameters = new
+        {
+            orderBy = Model.OrderedBy,
+            selectedStatuses = Model.SelectedStatuses,
+            selectedPriorities = Model.SelectedPriorities
+        };
+    }
+
     <div>
         <ul class="pagination justify-content-center">
 
@@ -115,7 +180,7 @@
             else if (Model.CurrentPage > 1)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-route-page="1" asp-route-orderBy="@Model.OrderedBy">&laquo;</a>
+                    <a class="page-link" href="@Url.Action("Index", parameters)&page=1">&laquo;</a>
                 </li>
             }
 
@@ -135,7 +200,7 @@
                     else
                     {
                         <li class="page-item">
-                            <a class="page-link" asp-route-page="@i" asp-route-orderBy="@Model.OrderedBy">@i</a>
+                            <a class="page-link" href="@Url.Action("Index", parameters)&page=@i">@i</a>
                         </li>
                     }
                 }
@@ -144,7 +209,7 @@
             @if (Model.CurrentPage < Model.LastPage)
             {
                 <li class="page-item">
-                    <a class="page-link" asp-route-page="@Model.LastPage" asp-route-orderBy="@Model.OrderedBy">&raquo;</a>
+                    <a class="page-link" href="@Url.Action("Index", parameters)&page=@Model.LastPage">&raquo;</a>
                 </li>
             }
             else if (Model.AllCases > 0)
@@ -162,4 +227,23 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/marquee3k.js"></script>
     <script>Marquee3k.init();</script>
+    <script>
+        let orderAndFilterModal = document.getElementById("orderAndFilterModal");
+
+        let orderAndFilterBtn = document.getElementById("orderAndFilterBtn");
+        orderAndFilterBtn.addEventListener("click", openModal);
+
+        let closeModalBtns = document.getElementsByClassName("closeModalBtn");
+        for (closeModalBtn of closeModalBtns) {
+            closeModalBtn.addEventListener("click", closeModal);
+        }
+
+        function openModal(e) {
+            orderAndFilterModal.classList.add("d-block");
+        }
+
+        function closeModal(e) {
+            orderAndFilterModal.classList.remove("d-block");
+        }
+    </script>
 }

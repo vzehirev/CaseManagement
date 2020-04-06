@@ -7,15 +7,17 @@ namespace CaseManagement.ViewModels.Cases.Input
     public class CreateCaseInputModel
     {
         [Required]
-        [Display(Name = "Case Number")]
+        [Display(Name = "Number")]
         public string Number { get; set; }
 
-        public int? StatusId { get; set; }
+        [Display(Name = "Status")]
+        public int StatusId { get; set; }
 
-        public int? PriorityId { get; set; }
+        [Display(Name = "Priority")]
+        public int PriorityId { get; set; }
 
         [Required]
-        [Display(Name = "Case Subject")]
+        [Display(Name = "Subject")]
         public string Subject { get; set; }
 
         public int? TypeId { get; set; }
@@ -24,7 +26,7 @@ namespace CaseManagement.ViewModels.Cases.Input
 
         public int? ServiceId { get; set; }
 
-        [Display(Name = "Case Description")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
         public IEnumerable<CaseStatus> CaseStatuses { get; set; }

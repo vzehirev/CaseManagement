@@ -3,9 +3,11 @@ using CaseManagement.Data.Extensions;
 using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
 using CaseManagement.Services.Announcements;
+using CaseManagement.ViewModels.CasePriorities.Output;
 using CaseManagement.ViewModels.Cases;
 using CaseManagement.ViewModels.Cases.Input;
 using CaseManagement.ViewModels.Cases.Output;
+using CaseManagement.ViewModels.CaseStatuses.Output;
 using CaseManagement.ViewModels.Tasks.Output;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -57,29 +59,49 @@ namespace CaseManagement.Services.Cases
             return await dbContext.CasePriorities.ToArrayAsync();
         }
 
-        public async Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy)
+        public async Task<AllCasesOutputModel> GetCasesAsync(
+            int skip, int take,
+            string orderBy,
+            int[] selectedStatuses, int[] selectedPriorities)
         {
             const int announcementsToTake = 5;
 
             AllCasesOutputModel result = new AllCasesOutputModel
             {
-                AllCases = await dbContext.Cases.CountAsync(),
+                AllCases = await dbContext.Cases
+                    .Where(c => selectedStatuses.Contains(c.StatusId) && selectedPriorities.Contains(c.PriorityId))
+                    .CountAsync(),
                 Cases = await dbContext.Cases
-                .CustomCasesOrder(orderBy)
-                .Skip(skip)
-                .Take(take)
-                .Select(c => new CaseOutputModel
-                {
-                    Id = c.Id,
-                    Number = c.Number,
-                    CreatedOn = c.CreatedOn,
-                    Status = c.Status.Status,
-                    Priority = c.Priority.Priority,
-                    Subject = c.Subject,
-                    Agent = c.User.Email,
-                })
-                .ToArrayAsync(),
+                    .Where(c => selectedStatuses.Contains(c.StatusId) && selectedPriorities.Contains(c.PriorityId))
+                    .CustomCasesOrder(orderBy)
+                    .Skip(skip)
+                    .Take(take)
+                    .Select(c => new CaseOutputModel
+                    {
+                        Id = c.Id,
+                        Number = c.Number,
+                        CreatedOn = c.CreatedOn,
+                        Status = c.Status.Status,
+                        Priority = c.Priority.Priority,
+                        Subject = c.Subject,
+                        Agent = c.User.Email,
+                    })
+                    .ToArrayAsync(),
                 Announcements = await announcementsService.GetAnnouncementsAsync(announcementsToTake),
+                AllAvailableCaseStatuses = await dbContext.CaseStatuses
+                    .Select(cp => new CaseStatusOuputModel
+                    {
+                        Id = cp.Id,
+                        Status = cp.Status,
+                    })
+                    .ToArrayAsync(),
+                AllAvailableCasePriorities = await dbContext.CasePriorities
+                    .Select(cp => new CasePriorityOutputModel
+                    {
+                        Id = cp.Id,
+                        Priority = cp.Priority,
+                    })
+                    .ToArrayAsync(),
             };
 
             return result;
@@ -288,6 +310,20 @@ namespace CaseManagement.Services.Cases
             int saveResult = await dbContext.SaveChangesAsync();
 
             return saveResult;
+        }
+
+        public async Task<int[]> GetAllCaseStatusesIdsAsync()
+        {
+            return await dbContext.CaseStatuses
+                .Select(cs => cs.Id)
+                .ToArrayAsync();
+        }
+
+        public async Task<int[]> GetAllCasePrioritiesIdsAsync()
+        {
+            return await dbContext.CasePriorities
+                .Select(cp => cp.Id)
+                .ToArrayAsync();
         }
     }
 }

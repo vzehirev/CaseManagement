@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200406113441_MakeAllCaseStatusesAndPrioritiesWhereNullToNA")]
+    partial class MakeAllCaseStatusesAndPrioritiesWhereNullToNA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,7 +137,7 @@ namespace CaseManagement.Data.Migrations
                     b.Property<int?>("PhaseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PriorityId")
+                    b.Property<int?>("PriorityId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ServiceAreaId")
@@ -144,7 +146,7 @@ namespace CaseManagement.Data.Migrations
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int");
 
-                    b.Property<int>("StatusId")
+                    b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<string>("Subject")
@@ -587,9 +589,7 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasOne("CaseManagement.Models.CaseModels.CasePriority", "Priority")
                         .WithMany()
-                        .HasForeignKey("PriorityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PriorityId");
 
                     b.HasOne("CaseManagement.Models.CaseModels.ServiceArea", "ServiceArea")
                         .WithMany()
@@ -601,9 +601,7 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasOne("CaseManagement.Models.CaseModels.CaseStatus", "Status")
                         .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StatusId");
 
                     b.HasOne("CaseManagement.Models.CaseModels.CaseType", "Type")
                         .WithMany()

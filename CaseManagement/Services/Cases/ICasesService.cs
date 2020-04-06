@@ -11,7 +11,7 @@ namespace CaseManagement.Services.Cases
     {
         public Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId);
 
-        public Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy);
+        public Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy, int[] selectedStatuses, int[] selectedPriorities);
 
         public Task<SearchCaseResultsOutputModel> GetCasesByNumberAsync(string caseNumber);
 
@@ -28,5 +28,9 @@ namespace CaseManagement.Services.Cases
         public Task<ICollection<Service>> GetAllCaseServicesAsync();
 
         public Task<string> GetCaseNumberByIdAsync(int caseId);
+
+        public Task<int[]> GetAllCaseStatusesIdsAsync();
+
+        public Task<int[]> GetAllCasePrioritiesIdsAsync();
     }
 }

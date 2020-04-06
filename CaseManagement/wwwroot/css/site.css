@@ -81,3 +81,11 @@ body {
 #marquee-content {
     font-size: 1.1rem;
 }
+
+#orderAndFilterModal {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.tox-notifications-container {
+    display: none;
+}

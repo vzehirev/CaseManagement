@@ -35,11 +35,13 @@ namespace CaseManagement.Models.CaseModels
 
         public virtual CasePhase Phase { get; set; }
 
-        public int? StatusId { get; set; }
+        [Required]
+        public int StatusId { get; set; }
 
         public virtual CaseStatus Status { get; set; }
 
-        public int? PriorityId { get; set; }
+        [Required]
+        public int PriorityId { get; set; }
 
         public virtual CasePriority Priority { get; set; }
 

@@ -44,11 +44,6 @@
                         <label>Status</label>
                         <select asp-for="StatusId" class="form-control">
 
-                            @if (Model.StatusId == null)
-                            {
-                                <option value="">Select status</option>
-                            }
-
                             @foreach (var status in Model.CaseStatuses)
                             {
                                 if (Model.StatusId == status.Id)
@@ -67,11 +62,6 @@
                     <div class="form-group col-4">
                         <label>Priority</label>
                         <select asp-for="PriorityId" class="form-control">
-
-                            @if (Model.PriorityId == null)
-                            {
-                                <option value="">Select priority</option>
-                            }
 
                             @foreach (var priority in Model.CasePriorities)
                             {
