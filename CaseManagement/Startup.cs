@@ -2,6 +2,7 @@ using CaseManagement.Data;
 using CaseManagement.Models;
 using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
+using CaseManagement.Services.Statistics;
 using CaseManagement.Services.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,7 @@ namespace CaseManagement
             services.AddTransient<ICasesService, CasesService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<IAnnouncementsService, AnnouncementsService>();
+            services.AddTransient<IUsersStatisticsService, UsersStatisticsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

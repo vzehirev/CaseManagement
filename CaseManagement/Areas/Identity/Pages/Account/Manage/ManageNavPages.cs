@@ -17,12 +17,10 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
+        public static string MyStatistics => "MyStatistics";
+
         public static string Announcements => "Announcements";
 
-        public static string AnnouncementsNavClass(ViewContext viewContext)
-        {
-            return PageNavClass(viewContext, Announcements);
-        }
 
         public static string IndexNavClass(ViewContext viewContext)
         {
@@ -52,6 +50,16 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
         public static string TwoFactorAuthenticationNavClass(ViewContext viewContext)
         {
             return PageNavClass(viewContext, TwoFactorAuthentication);
+        }
+
+        public static string AnnouncementsNavClass(ViewContext viewContext)
+        {
+            return PageNavClass(viewContext, Announcements);
+        }
+
+        public static string MyStatisticsNavClass(ViewContext viewContext)
+        {
+            return PageNavClass(viewContext, MyStatistics);
         }
 
         private static string PageNavClass(ViewContext viewContext, string page)

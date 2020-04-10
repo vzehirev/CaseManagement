@@ -15,6 +15,8 @@ namespace CaseManagement.Models.CaseModels
 
         public int CaseId { get; set; }
 
+        public virtual Case Case { get; set; }
+
         [Required]
         public DateTime ModificationTime { get; set; }
 

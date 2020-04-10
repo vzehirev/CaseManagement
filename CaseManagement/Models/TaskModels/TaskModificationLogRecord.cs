@@ -13,6 +13,8 @@ namespace CaseManagement.Models.TaskModels
 
         public virtual ApplicationUser User { get; set; }
 
+        public CaseTask Task { get; set; }
+
         public int TaskId { get; set; }
 
         [Required]

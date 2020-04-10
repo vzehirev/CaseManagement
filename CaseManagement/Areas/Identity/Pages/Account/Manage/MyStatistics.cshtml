@@ -1,0 +1,95 @@
+﻿@page
+@model MyStatisticsModel
+@{
+    ViewData["Title"] = "My statistics";
+    ViewData["ActivePage"] = ManageNavPages.MyStatistics;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<div class="form-group col-md-2 px-0">
+    <select asp-for="@Model.TimeFrameOutput" id="timeFrameSelect" class="custom-select">
+        <option value="today">Today</option>
+        <option value="week">This week </option>
+        <option value="month">This month </option>
+    </select>
+</div>
+
+<table class="table table-hover border my-4">
+    <thead>
+        <tr class="table-active">
+            <th scope="col">Cases</th>
+            <th scope="col">Low</th>
+            <th scope="col">Normal</th>
+            <th scope="col">Urgent</th>
+            <th scope="col">Immediate</th>
+            <th scope="col">N/A</th>
+            <th scope="col">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Created cases</td>
+            <td>@Model.OutputModel.CreatedCasesLowPriority</td>
+            <td>@Model.OutputModel.CreatedCasesNormalPriority</td>
+            <td>@Model.OutputModel.CreatedCasesUrgentPriority</td>
+            <td>@Model.OutputModel.CreatedCasesImmediatePriority</td>
+            <td>@Model.OutputModel.CreatedCasesNaPriority</td>
+            <td>@Model.OutputModel.TotalCreatedCases</td>
+        </tr>
+        <tr>
+            <td>Updated cases</td>
+            <td>@Model.OutputModel.UpdatedCasesLowPriority</td>
+            <td>@Model.OutputModel.UpdatedCasesNormalPriority</td>
+            <td>@Model.OutputModel.UpdatedCasesUrgentPriority</td>
+            <td>@Model.OutputModel.UpdatedCasesImmediatePriority</td>
+            <td>@Model.OutputModel.UpdatedCasesNaPriority</td>
+            <td>@Model.OutputModel.TotalUpdatedCases</td>
+        </tr>
+        <tr>
+            <td>Closed cases</td>
+            <td>@Model.OutputModel.ClosedCasesLowPriority</td>
+            <td>@Model.OutputModel.ClosedCasesNormalPriority</td>
+            <td>@Model.OutputModel.ClosedCasesUrgentPriority</td>
+            <td>@Model.OutputModel.ClosedCasesImmediatePriority</td>
+            <td>@Model.OutputModel.ClosedCasesNaPriority</td>
+            <td>@Model.OutputModel.TotalClosedCases</td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table table-hover border my-4">
+    <thead>
+        <tr class="table-active">
+            <th scope="col">Tasks</th>
+            <th scope="col">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Created tasks</td>
+            <td>@Model.OutputModel.CreatedTasks</td>
+        </tr>
+        <tr>
+            <td>Updated tasks</td>
+            <td>@Model.OutputModel.UpdatedTasks</td>
+        </tr>
+        <tr>
+            <td>Closed tasks</td>
+            <td>@Model.OutputModel.ClosedTasks</td>
+        </tr>
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $("#timeFrameSelect").on("change", filterDataByTimeFrame);
+
+        function filterDataByTimeFrame() {
+            let timeFrameValue = $("#timeFrameSelect").val();
+            window.location.href = `?timeFrameInput=${timeFrameValue}`;
+        }
+    </script>
+}
