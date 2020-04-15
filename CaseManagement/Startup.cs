@@ -1,5 +1,6 @@
 using CaseManagement.Data;
 using CaseManagement.Models;
+using CaseManagement.Services;
 using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
 using CaseManagement.Services.Statistics;
@@ -41,6 +42,7 @@ namespace CaseManagement
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<IAnnouncementsService, AnnouncementsService>();
             services.AddTransient<IUsersStatisticsService, UsersStatisticsService>();
+            services.AddTransient<CasesTableInputToOutputModelService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

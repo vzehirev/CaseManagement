@@ -11,7 +11,7 @@ namespace CaseManagement.Services.Cases
     {
         public Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId);
 
-        public Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy, int[] selectedStatuses, int[] selectedPriorities);
+        public Task<AllCasesOutputModel> GetCasesAsync(int skip, int take, string orderBy, int[] selectedStatuses, int[] selectedPriorities, string userId);
 
         public Task<SearchCaseResultsOutputModel> GetCasesByNumberAsync(string caseNumber);
 

@@ -1,4 +1,6 @@
 ﻿using CaseManagement.Models;
+using CaseManagement.Services;
+using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
 using CaseManagement.ViewModels.Cases;
 using CaseManagement.ViewModels.Cases.Input;
@@ -17,71 +19,36 @@ namespace CaseManagement.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly ICasesService casesService;
+        private readonly CasesTableInputToOutputModelService casesTableInputToOutputModelService;
+        private readonly IAnnouncementsService announcementsService;
 
-        public CasesController(UserManager<ApplicationUser> userManager, ICasesService casesService)
+        public CasesController(UserManager<ApplicationUser> userManager,
+            ICasesService casesService,
+            CasesTableInputToOutputModelService casesTableInputToOutputModelService,
+            IAnnouncementsService announcementsService)
         {
             this.userManager = userManager;
             this.casesService = casesService;
+            this.casesTableInputToOutputModelService = casesTableInputToOutputModelService;
+            this.announcementsService = announcementsService;
         }
 
         public async Task<IActionResult> Index(CasesIndexInputModel inputModel)
         {
-            if (inputModel.Page < 1)
-            {
-                inputModel.Page = 1;
-            }
+            AllCasesOutputModel outputModel = await casesTableInputToOutputModelService.InputToOutputModelAsync(inputModel);
 
-            string[] possibleOrders = new[]
-            {
-                "CreatedOn-desc",
-                "CreatedOn-asc",
-                "Status-desc",
-                "Status-asc",
-                "Priority-desc",
-                "Priority-asc",
-            };
-
-            if (!possibleOrders.Contains(inputModel.OrderBy))
-            {
-                inputModel.OrderBy = possibleOrders.First();
-            }
-
-            const int casesPerPage = 10;
-
-            int skip = (inputModel.Page - 1) * casesPerPage;
-
-            if (inputModel.SelectedStatuses == null)
-            {
-                inputModel.SelectedStatuses = await casesService.GetAllCaseStatusesIdsAsync();
-            }
-
-            if (inputModel.SelectedPriorities == null)
-            {
-                inputModel.SelectedPriorities = await casesService.GetAllCasePrioritiesIdsAsync();
-            }
-
-            AllCasesOutputModel outputModel = await casesService
-                .GetCasesAsync(skip, casesPerPage, inputModel.OrderBy, inputModel.SelectedStatuses, inputModel.SelectedPriorities);
-
-            outputModel.OrderedBy = inputModel.OrderBy;
-            outputModel.SelectedStatuses = inputModel.SelectedStatuses;
-            outputModel.SelectedPriorities = inputModel.SelectedPriorities;
-
-            // If there are no results and need for paging just return model with empty Cases collection and don't do any paging logic
-            if (outputModel.AllCases == 0)
+            if (outputModel.LastPage == 0)
             {
                 return View(outputModel);
             }
 
-            outputModel.LastPage = (int)Math.Ceiling((double)outputModel.AllCases / casesPerPage);
-
-            if (inputModel.Page > outputModel.LastPage)
+            if (inputModel.PageNumber > outputModel.LastPage)
             {
                 return RedirectToAction("Index", new { page = outputModel.LastPage });
             }
 
-            outputModel.CurrentPage = inputModel.Page;
-
+            outputModel.CurrentPage = inputModel.PageNumber;
+            outputModel.Announcements = await announcementsService.GetAnnouncementsAsync();
             return View(outputModel);
         }
 

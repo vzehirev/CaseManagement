@@ -47,13 +47,15 @@ namespace CaseManagement.Services.Announcements
                 .ToArrayAsync();
         }
 
-        public async Task<string> GetAnnouncementsAsync(int count)
+        public async Task<string> GetAnnouncementsAsync()
         {
+            const int announcementsToTake = 5;
+
             string[] announcements = await dbContext.Announcements
                 .OrderByDescending(a => a.PublishedOn)
                 // TinyMCE (the visual editor used for adding the announcements) adds p tag to each entry. It's removed here.
                 .Select(a => a.Content.Replace("<p>", "").Replace("</p>", ""))
-                .Take(count)
+                .Take(announcementsToTake)
                 .ToArrayAsync();
 
             if (announcements.Length == 0)

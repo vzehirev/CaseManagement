@@ -7,7 +7,7 @@ namespace CaseManagement.Services.Announcements
     {
         public Task<int> AddAnnouncementAsync(string userId, string announcement);
 
-        public Task<string> GetAnnouncementsAsync(int count);
+        public Task<string> GetAnnouncementsAsync();
 
         public Task<Announcement[]> GetAllAnnouncementsAsync();
 

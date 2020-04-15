@@ -1,0 +1,75 @@
+﻿@page
+@model MyCasesModel
+@{
+    ViewData["Title"] = "My cases";
+    ViewData["ActivePage"] = ManageNavPages.MyCases;
+}
+
+<partial name="CasesTablePartial" , model="Model.outputModel" />
+
+@* pagination *@
+@{
+    // Needed query string parameters for proper ordering and filtering when navigating through pages
+    // Note that, when this is used the page number is also passed after it in the format: &page=X
+    var parameters = new
+    {
+        orderBy = Model.outputModel.OrderedBy,
+        selectedStatuses = Model.outputModel.SelectedStatuses,
+        selectedPriorities = Model.outputModel.SelectedPriorities
+    };
+}
+
+<div>
+    <ul class="pagination justify-content-center">
+
+        @if (Model.outputModel.CurrentPage == 1)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&laquo;</a>
+            </li>
+        }
+        else if (Model.outputModel.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Page("MyCases", parameters)&pageNumber=1">&laquo;</a>
+            </li>
+        }
+
+        @{
+            // -5 and +5 so it can show 5 pages before and 5 pages ahead (if available) of the current one
+            int firstPageToShow = Model.outputModel.CurrentPage - 5 < 1 ? 1 : Model.outputModel.CurrentPage - 5;
+            int lastPageToShow = Model.outputModel.CurrentPage + 5 > Model.outputModel.LastPage ? Model.outputModel.LastPage : Model.outputModel.CurrentPage + 5;
+
+            for (int i = firstPageToShow; i <= lastPageToShow; i++)
+            {
+                if (Model.outputModel.CurrentPage == i)
+                {
+                    <li class="page-item active">
+                        <a class="page-link" href="#">@i</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Page("MyCases", parameters)&pageNumber=@i">@i</a>
+                    </li>
+                }
+            }
+        }
+
+        @if (Model.outputModel.CurrentPage < Model.outputModel.LastPage)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Page("MyCases", parameters)&pageNumber=@Model.outputModel.LastPage">&raquo;</a>
+            </li>
+        }
+        else if (Model.outputModel.AllCases > 0)
+        {
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&raquo;</a>
+            </li>
+        }
+
+    </ul>
+</div>
+</div>

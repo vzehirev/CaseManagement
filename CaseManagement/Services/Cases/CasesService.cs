@@ -2,7 +2,6 @@
 using CaseManagement.Data.Extensions;
 using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
-using CaseManagement.Services.Announcements;
 using CaseManagement.ViewModels.CasePriorities.Output;
 using CaseManagement.ViewModels.Cases;
 using CaseManagement.ViewModels.Cases.Input;
@@ -20,12 +19,10 @@ namespace CaseManagement.Services.Cases
     public class CasesService : ICasesService
     {
         private readonly ApplicationDbContext dbContext;
-        private readonly IAnnouncementsService announcementsService;
 
-        public CasesService(ApplicationDbContext dbContext, IAnnouncementsService announcementsService)
+        public CasesService(ApplicationDbContext dbContext)
         {
             this.dbContext = dbContext;
-            this.announcementsService = announcementsService;
         }
 
         public async Task<int> CreateCaseAsync(CreateCaseInputModel inputModel, string userId)
@@ -62,16 +59,22 @@ namespace CaseManagement.Services.Cases
         public async Task<AllCasesOutputModel> GetCasesAsync(
             int skip, int take,
             string orderBy,
-            int[] selectedStatuses, int[] selectedPriorities)
+            int[] selectedStatuses, int[] selectedPriorities,
+            string userId = null)
         {
-            const int announcementsToTake = 5;
+            IQueryable<Case> query = dbContext.Cases.AsQueryable();
+
+            if (userId != null)
+            {
+                query = query.Where(c => c.UserId == userId || c.CaseModificationLogRecords.Any(cmlr => cmlr.UserId == userId));
+            }
 
             AllCasesOutputModel result = new AllCasesOutputModel
             {
-                AllCases = await dbContext.Cases
+                AllCases = await query
                     .Where(c => selectedStatuses.Contains(c.StatusId) && selectedPriorities.Contains(c.PriorityId))
                     .CountAsync(),
-                Cases = await dbContext.Cases
+                Cases = await query
                     .Where(c => selectedStatuses.Contains(c.StatusId) && selectedPriorities.Contains(c.PriorityId))
                     .CustomCasesOrder(orderBy)
                     .Skip(skip)
@@ -87,7 +90,6 @@ namespace CaseManagement.Services.Cases
                         Agent = c.User.Email,
                     })
                     .ToArrayAsync(),
-                Announcements = await announcementsService.GetAnnouncementsAsync(announcementsToTake),
                 AllAvailableCaseStatuses = await dbContext.CaseStatuses
                     .Select(cp => new CaseStatusOuputModel
                     {
