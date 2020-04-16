@@ -3,8 +3,10 @@ using CaseManagement.Models;
 using CaseManagement.Services;
 using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
+using CaseManagement.Services.Reports;
 using CaseManagement.Services.Statistics;
 using CaseManagement.Services.Tasks;
+using CaseManagement.Services.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -43,6 +45,8 @@ namespace CaseManagement
             services.AddTransient<IAnnouncementsService, AnnouncementsService>();
             services.AddTransient<IUsersStatisticsService, UsersStatisticsService>();
             services.AddTransient<CasesTableInputToOutputModelService>();
+            services.AddTransient<IReportsService, ReportsService>();
+            services.AddTransient<UsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

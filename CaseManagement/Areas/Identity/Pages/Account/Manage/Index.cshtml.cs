@@ -31,21 +31,27 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Required]
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private void Load(ApplicationUser user)
         {
-            string userName = await _userManager.GetUserNameAsync(user);
-            string phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            string userName = user.UserName;
+            string firstName = user.FirstName;
+            string lastName = user.LastName;
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                FirstName = firstName,
+                LastName = lastName,
             };
         }
 
@@ -57,7 +63,7 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            Load(user);
             return Page();
         }
 
@@ -71,19 +77,19 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                Load(user);
                 return Page();
             }
 
-            string phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+
+            IdentityResult updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
             {
-                IdentityResult setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    string userId = await _userManager.GetUserIdAsync(user);
-                    throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
-                }
+                string userId = await _userManager.GetUserIdAsync(user);
+                throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
             }
 
             await _signInManager.RefreshSignInAsync(user);

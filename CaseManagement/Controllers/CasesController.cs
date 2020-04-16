@@ -2,11 +2,11 @@
 using CaseManagement.Services;
 using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
+using CaseManagement.Services.Users;
 using CaseManagement.ViewModels.Cases;
 using CaseManagement.ViewModels.Cases.Input;
 using CaseManagement.ViewModels.Cases.Output;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -17,17 +17,17 @@ namespace CaseManagement.Controllers
     [Authorize]
     public class CasesController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UsersService usersService;
         private readonly ICasesService casesService;
         private readonly CasesTableInputToOutputModelService casesTableInputToOutputModelService;
         private readonly IAnnouncementsService announcementsService;
 
-        public CasesController(UserManager<ApplicationUser> userManager,
+        public CasesController(UsersService usersService,
             ICasesService casesService,
             CasesTableInputToOutputModelService casesTableInputToOutputModelService,
             IAnnouncementsService announcementsService)
         {
-            this.userManager = userManager;
+            this.usersService = usersService;
             this.casesService = casesService;
             this.casesTableInputToOutputModelService = casesTableInputToOutputModelService;
             this.announcementsService = announcementsService;
@@ -80,11 +80,14 @@ namespace CaseManagement.Controllers
                 return View(inputModel);
             }
 
-            string userId = userManager.GetUserId(User);
+            string userId = usersService.GetUserId(User);
+
             int createResult = await casesService.CreateCaseAsync(inputModel, userId);
 
             if (createResult > 0)
             {
+                await usersService.UpdateUserLastActivityDateAsync(userId);
+
                 TempData["CaseCreatedSuccesffully"] = true;
 
                 return RedirectToAction("ViewUpdate", new { id = createResult });
@@ -129,11 +132,13 @@ namespace CaseManagement.Controllers
                 return View("Error", new ErrorViewModel());
             }
 
-            string userId = userManager.GetUserId(User);
+            string userId = usersService.GetUserId(User);
             int updateResult = await casesService.UpdateCaseAsync(inputModel, userId);
 
             if (updateResult > 0)
             {
+                await usersService.UpdateUserLastActivityDateAsync(userId);
+
                 TempData["CaseUpdatedSuccessfully"] = true;
             }
 

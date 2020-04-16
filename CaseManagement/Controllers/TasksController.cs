@@ -1,9 +1,9 @@
 ﻿using CaseManagement.Models;
 using CaseManagement.Services.Tasks;
+using CaseManagement.Services.Users;
 using CaseManagement.ViewModels.Tasks;
 using CaseManagement.ViewModels.Tasks.Input;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -12,12 +12,12 @@ namespace CaseManagement.Controllers
     [Authorize]
     public class TasksController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UsersService usersService;
         private readonly ITasksService tasksService;
 
-        public TasksController(UserManager<ApplicationUser> userManager, ITasksService tasksService)
+        public TasksController(UsersService usersService, ITasksService tasksService)
         {
-            this.userManager = userManager;
+            this.usersService = usersService;
             this.tasksService = tasksService;
         }
 
@@ -47,11 +47,13 @@ namespace CaseManagement.Controllers
                 return View(inputModel);
             }
 
-            string userId = userManager.GetUserId(User);
+            string userId = usersService.GetUserId(User);
             int createResult = await tasksService.CreateTaskAsync(inputModel, userId);
 
             if (createResult > 0)
             {
+                await usersService.UpdateUserLastActivityDateAsync(userId);
+
                 TempData["TaskCreatedSuccessfully"] = true;
 
                 return LocalRedirect($"/Cases/ViewUpdate/{inputModel.CaseId}#tasks-table");
@@ -75,13 +77,14 @@ namespace CaseManagement.Controllers
                 return View("Error", new ErrorViewModel());
             }
 
-            string userId = userManager.GetUserId(User);
+            string userId = usersService.GetUserId(User);
             int updateResult = await tasksService.UpdateTaskAsync(inputModel, userId);
 
             if (updateResult > 0)
             {
-                TempData["TaskUpdatedSuccessfully"] = true;
+                await usersService.UpdateUserLastActivityDateAsync(userId);
 
+                TempData["TaskUpdatedSuccessfully"] = true;
             }
 
             return LocalRedirect($"/Cases/ViewUpdate/{inputModel.CaseId}#tasks-table");

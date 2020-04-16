@@ -1,0 +1,34 @@
+﻿@model CaseManagement.ViewModels.Agents.AllAgentsOutputModel
+
+@if (this.TempData["AgentPasswordResetSuccessful"] as bool? == true)
+{
+    <div class="alert alert-dismissible alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Successful agent password reset.</strong>
+    </div>
+}
+
+<table class="table table-hover border">
+    <thead>
+        <tr class="table-active">
+
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Last activity</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var agent in Model.Agents)
+        {
+            <tr>
+                <td>@agent.FirstName @agent.LastName</td>
+                <td>@agent.Email</td>
+                <td>@agent.LastActivityDate.ToShortDateString()</td>
+                <td><a class="btn btn-dark p-1" asp-controller="Users" asp-action="ResetAgentPassword" asp-route-userId="@agent.Id">Reset pass</a></td>
+            </tr>
+        }
+
+    </tbody>
+</table>

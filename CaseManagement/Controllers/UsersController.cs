@@ -1,5 +1,5 @@
-﻿using CaseManagement.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using CaseManagement.Services.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
@@ -8,13 +8,12 @@ namespace CaseManagement.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly UserManager<ApplicationUser> userManager;
+        private readonly UsersService usersService;
         private readonly IConfiguration configuration;
 
-        public UsersController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public UsersController(UsersService usersService)
         {
-            this.userManager = userManager;
-            this.configuration = configuration;
+            this.usersService = usersService;
         }
 
         public IActionResult ForgotPassword()
@@ -25,14 +24,21 @@ namespace CaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ForgotPassword(string userEmail)
         {
-            ApplicationUser user = await userManager.FindByEmailAsync(userEmail.Trim());
-
-            await userManager.RemovePasswordAsync(user);
-            await userManager.AddPasswordAsync(user, configuration["DefaultResetPassword"]);
+            await usersService.ResetUserPasswordByEmailAsync(userEmail.Trim());
 
             TempData["PasswordResetSuccessful"] = true;
 
             return LocalRedirect("/");
+        }
+
+        [Authorize(Roles = "Lead")]
+        public async Task<IActionResult> ResetAgentPassword(string userId)
+        {
+            await usersService.ResetUserPasswordByIdAsync(userId);
+
+            TempData["AgentPasswordResetSuccessful"] = true;
+
+            return LocalRedirect("/Reports");
         }
     }
 }
