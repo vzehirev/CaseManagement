@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200422063554_AddTimezonesAndTimezoneRegions")]
+    partial class AddTimezonesAndTimezoneRegions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -317,16 +319,11 @@ namespace CaseManagement.Data.Migrations
                     b.Property<string>("Tag")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TimezoneRegionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TzIanaName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TimezoneRegionId");
 
                     b.ToTable("Timezones");
                 });
@@ -677,15 +674,6 @@ namespace CaseManagement.Data.Migrations
                     b.HasOne("CaseManagement.Models.ApplicationUser", "User")
                         .WithMany("ModifiedCases")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CaseManagement.Models.DatacentersTimes.Timezone", b =>
-                {
-                    b.HasOne("CaseManagement.Models.DatacentersTimes.TimezoneRegion", "TimezoneRegion")
-                        .WithMany("Timezones")
-                        .HasForeignKey("TimezoneRegionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

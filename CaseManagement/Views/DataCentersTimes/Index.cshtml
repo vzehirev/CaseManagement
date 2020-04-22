@@ -1,0 +1,68 @@
+﻿@model CaseManagement.ViewModels.DatacentersTimes.DatacentersTimesIndexOutputModel
+
+<div class="col-md-8 justify-content-center m-auto">
+
+    @foreach (var region in Model.TimezoneRegions)
+    {
+        <h4 class="text-center mt-4">@region.Name</h4>
+        <table class="table table-hover border">
+            <thead>
+                <tr class="table-active">
+                    <th scope="col">Name</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">24-hr time</th>
+                    <th scope="col">12-hr time</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var timezone in region.Timezones)
+                {
+                    <tr>
+                        <td>@timezone.Name</td>
+                        <td>@timezone.Tag</td>
+                        <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="date"></td>
+                        <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="24hr"></td>
+                        <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="12hr"></td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    }
+</div>
+
+<script>
+    let elements = document.getElementsByClassName("setByJs");
+
+    let dateOptions = {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+    };
+
+    setInterval(updateTableTimes, 1000);
+
+    function updateTableTimes() {
+        let currentTime = new Date();
+
+        for (element of elements) {
+            let tzIanaName = element.getAttribute("tzIanaName");
+            let format = element.getAttribute("format");
+            dateOptions.timeZone = tzIanaName;
+
+            switch (format) {
+                case "date":
+                    element.innerText = currentTime.toLocaleDateString("en-US", dateOptions);
+                    break;
+                case "12hr":
+                    element.innerText = currentTime.toLocaleTimeString("en-US", { timeZone: tzIanaName });
+                    break;
+                case "24hr":
+                    element.innerText = currentTime.toLocaleTimeString("en-GB", { timeZone: tzIanaName });
+                    break;
+            }
+        }
+    }
+</script>

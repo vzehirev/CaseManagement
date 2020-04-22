@@ -1,5 +1,6 @@
 ﻿using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
+using CaseManagement.Models.DatacentersTimes;
 using CaseManagement.Models.TaskModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -41,5 +42,9 @@ namespace CaseManagement.Data
         public DbSet<TaskModificationLogRecord> TaskModificationLogRecords { get; set; }
 
         public DbSet<Announcement> Announcements { get; set; }
+
+        public DbSet<TimezoneRegion> TimezoneRegions { get; set; }
+
+        public DbSet<Timezone> Timezones { get; set; }
     }
 }
