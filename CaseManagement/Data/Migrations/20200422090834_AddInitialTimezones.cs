@@ -18,7 +18,7 @@ namespace CaseManagement.Data.Migrations
                             ('Chandler', 'CHA', 'America/Phoenix', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
                             ('Colorado Springs', 'COS', 'America/Denver', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
                             ('Newtown Square', 'NSQ', 'America/New_York', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
-                            ('Santa Clara', 'SCL', 'America/Havana', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
+                            ('Santa Clara', 'SCL', 'America/Los_Angeles', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
                             ('Sao Paulo', 'SAO', 'America/Sao_Paulo', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
                             ('Sterling', 'STE', 'America/New_York', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),
                             ('Toronto', 'TOR', 'America/Toronto', (SELECT Id FROM TimezoneRegions WHERE Name = 'AMER')),

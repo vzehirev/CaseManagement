@@ -1,68 +1,161 @@
 ﻿@model CaseManagement.ViewModels.DatacentersTimes.DatacentersTimesIndexOutputModel
 
-<div class="col-md-8 justify-content-center m-auto">
-
+<div class="row col-md-12 mx-auto">
     @foreach (var region in Model.TimezoneRegions)
     {
-        <h4 class="text-center mt-4">@region.Name</h4>
-        <table class="table table-hover border">
-            <thead>
-                <tr class="table-active">
-                    <th scope="col">Name</th>
-                    <th scope="col">Tag</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">24-hr time</th>
-                    <th scope="col">12-hr time</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach (var timezone in region.Timezones)
-                {
-                    <tr>
-                        <td>@timezone.Name</td>
-                        <td>@timezone.Tag</td>
-                        <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="date"></td>
-                        <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="24hr"></td>
-                        <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="12hr"></td>
+        <div class="col-md-8">
+            <h4 class="text-center mt-4">@region.Name</h4>
+            <table class="table table-hover border">
+                <thead>
+                    <tr class="table-active">
+                        <th scope="col">Name</th>
+                        <th scope="col">Tag</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">24-hr time</th>
+                        <th scope="col">12-hr time</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
 
-            </tbody>
-        </table>
+                    @foreach (var timezone in region.Timezones)
+                    {
+                        <tr>
+                            <td>@timezone.Name</td>
+                            <td>@timezone.Tag</td>
+                            <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="date"></td>
+                            <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="24hr"></td>
+                            <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="12hr"></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
     }
+    <div class="col-md-3 position-absolute mt-4 p-0 text-center" style="right:3rem;">
+        <div class="form-group">
+            <label>Vendor</label>
+            <select id="vendorsSelect" class="custom-select">
+                @foreach (var vendor in Model.VendorsWithRegions.Vendors)
+                {
+                    <option>@vendor.Name</option>
+                }
+                <option selected>Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Region</label>
+            <select id="regionsSelect" class="custom-select">
+                @foreach (var vendor in Model.VendorsWithRegions.Vendors)
+                {
+                    foreach (var region in vendor.Regions)
+                    {
+                        <option vendorName="@vendor.Name" value="@region.UtcOffset">@region.FullName</option>
+                    }
+                }
+                <option value="0">UTC (0)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Time</label>
+            <input id="timeValue" type="text" class="form-control">
+        </div>
+        <div class="form-group">
+            <button id="ccBtn" type="button" class="btn btn-info">Convert & Copy</button>
+        </div>
+        <div class="form-group">
+            <input id="convertedTimeValue" class="form-control" type="text" value="">
+        </div>
+    </div>
 </div>
 
-<script>
-    let elements = document.getElementsByClassName("setByJs");
+@section Scripts{
+    <script>
+        let elements = document.getElementsByClassName("setByJs");
 
-    let dateOptions = {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-    };
+        let dateOptions = {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+        };
 
-    setInterval(updateTableTimes, 1000);
+        setInterval(updateTableTimes, 1000);
 
-    function updateTableTimes() {
-        let currentTime = new Date();
+        function updateTableTimes() {
+            let currentTime = new Date();
 
-        for (element of elements) {
-            let tzIanaName = element.getAttribute("tzIanaName");
-            let format = element.getAttribute("format");
-            dateOptions.timeZone = tzIanaName;
+            for (element of elements) {
+                let tzIanaName = element.getAttribute("tzIanaName");
+                let format = element.getAttribute("format");
+                dateOptions.timeZone = tzIanaName;
 
-            switch (format) {
-                case "date":
-                    element.innerText = currentTime.toLocaleDateString("en-US", dateOptions);
-                    break;
-                case "12hr":
-                    element.innerText = currentTime.toLocaleTimeString("en-US", { timeZone: tzIanaName });
-                    break;
-                case "24hr":
-                    element.innerText = currentTime.toLocaleTimeString("en-GB", { timeZone: tzIanaName });
-                    break;
+                switch (format) {
+                    case "date":
+                        element.innerText = currentTime.toLocaleDateString("en-US", dateOptions);
+                        break;
+                    case "12hr":
+                        element.innerText = currentTime.toLocaleTimeString("en-US", { timeZone: tzIanaName });
+                        break;
+                    case "24hr":
+                        element.innerText = currentTime.toLocaleTimeString("en-GB", { timeZone: tzIanaName });
+                        break;
+                }
             }
         }
-    }
-</script>
+    </script>
+
+    <script>
+        $(document).ready(updateVendorsAndRegionsSelectOptions);
+        $("#vendorsSelect").change(updateVendorsAndRegionsSelectOptions);
+
+        function updateVendorsAndRegionsSelectOptions() {
+            let selectedVendor = $("#vendorsSelect").val();
+            let regionsSelect = $("#regionsSelect");
+            regionsSelect.children().each((k, v) => {
+                let displayValueToSet = v.getAttribute("vendorName") == selectedVendor ? "" : "none";
+                v.removeAttribute("selected");
+                v.style.display = displayValueToSet;
+            }).last().show().attr("selected", "");
+        }
+    </script>
+
+    <script>
+        $("#ccBtn").click(convert);
+
+        function convert() {
+            let timeValue = $("#timeValue").val();
+            let utcOffset = Number($("#regionsSelect").val());
+            let dateTimeMs = new Date(timeValue).setSeconds(-(utcOffset * 3600));
+            let dateTime = new Date(dateTimeMs);
+
+            let currentTime = new Date();
+            let currentTimeOffsetInSeconds = currentTime.getTimezoneOffset() * 60;
+            currentTime.setSeconds(currentTimeOffsetInSeconds);
+
+            if (dateTime > currentTime) {
+                dateTime = currentTime;
+            }
+
+            let mon = dateTime.getMonth() + 1;
+            mon = mon < 10 ? `0${mon}` : mon.toString();
+
+            let d = dateTime.getDate();
+            d = d < 10 ? `0${d}` : d.toString();
+
+            let y = dateTime.getFullYear();
+
+            let h = dateTime.getHours();
+            h = h < 10 ? `0${h}` : h.toString();
+
+            let min = dateTime.getMinutes();
+            min = min < 10 ? `0${min}` : min.toString();
+
+            // Target format: #RTPU | mm.dd.yyyy | hh:mm UTC
+
+            $("#convertedTimeValue").val(`#RTPU | ${mon}.${d}.${y} | ${h}:${min} UTC`);
+
+            $("#convertedTimeValue").select();
+            document.execCommand("copy");
+        }
+    </script>
+}

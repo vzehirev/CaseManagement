@@ -1,4 +1,5 @@
-﻿using CaseManagement.ViewModels.TimezoneRegions;
+﻿using CaseManagement.ViewModels.DateTimeConverter;
+using CaseManagement.ViewModels.TimezoneRegions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,7 @@ namespace CaseManagement.ViewModels.DatacentersTimes
     public class DatacentersTimesIndexOutputModel
     {
         public IEnumerable<TimezoneRegionOutputModel> TimezoneRegions { get; set; }
+
+        public VendorsWithRegionsOutputModel VendorsWithRegions { get; set; }
     }
 }
