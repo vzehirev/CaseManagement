@@ -91,5 +91,9 @@ body {
 }
 
 .table th, .table td {
-    padding: 1rem;
+    padding: 0.5rem;
+}
+
+.padding01rem {
+    padding: 0.1rem !important;
 }

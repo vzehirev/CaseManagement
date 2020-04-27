@@ -23,5 +23,10 @@ namespace CaseManagement.Controllers
 
             return View(outputModel);
         }
+
+        public async Task<IActionResult> AgentsActivities()
+        {
+            return View();
+        }
     }
 }

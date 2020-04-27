@@ -4,15 +4,15 @@
     @foreach (var region in Model.TimezoneRegions)
     {
         <div class="col-md-8">
-            <h4 class="text-center mt-4">@region.Name</h4>
+            <h5 class="text-center mt-2">@region.Name</h5>
             <table class="table table-hover border">
                 <thead>
                     <tr class="table-active">
-                        <th scope="col">Name</th>
-                        <th scope="col">Tag</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">24-hr time</th>
-                        <th scope="col">12-hr time</th>
+                        <th class="padding01rem" scope="col">Name</th>
+                        <th class="padding01rem" scope="col">Tag</th>
+                        <th class="padding01rem" scope="col">Date</th>
+                        <th class="padding01rem" scope="col">24-hr time</th>
+                        <th class="padding01rem" scope="col">12-hr time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,11 +20,11 @@
                     @foreach (var timezone in region.Timezones)
                     {
                         <tr>
-                            <td>@timezone.Name</td>
-                            <td>@timezone.Tag</td>
-                            <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="date"></td>
-                            <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="24hr"></td>
-                            <td class="setByJs" tzIanaName="@timezone.TzIanaName" format="12hr"></td>
+                            <td class="padding01rem">@timezone.Name</td>
+                            <td class="padding01rem">@timezone.Tag</td>
+                            <td class="padding01rem setByJs" tzIanaName="@timezone.TzIanaName" format="date"></td>
+                            <td class="padding01rem setByJs" tzIanaName="@timezone.TzIanaName" format="24hr"></td>
+                            <td class="padding01rem setByJs" tzIanaName="@timezone.TzIanaName" format="12hr"></td>
                         </tr>
                     }
 
