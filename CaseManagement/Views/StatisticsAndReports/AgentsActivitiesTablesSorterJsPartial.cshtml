@@ -1,0 +1,42 @@
+﻿<script>
+    let sortAsc = true;
+
+    $("th").on("click", function (e) {
+        sortTable(e.currentTarget, sortAsc)
+        sortAsc = !sortAsc;
+    });
+
+
+    let lastOrderedBy;
+    let orderedAscArrow = '<img class="order-by-icon pl-1" src="/img/arrow-up.png">';
+    let orderedDescArrow = '<img class="order-by-icon pl-1" src="/img/arrow-down.png">';
+
+    function sortTable(currentTarget, sortAsc) {
+        let tBody = $(currentTarget).parents("table").children("tbody").first();
+        let trs = tBody.children("tr");
+        let elIndexToSortBy = $(currentTarget).index();
+
+        trs.sort((x, y) => {
+            let el1 = $(x).children().eq(elIndexToSortBy).text();
+            let el2 = $(y).children().eq(elIndexToSortBy).text();
+
+            if (!isNaN(el1) && !isNaN(el2)) {
+                return sortAsc === true ? (Number(el1) - Number(el2)) : (Number(el2) - Number(el1));
+            } else {
+                return sortAsc === true ? el1.localeCompare(el2) : el2.localeCompare(el1);
+            }
+        }).appendTo(tBody);
+
+        manageOrderByIconAndUnderline(currentTarget);
+    }
+
+    function manageOrderByIconAndUnderline(currentTarget) {
+        $(lastOrderedBy).html($(lastOrderedBy).text());
+        $(lastOrderedBy).addClass("underlined");
+
+        let orderedByHtml = sortAsc === true ? $(currentTarget).text() + orderedAscArrow : $(currentTarget).text() + orderedDescArrow;
+        $(currentTarget).html(orderedByHtml);
+        $(currentTarget).removeClass("underlined");
+        lastOrderedBy = currentTarget;
+    }
+</script>

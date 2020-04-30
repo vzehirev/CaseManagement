@@ -66,7 +66,7 @@ body {
 }
 
 .order-by-icon {
-    max-height: 1.3rem;
+    max-height: 1.1rem;
 }
 
 .marquee3k {
@@ -97,3 +97,15 @@ body {
 .padding01rem {
     padding: 0.1rem !important;
 }
+
+.pointerOnHover {
+    cursor: pointer;
+}
+
+.underlined {
+    text-decoration: underline;
+}
+
+    .underlined:hover {
+        text-decoration: none;
+    }

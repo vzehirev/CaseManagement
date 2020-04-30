@@ -49,13 +49,13 @@
     <table class="table table-hover border">
         <thead>
             <tr class="table-active">
-                <th scope="col">Name</th>
-                <th scope="col">E-mail</th>
-                <th scope="col">Created cases</th>
-                <th scope="col">Updated cases</th>
-                <th scope="col">Open cases</th>
-                <th scope="col">Closed cases</th>
-                <th scope="col">Other cases status</th>
+                <th scope="col" class="pointerOnHover underlined">Name</th>
+                <th scope="col" class="pointerOnHover underlined">E-mail</th>
+                <th scope="col" class="pointerOnHover underlined">Created cases</th>
+                <th scope="col" class="pointerOnHover underlined">Updated cases</th>
+                <th scope="col" class="pointerOnHover underlined">Open cases</th>
+                <th scope="col" class="pointerOnHover underlined">Closed cases</th>
+                <th scope="col" class="pointerOnHover underlined">Other cases status</th>
             </tr>
         </thead>
         <tbody>
@@ -80,13 +80,13 @@
     <table class="table table-hover border">
         <thead>
             <tr class="table-active">
-                <th scope="col">Name</th>
-                <th scope="col">E-mail</th>
-                <th scope="col">Created tasks</th>
-                <th scope="col">Updated tasks</th>
-                <th scope="col">Open tasks</th>
-                <th scope="col">Closed tasks</th>
-                <th scope="col">Other tasks status</th>
+                <th scope="col" class="pointerOnHover underlined">Name</th>
+                <th scope="col" class="pointerOnHover underlined">E-mail</th>
+                <th scope="col" class="pointerOnHover underlined">Created tasks</th>
+                <th scope="col" class="pointerOnHover underlined">Updated tasks</th>
+                <th scope="col" class="pointerOnHover underlined">Open tasks</th>
+                <th scope="col" class="pointerOnHover underlined">Closed tasks</th>
+                <th scope="col" class="pointerOnHover underlined">Other tasks status</th>
             </tr>
         </thead>
         <tbody>
@@ -105,3 +105,8 @@
         </tbody>
     </table>
 </div>
+
+@section Scripts
+{
+    <partial name="AgentsActivitiesTablesSorterJsPartial" />
+}
