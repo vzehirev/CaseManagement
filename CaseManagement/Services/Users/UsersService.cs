@@ -1,52 +1,82 @@
-﻿using CaseManagement.Models;
+﻿using CaseManagement.Data;
+using CaseManagement.Models;
+using CaseManagement.ViewModels.Agents;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CaseManagement.Services.Users
 {
-    public class UsersService : UserManager<ApplicationUser>
+    public class UsersService : IUsersService
     {
+        private readonly ApplicationDbContext dbContext;
         private readonly IConfiguration configuration;
 
-        public UsersService(IUserStore<ApplicationUser> store,
-            IOptions<IdentityOptions> optionsAccessor,
-            IPasswordHasher<ApplicationUser> passwordHasher,
-            IEnumerable<IUserValidator<ApplicationUser>> userValidators,
-            IEnumerable<IPasswordValidator<ApplicationUser>> passwordValidators,
-            ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors,
-            IServiceProvider services,
-            ILogger<UserManager<ApplicationUser>> logger,
+        public UserManager<ApplicationUser> UserManager { get; }
+
+        public UsersService(ApplicationDbContext dbContext,
+            UserManager<ApplicationUser> userManager,
             IConfiguration configuration)
-            : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
             this.configuration = configuration;
+            this.dbContext = dbContext;
+            this.UserManager = userManager;
         }
 
-        public async Task ResetUserPasswordByIdAsync(string userId)
+        public async Task<bool> ResetUserPasswordByIdAsync(string userId)
         {
-            ApplicationUser user = await FindByIdAsync(userId);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(userId);
 
-            await RemovePasswordAsync(user);
-            await AddPasswordAsync(user, configuration["DefaultResetPassword"]);
+            var removePassResult = await this.UserManager.RemovePasswordAsync(user);
+            var setPassResult = await this.UserManager.AddPasswordAsync(user, configuration["DefaultResetPassword"]);
+
+            return removePassResult.Succeeded && setPassResult.Succeeded;
         }
 
-        public async Task ResetUserPasswordByEmailAsync(string userEmail)
+        public async Task<bool> ResetUserPasswordByEmailAsync(string userEmail)
         {
-            ApplicationUser user = await FindByEmailAsync(userEmail.Trim());
+            ApplicationUser user = await this.UserManager.FindByEmailAsync(userEmail.Trim());
 
-            await ResetUserPasswordByIdAsync(user.Id);
+            var result = await ResetUserPasswordByIdAsync(user.Id);
+
+            return result;
         }
 
-        public async Task UpdateUserLastActivityDateAsync(string userId)
+        public async Task<bool> UpdateUserLastActivityDateAsync(string userId)
         {
-            ApplicationUser user = await FindByIdAsync(userId);
+            ApplicationUser user = await this.UserManager.FindByIdAsync(userId);
             user.LastActivity = DateTime.UtcNow;
-            await UpdateAsync(user);
+            var result = await this.UserManager.UpdateAsync(user);
+
+            return result.Succeeded;
+        }
+
+        public async Task<IEnumerable<ReportsRegisteredAgentsAgentViewModel>> GetAllAgentsLastActivityAsync()
+        {
+            return await this.dbContext.Users
+                .Select(u => new ReportsRegisteredAgentsAgentViewModel
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FullName = string.Join(' ', u.FirstName, u.LastName),
+                    LastActivityDate = u.LastActivity,
+                })
+                .ToArrayAsync();
+        }
+
+        public async Task<IEnumerable<ReportsAgentsActivitiesAgentViewModel>> GetAllAgentsIdAndFullNameAsync()
+        {
+            return await this.dbContext.Users
+                .Select(u => new ReportsAgentsActivitiesAgentViewModel
+                {
+                    Id = u.Id,
+                    FullName = string.Join(' ', u.FirstName, u.LastName),
+                })
+                .ToArrayAsync();
         }
     }
 }

@@ -17,12 +17,12 @@ namespace CaseManagement.Controllers
     [Authorize]
     public class CasesController : Controller
     {
-        private readonly UsersService usersService;
+        private readonly IUsersService usersService;
         private readonly ICasesService casesService;
         private readonly CasesTableInputToOutputModelService casesTableInputToOutputModelService;
         private readonly IAnnouncementsService announcementsService;
 
-        public CasesController(UsersService usersService,
+        public CasesController(IUsersService usersService,
             ICasesService casesService,
             CasesTableInputToOutputModelService casesTableInputToOutputModelService,
             IAnnouncementsService announcementsService)
@@ -80,7 +80,7 @@ namespace CaseManagement.Controllers
                 return View(inputModel);
             }
 
-            string userId = usersService.GetUserId(User);
+            string userId = usersService.UserManager.GetUserId(User);
 
             int createResult = await casesService.CreateCaseAsync(inputModel, userId);
 
@@ -132,7 +132,7 @@ namespace CaseManagement.Controllers
                 return View("Error", new ErrorViewModel());
             }
 
-            string userId = usersService.GetUserId(User);
+            string userId = usersService.UserManager.GetUserId(User);
             int updateResult = await casesService.UpdateCaseAsync(inputModel, userId);
 
             if (updateResult > 0)

@@ -1,5 +1,7 @@
-﻿using CaseManagement.Models;
-using CaseManagement.Services.Statistics;
+﻿using CaseManagement.Enums;
+using CaseManagement.Helpers;
+using CaseManagement.Models;
+using CaseManagement.Services.StatisticsAndReports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +15,22 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
     public partial class MyStatisticsModel : PageModel
     {
         private readonly UserManager<ApplicationUser> userManager;
-        private readonly IUsersStatisticsService usersStatisticsService;
+        private readonly IAgentsStatisticsAndReportsService agentsStatisticsAndReportsService;
 
-        public MyStatisticsModel(UserManager<ApplicationUser> userManager, IUsersStatisticsService usersStatisticsService)
+        public MyStatisticsModel(UserManager<ApplicationUser> userManager,
+            IAgentsStatisticsAndReportsService agentsStatisticsAndReportsService)
         {
             this.userManager = userManager;
-            this.usersStatisticsService = usersStatisticsService;
+            this.agentsStatisticsAndReportsService = agentsStatisticsAndReportsService;
         }
 
-        public string TimeFrameOutput { get; set; }
 
-        public MyStatisticsOutputModel OutputModel { get; set; }
+        public MyStatisticsViewModel OutputModel { get; set; }
 
-        public class MyStatisticsOutputModel
+        public class MyStatisticsViewModel
         {
+            public TimeFrameEnum TimeFrameOutput { get; set; }
+
             public int CreatedCasesLowPriority { get; set; }
 
             public int CreatedCasesNormalPriority { get; set; }
@@ -85,38 +89,15 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
                 + ClosedCasesNaPriority;
         }
 
-        public async Task<IActionResult> OnGetAsync(string timeFrameInput)
+        public async Task<IActionResult> OnGetAsync(TimeFrameEnum timeFrame)
         {
-            TimeFrameOutput = timeFrameInput;
-
-            string[] possibleFilters = new string[]
-            {
-                "today",
-                "week",
-                "month",
-            };
-
-            if (!possibleFilters.Contains(TimeFrameOutput))
-            {
-                TimeFrameOutput = "today";
-            }
-
             string userId = userManager.GetUserId(User);
 
-            switch (TimeFrameOutput)
-            {
-                case "today":
-                    OutputModel = await usersStatisticsService.GetUserStatisticsForTodayAsync(userId);
-                    break;
+            var fromDate = CalculateFromAndToDatesByTimeFrameEnum.CalculateFromDate(timeFrame);
+            var toDate = CalculateFromAndToDatesByTimeFrameEnum.CalculateToDate(timeFrame);
 
-                case "week":
-                    OutputModel = await usersStatisticsService.GetUserStatisticsForThisWeekAsync(userId);
-                    break;
-
-                case "month":
-                    OutputModel = await usersStatisticsService.GetUserStatisticsForThisMonthAsync(userId);
-                    break;
-            }
+            OutputModel = await agentsStatisticsAndReportsService.GetAgentsStatisticsAsync(userId, fromDate, toDate);
+            OutputModel.TimeFrameOutput = timeFrame;
 
             return Page();
         }

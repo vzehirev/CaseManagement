@@ -12,10 +12,10 @@ namespace CaseManagement.Controllers
     [Authorize]
     public class TasksController : Controller
     {
-        private readonly UsersService usersService;
+        private readonly IUsersService usersService;
         private readonly ITasksService tasksService;
 
-        public TasksController(UsersService usersService, ITasksService tasksService)
+        public TasksController(IUsersService usersService, ITasksService tasksService)
         {
             this.usersService = usersService;
             this.tasksService = tasksService;
@@ -47,7 +47,7 @@ namespace CaseManagement.Controllers
                 return View(inputModel);
             }
 
-            string userId = usersService.GetUserId(User);
+            string userId = usersService.UserManager.GetUserId(User);
             int createResult = await tasksService.CreateTaskAsync(inputModel, userId);
 
             if (createResult > 0)
@@ -77,7 +77,7 @@ namespace CaseManagement.Controllers
                 return View("Error", new ErrorViewModel());
             }
 
-            string userId = usersService.GetUserId(User);
+            string userId = usersService.UserManager.GetUserId(User);
             int updateResult = await tasksService.UpdateTaskAsync(inputModel, userId);
 
             if (updateResult > 0)

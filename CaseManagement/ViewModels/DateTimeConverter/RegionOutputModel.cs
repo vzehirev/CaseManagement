@@ -20,10 +20,6 @@ namespace CaseManagement.ViewModels.DateTimeConverter
                 {
                     return $"{Name} (UTC +{UtcOffset})";
                 }
-                else if (UtcOffset < 0)
-                {
-                    return $"{Name} (UTC -{UtcOffset})";
-                }
                 else
                 {
                     return $"{Name} (UTC {UtcOffset})";

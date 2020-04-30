@@ -8,10 +8,10 @@
 <h4>@ViewData["Title"]</h4>
 
 <div class="form-group col-md-2 px-0">
-    <select asp-for="@Model.TimeFrameOutput" id="timeFrameSelect" class="custom-select">
-        <option value="today">Today</option>
-        <option value="week">This week </option>
-        <option value="month">This month </option>
+    <select asp-for="@Model.OutputModel.TimeFrameOutput" id="timeFrameSelect" class="custom-select">
+        <option value="@CaseManagement.Enums.TimeFrameEnum.Today">Today</option>
+        <option value="@CaseManagement.Enums.TimeFrameEnum.ThisWeek">This week </option>
+        <option value="@CaseManagement.Enums.TimeFrameEnum.ThisMonth">This month </option>
     </select>
 </div>
 
@@ -89,7 +89,7 @@
 
         function filterDataByTimeFrame() {
             let timeFrameValue = $("#timeFrameSelect").val();
-            window.location.href = `?timeFrameInput=${timeFrameValue}`;
+            window.location.href = `?timeFrame=${timeFrameValue}`;
         }
     </script>
 }

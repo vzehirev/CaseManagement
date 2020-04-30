@@ -18,7 +18,7 @@ namespace CaseManagement.Data.Migrations
             var regionsQuery = @"INSERT INTO Regions (Name, UtcOffset, VendorId) VALUES
                             ('EMEA', 2, (SELECT Id FROM Vendors WHERE Name = 'Fujitsu')),
                             ('APJ', 11, (SELECT Id FROM Vendors WHERE Name = 'Fujitsu')),
-                            ('AMER', 4, (SELECT Id FROM Vendors WHERE Name = 'Fujitsu'));";
+                            ('AMER', -4, (SELECT Id FROM Vendors WHERE Name = 'Fujitsu'));";
 
             migrationBuilder.Sql(regionsQuery);
         }
@@ -27,7 +27,7 @@ namespace CaseManagement.Data.Migrations
         {
             var regionsQuery = @"DELETE FROM Regions WHERE Name = 'EMEA' AND UtcOffset = 2;
                                  DELETE FROM Regions WHERE Name = 'APJ' AND UtcOffset = 11;
-                                 DELETE FROM Regions WHERE Name = 'AMER' AND UtcOffset = 4;";
+                                 DELETE FROM Regions WHERE Name = 'AMER' AND UtcOffset = -4;";
 
             migrationBuilder.Sql(regionsQuery);
 

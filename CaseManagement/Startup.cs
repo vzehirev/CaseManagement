@@ -5,8 +5,7 @@ using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
 using CaseManagement.Services.DatacentersTimesService;
 using CaseManagement.Services.DateTimeConverter;
-using CaseManagement.Services.Reports;
-using CaseManagement.Services.Statistics;
+using CaseManagement.Services.StatisticsAndReports;
 using CaseManagement.Services.Tasks;
 using CaseManagement.Services.Users;
 using Microsoft.AspNetCore.Builder;
@@ -46,12 +45,11 @@ namespace CaseManagement
             services.AddTransient<ICasesService, CasesService>();
             services.AddTransient<ITasksService, TasksService>();
             services.AddTransient<IAnnouncementsService, AnnouncementsService>();
-            services.AddTransient<IUsersStatisticsService, UsersStatisticsService>();
+            services.AddTransient<IAgentsStatisticsAndReportsService, AgentsStatisticsAndReportsService>();
             services.AddTransient<CasesTableInputToOutputModelService>();
-            services.AddTransient<IReportsService, ReportsService>();
-            services.AddTransient<UsersService>();
             services.AddTransient<IDatacentersTimesService, DatacentersTimesService>();
             services.AddTransient<IDateTimeConverterService, DateTimeConverterService>();
+            services.AddTransient<IUsersService, UsersService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

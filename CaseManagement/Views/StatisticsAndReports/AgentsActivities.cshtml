@@ -1,0 +1,107 @@
+﻿@model CaseManagement.ViewModels.Reports.AgentsActivitiesViewModel
+
+@{
+    ViewData["Title"] = "Agents' Activities";
+}
+
+<div class="row">
+    <div class="badge badge-pill badge-primary mx-1">
+        <a class="text-light nav-link p-1" asp-controller="StatisticsAndReports" asp-action="AgentsActivities" asp-route-TimeFrame="@CaseManagement.Enums.TimeFrameEnum.LastMonth">Last month</a>
+    </div>
+    <div class="badge badge-pill badge-primary mx-1">
+        <a class="text-light nav-link p-1" asp-controller="StatisticsAndReports" asp-action="AgentsActivities" asp-route-TimeFrame="@CaseManagement.Enums.TimeFrameEnum.ThisMonth">This month</a>
+    </div>
+    <div class="badge badge-pill badge-primary mx-1">
+        <a class="text-light nav-link p-1" asp-controller="StatisticsAndReports" asp-action="AgentsActivities" asp-route-TimeFrame="@CaseManagement.Enums.TimeFrameEnum.LastWeek">Last week</a>
+    </div>
+    <div class="badge badge-pill badge-primary mx-1">
+        <a class="text-light nav-link p-1" asp-controller="StatisticsAndReports" asp-action="AgentsActivities" asp-route-TimeFrame="@CaseManagement.Enums.TimeFrameEnum.ThisWeek">This week</a>
+    </div>
+    <div class="badge badge-pill badge-primary mx-1">
+        <a class="text-light nav-link p-1" asp-controller="StatisticsAndReports" asp-action="AgentsActivities" asp-route-TimeFrame="@CaseManagement.Enums.TimeFrameEnum.Yesterday">Yesterday</a>
+    </div>
+    <div class="badge badge-pill badge-primary mx-1">
+        <a class="text-light nav-link p-1" asp-controller="StatisticsAndReports" asp-action="AgentsActivities" asp-route-TimeFrame="@CaseManagement.Enums.TimeFrameEnum.Today">Today</a>
+    </div>
+</div>
+
+<form>
+    <div class="row mt-3 form-inline">
+        <div class="mr-3">From: <input asp-for="@Model.FromDate" class="form-control" type="date" /></div>
+        <div>To: <input asp-for="@Model.ToDate" class="form-control" type="date" /></div>
+    </div>
+
+    <div class="row my-3 form-inline">
+        Agent:&nbsp;
+        <select asp-for="@Model.UserId" class="form-control">
+            <option value="@null">All</option>
+            @foreach (var agent in Model.AllAgents)
+            {
+                <option value="@agent.Id">@agent.FullName</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-primary ml-5 px-3 py-2">OK</button>
+    </div>
+</form>
+
+<div class="row mr-1">
+    <h5>Cases</h5>
+    <table class="table table-hover border">
+        <thead>
+            <tr class="table-active">
+                <th scope="col">Name</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Created cases</th>
+                <th scope="col">Updated cases</th>
+                <th scope="col">Open cases</th>
+                <th scope="col">Closed cases</th>
+                <th scope="col">Other cases status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var agent in Model.SelectedAgents)
+            {
+                <tr>
+                    <td>@agent.FullName</td>
+                    <td>@agent.Email</td>
+                    <td>@agent.CreatedCases</td>
+                    <td>@agent.UpdatedCases</td>
+                    <td>@agent.OpenCases</td>
+                    <td>@agent.ClosedCases</td>
+                    <td>@agent.OtherCasesStatus</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="row mr-1">
+    <h5>Tasks</h5>
+    <table class="table table-hover border">
+        <thead>
+            <tr class="table-active">
+                <th scope="col">Name</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Created tasks</th>
+                <th scope="col">Updated tasks</th>
+                <th scope="col">Open tasks</th>
+                <th scope="col">Closed tasks</th>
+                <th scope="col">Other tasks status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var agent in Model.SelectedAgents)
+            {
+                <tr>
+                    <td>@agent.FullName</td>
+                    <td>@agent.Email</td>
+                    <td>@agent.CreatedTasks</td>
+                    <td>@agent.UpdatedTasks</td>
+                    <td>@agent.OpenTasks</td>
+                    <td>@agent.ClosedTasks</td>
+                    <td>@agent.OtherTasksStatus</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
