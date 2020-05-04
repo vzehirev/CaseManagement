@@ -1,8 +1,9 @@
 ﻿using CaseManagement.Models;
 using CaseManagement.Models.CaseModels;
-using CaseManagement.Models.DatacentersTimes;
+using CaseManagement.Models.Datacenters;
 using CaseManagement.Models.DateTimeConverter;
 using CaseManagement.Models.TaskModels;
+using CaseManagement.Models.TimeZoneRegions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,6 @@ namespace CaseManagement.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-
         }
 
         public DbSet<Case> Cases { get; set; }
@@ -44,9 +44,9 @@ namespace CaseManagement.Data
 
         public DbSet<Announcement> Announcements { get; set; }
 
-        public DbSet<TimezoneRegion> TimezoneRegions { get; set; }
+        public DbSet<TimeZoneRegion> TimeZoneRegions { get; set; }
 
-        public DbSet<Timezone> Timezones { get; set; }
+        public DbSet<Datacenter> Datacenters { get; set; }
 
         public DbSet<Vendor> Vendors { get; set; }
 

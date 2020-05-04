@@ -4,14 +4,16 @@ using CaseManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CaseManagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200504115416_RenameTimezonePropertiesToTimeZone")]
+    partial class RenameTimezonePropertiesToTimeZone
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -310,21 +312,9 @@ namespace CaseManagement.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClosingAtDay")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("ClosingAtTime")
-                        .HasColumnType("time");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OpeningAtDay")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("OpeningAtTime")
-                        .HasColumnType("time");
 
                     b.Property<string>("Tag")
                         .HasColumnType("nvarchar(max)");
@@ -340,7 +330,7 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasIndex("TimeZoneRegionId");
 
-                    b.ToTable("Datacenters");
+                    b.ToTable("Timezones");
                 });
 
             modelBuilder.Entity("CaseManagement.Models.DateTimeConverter.Region", b =>
@@ -536,7 +526,7 @@ namespace CaseManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TimeZoneRegions");
+                    b.ToTable("TimezoneRegions");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

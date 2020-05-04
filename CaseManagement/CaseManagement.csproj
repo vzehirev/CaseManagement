@@ -12,6 +12,18 @@
     <Compile Remove="Data\Migrations\20200307184448_InitialDatabaseModelsCreation.Designer.cs" />
     <Compile Remove="Data\Migrations\20200320204323_MigrationBeforePublishing.cs" />
     <Compile Remove="Data\Migrations\20200320204323_MigrationBeforePublishing.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504112341_ChangeTimeZonesToDatacenters.cs" />
+    <Compile Remove="Data\Migrations\20200504112341_ChangeTimeZonesToDatacenters.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504112525_ChangeTimeZonesToDatacenters.cs" />
+    <Compile Remove="Data\Migrations\20200504112525_ChangeTimeZonesToDatacenters.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504115316_RenameTimeZoneRegionsTableAndTimeZonesTable.cs" />
+    <Compile Remove="Data\Migrations\20200504115316_RenameTimeZoneRegionsTableAndTimeZonesTable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504150622_ChangeOpeningAndClosingDaysDataType.cs" />
+    <Compile Remove="Data\Migrations\20200504150622_ChangeOpeningAndClosingDaysDataType.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504153101_ChangeOpeningAndClosingTimesToNullable.cs" />
+    <Compile Remove="Data\Migrations\20200504153101_ChangeOpeningAndClosingTimesToNullable.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200504155409_asfkljasffklas.cs" />
+    <Compile Remove="Data\Migrations\20200504155409_asfkljasffklas.Designer.cs" />
   </ItemGroup>
 
 

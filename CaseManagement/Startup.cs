@@ -3,10 +3,11 @@ using CaseManagement.Models;
 using CaseManagement.Services;
 using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
-using CaseManagement.Services.DatacentersTimesService;
+using CaseManagement.Services.DatacentersService;
 using CaseManagement.Services.DateTimeConverter;
 using CaseManagement.Services.StatisticsAndReports;
 using CaseManagement.Services.Tasks;
+using CaseManagement.Services.TimeZoneRegions;
 using CaseManagement.Services.Users;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 
 namespace CaseManagement
 {
@@ -47,9 +47,10 @@ namespace CaseManagement
             services.AddTransient<IAnnouncementsService, AnnouncementsService>();
             services.AddTransient<IAgentsStatisticsAndReportsService, AgentsStatisticsAndReportsService>();
             services.AddTransient<CasesTableInputToOutputModelService>();
-            services.AddTransient<IDatacentersTimesService, DatacentersTimesService>();
+            services.AddTransient<IDatacentersService, DatacentersService>();
             services.AddTransient<IDateTimeConverterService, DateTimeConverterService>();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<ITimeZoneRegionsService, TimeZoneRegionsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

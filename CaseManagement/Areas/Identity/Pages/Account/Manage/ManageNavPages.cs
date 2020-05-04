@@ -11,18 +11,19 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
 
         public static string ChangePassword => "ChangePassword";
 
-        public static string ExternalLogins => "ExternalLogins";
-
-        public static string PersonalData => "PersonalData";
-
-        public static string TwoFactorAuthentication => "TwoFactorAuthentication";
-
         public static string MyCases => "MyCases";
 
         public static string MyStatistics => "MyStatistics";
 
         public static string Announcements => "Announcements";
 
+        public static string AddDc => "AddDc";
+
+        public static string ExternalLogins => "ExternalLogins";
+
+        public static string TwoFactorAuthentication => "TwoFactorAuthentication";
+
+        public static string PersonalData => "PersonalData";
 
         public static string IndexNavClass(ViewContext viewContext)
         {
@@ -67,6 +68,11 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
         public static string AnnouncementsNavClass(ViewContext viewContext)
         {
             return PageNavClass(viewContext, Announcements);
+        }
+
+        public static string AddDcNavClass(ViewContext viewContext)
+        {
+            return PageNavClass(viewContext, AddDc);
         }
 
         private static string PageNavClass(ViewContext viewContext, string page)

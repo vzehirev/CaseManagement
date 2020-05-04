@@ -1,0 +1,72 @@
+﻿<script>
+    let elements = document.getElementsByClassName("setFromJs");
+
+    let dateOptions = {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+    };
+
+    setInterval(updateTableTimes, 1000);
+
+    function updateTableTimes() {
+        let currentTime = new Date();
+
+        for (element of elements) {
+            let tzIanaName = element.getAttribute("tzIanaName");
+            let format = element.getAttribute("format");
+            dateOptions.timeZone = tzIanaName;
+
+            switch (format) {
+                case "date":
+                    element.innerText = currentTime.toLocaleDateString("en-US", dateOptions);
+                    break;
+                case "12hr":
+                    element.innerText = currentTime.toLocaleTimeString("en-US", { timeZone: dateOptions.timeZone });
+                    break;
+                case "24hr":
+                    element.innerText = currentTime.toLocaleTimeString("en-GB", { timeZone: dateOptions.timeZone });
+                    break;
+                case "openClose":
+                    let openingAtDay = element.getAttribute("openingAtDay");
+                    let openingAtTime = element.getAttribute("openingAtTime");
+                    let closingAtDay = element.getAttribute("closingAtDay");
+                    let closingAtTime = element.getAttribute("closingAtTime");
+
+                    if (openingAtDay === null || closingAtDay === null) {
+                        break;
+                    }
+
+                    let currentDate = new Date(Date.parse(currentTime.toLocaleTimeString("en-GB", dateOptions)));
+
+                    let currentDayOfWeek = currentDate.getDay();
+
+                    let openingHour = Number(openingAtTime.split(":")[0]);
+                    let openingMinutes = Number(openingAtTime.split(":")[1]);
+                    let openingDate = new Date();
+                    openingDate.setHours(openingHour);
+                    openingDate.setMinutes(openingMinutes);
+
+                    let closingHour = Number(closingAtTime.split(":")[0]);
+                    let closingMinutes = Number(closingAtTime.split(":")[1]);
+                    let closingDate = new Date();
+                    closingDate.setHours(closingHour);
+                    closingDate.setMinutes(closingMinutes);
+
+                    let withinWorkingDays = currentDayOfWeek >= openingAtDay && currentDayOfWeek <= closingAtDay;
+                    let withinWorkingHours = currentDate >= openingDate && currentDate <= closingDate;
+
+                    if (withinWorkingDays && withinWorkingHours) {
+                        element.innerText = "OPEN";
+                        element.classList.add("text-success");
+                    } else {
+                        element.innerText = "CLOSED";
+                        element.classList.add("text-danger");
+                    }
+
+                    break;
+            }
+        }
+    }
+
+</script>

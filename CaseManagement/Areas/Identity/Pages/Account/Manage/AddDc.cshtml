@@ -1,0 +1,91 @@
+﻿@page
+@model AddDc
+@{
+    ViewData["Title"] = "Add DC";
+    ViewData["ActivePage"] = ManageNavPages.AddDc;
+}
+<div class="col-6">
+    @if (this.TempData["timeZoneRegionAdded"] as bool? == true)
+    {
+        <div class="alert alert-dismissible alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            Time zone region added successfully.
+        </div>
+    }
+    @if (this.TempData["datacenterAdded"] as bool? == true)
+    {
+        <div class="alert alert-dismissible alert-success">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            Datacenter added successfully.
+        </div>
+    }
+
+    <div class="mb-4">
+        <h5>Add time zone region</h5>
+        <form asp-area="Identity" asp-page="AddDc" asp-page-handler="AddTimeZoneRegion" method="post" class="form-inline">
+            <label>Name:&nbsp;</label>
+            <input asp-for="@Model.AddTimeZoneRegionModel.Name" class="form-control mr-4" />
+            <button type="submit" class="btn btn-success">Add time zone region</button>
+            <span asp-validation-for="@Model.AddTimeZoneRegionModel.Name" class="text-danger"></span>
+        </form>
+    </div>
+
+    <div>
+        <h5>Add datacenter</h5>
+        <form asp-area="Identity" asp-page="AddDc" asp-page-handler="AddDc" method="post">
+            <div class="my-1">
+                <label asp-for="@Model.AddDcModel.Name"></label>
+                <input asp-for="@Model.AddDcModel.Name" class="form-control" />
+                <span asp-validation-for="@Model.AddDcModel.Name" class="text-danger"></span>
+            </div>
+            <div class="my-1">
+                <label asp-for="@Model.AddDcModel.Tag"></label>
+                <input asp-for="@Model.AddDcModel.Tag" class="form-control" />
+                <span asp-validation-for="@Model.AddDcModel.Tag" class="text-danger"></span>
+            </div>
+            <div class="my-1">
+                <label asp-for="@Model.AddDcModel.TzIanaName"></label>
+                <input asp-for="@Model.AddDcModel.TzIanaName" class="form-control" />
+                <span asp-validation-for="@Model.AddDcModel.TzIanaName" class="text-danger"></span>
+            </div>
+            <div class="my-1">
+                <label></label>
+                <select asp-for="@Model.AddDcModel.TimeZoneRegionId" class="form-control">
+                    <option value="0">Select time zone region</option>
+                    @foreach (var timeZoneRegion in Model.AddDcModel.TimeZoneRegions)
+                    {
+                        <option value="@timeZoneRegion.Id">@timeZoneRegion.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="@Model.AddDcModel.TimeZoneRegionId" class="text-danger"></span>
+            </div>
+            <div class="my-3 form-inline">
+                <label>Opening at:&nbsp;</label>
+                <select asp-for="@Model.AddDcModel.OpeningAtDay" class="form-control mr-2">
+                    <option value="@null">Select day</option>
+                    @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
+                    {
+                        <option value="@((int)day)">@day</option>
+                    }
+                </select>
+                <input asp-for="@Model.AddDcModel.OpeningAtTime" type="time" min="00:00" max="23:59" class="form-control" />
+            </div>
+            <div class="my-3 form-inline">
+                <label>Closing at:&nbsp;</label>
+                <select asp-for="@Model.AddDcModel.ClosingAtDay" class="form-control mr-2">
+                    <option value="@null">Select day</option>
+                    @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
+                    {
+                        <option value="@((int)day)">@day</option>
+                    }
+                </select>
+                <input asp-for="@Model.AddDcModel.ClosingAtTime" type="time" min="00:00" max="23:59" class="form-control" />
+            </div>
+            <button type="submit" class="btn btn-success mt-2 d-block">Add DC</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

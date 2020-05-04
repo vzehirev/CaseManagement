@@ -44,66 +44,80 @@
     </div>
 </form>
 
-<div class="row mr-1">
-    <h5>Cases</h5>
-    <table class="table table-hover border">
-        <thead>
-            <tr class="table-active">
-                <th scope="col" class="pointerOnHover underlined">Name</th>
-                <th scope="col" class="pointerOnHover underlined">E-mail</th>
-                <th scope="col" class="pointerOnHover underlined">Created cases</th>
-                <th scope="col" class="pointerOnHover underlined">Updated cases</th>
-                <th scope="col" class="pointerOnHover underlined">Open cases</th>
-                <th scope="col" class="pointerOnHover underlined">Closed cases</th>
-                <th scope="col" class="pointerOnHover underlined">Other cases status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var agent in Model.SelectedAgents)
-            {
-                <tr>
-                    <td>@agent.FullName</td>
-                    <td>@agent.Email</td>
-                    <td>@agent.CreatedCases</td>
-                    <td>@agent.UpdatedCases</td>
-                    <td>@agent.OpenCases</td>
-                    <td>@agent.ClosedCases</td>
-                    <td>@agent.OtherCasesStatus</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+<ul class="nav nav-tabs row mb-4 widthInherit">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#cases">CASES</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#tasks">TASKS</a>
+    </li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade active show" id="cases">
+        <div class="row mr-1">
+            <h5>Cases</h5>
+            <table class="table table-hover border">
+                <thead>
+                    <tr class="table-active">
+                        <th scope="col" class="pointerOnHover underlined">Name</th>
+                        <th scope="col" class="pointerOnHover underlined">E-mail</th>
+                        <th scope="col" class="pointerOnHover underlined">Created cases</th>
+                        <th scope="col" class="pointerOnHover underlined">Updated cases</th>
+                        <th scope="col" class="pointerOnHover underlined">Open cases</th>
+                        <th scope="col" class="pointerOnHover underlined">Closed cases</th>
+                        <th scope="col" class="pointerOnHover underlined">Other cases status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var agent in Model.SelectedAgents)
+                    {
+                        <tr>
+                            <td>@agent.FullName</td>
+                            <td>@agent.Email</td>
+                            <td>@agent.CreatedCases</td>
+                            <td>@agent.UpdatedCases</td>
+                            <td>@agent.OpenCases</td>
+                            <td>@agent.ClosedCases</td>
+                            <td>@agent.OtherCasesStatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<div class="row mr-1">
-    <h5>Tasks</h5>
-    <table class="table table-hover border">
-        <thead>
-            <tr class="table-active">
-                <th scope="col" class="pointerOnHover underlined">Name</th>
-                <th scope="col" class="pointerOnHover underlined">E-mail</th>
-                <th scope="col" class="pointerOnHover underlined">Created tasks</th>
-                <th scope="col" class="pointerOnHover underlined">Updated tasks</th>
-                <th scope="col" class="pointerOnHover underlined">Open tasks</th>
-                <th scope="col" class="pointerOnHover underlined">Closed tasks</th>
-                <th scope="col" class="pointerOnHover underlined">Other tasks status</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var agent in Model.SelectedAgents)
-            {
-                <tr>
-                    <td>@agent.FullName</td>
-                    <td>@agent.Email</td>
-                    <td>@agent.CreatedTasks</td>
-                    <td>@agent.UpdatedTasks</td>
-                    <td>@agent.OpenTasks</td>
-                    <td>@agent.ClosedTasks</td>
-                    <td>@agent.OtherTasksStatus</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="tab-pane fade" id="tasks">
+        <div class="row mr-1">
+            <h5>Tasks</h5>
+            <table class="table table-hover border">
+                <thead>
+                    <tr class="table-active">
+                        <th scope="col" class="pointerOnHover underlined">Name</th>
+                        <th scope="col" class="pointerOnHover underlined">E-mail</th>
+                        <th scope="col" class="pointerOnHover underlined">Created tasks</th>
+                        <th scope="col" class="pointerOnHover underlined">Updated tasks</th>
+                        <th scope="col" class="pointerOnHover underlined">Open tasks</th>
+                        <th scope="col" class="pointerOnHover underlined">Closed tasks</th>
+                        <th scope="col" class="pointerOnHover underlined">Other tasks status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var agent in Model.SelectedAgents)
+                    {
+                        <tr>
+                            <td>@agent.FullName</td>
+                            <td>@agent.Email</td>
+                            <td>@agent.CreatedTasks</td>
+                            <td>@agent.UpdatedTasks</td>
+                            <td>@agent.OpenTasks</td>
+                            <td>@agent.ClosedTasks</td>
+                            <td>@agent.OtherTasksStatus</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @section Scripts

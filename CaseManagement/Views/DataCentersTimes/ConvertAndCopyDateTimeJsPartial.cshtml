@@ -1,0 +1,39 @@
+﻿<script>
+    $("#ccBtn").click(convert);
+
+    function convert() {
+        let timeValue = $("#timeValue").val();
+        let utcOffset = Number($("#regionsSelect").val());
+        let dateTimeMs = new Date(timeValue).setSeconds(-(utcOffset * 3600));
+        let dateTime = new Date(dateTimeMs);
+
+        let currentTime = new Date();
+        let currentTimeOffsetInSeconds = currentTime.getTimezoneOffset() * 60;
+        currentTime.setSeconds(currentTimeOffsetInSeconds);
+
+        if (dateTime > currentTime) {
+            dateTime = currentTime;
+        }
+
+        let mon = dateTime.getMonth() + 1;
+        mon = mon < 10 ? `0${mon}` : mon.toString();
+
+        let d = dateTime.getDate();
+        d = d < 10 ? `0${d}` : d.toString();
+
+        let y = dateTime.getFullYear();
+
+        let h = dateTime.getHours();
+        h = h < 10 ? `0${h}` : h.toString();
+
+        let min = dateTime.getMinutes();
+        min = min < 10 ? `0${min}` : min.toString();
+
+        // Target format: #RTPU | mm.dd.yyyy | hh:mm UTC
+
+        $("#convertedTimeValue").val(`#RTPU | ${mon}.${d}.${y} | ${h}:${min} UTC`);
+
+        $("#convertedTimeValue").select();
+        document.execCommand("copy");
+    }
+</script>
