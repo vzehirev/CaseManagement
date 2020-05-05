@@ -40,25 +40,41 @@ namespace CaseManagement.Services.DatacentersService
             return dc.Id;
         }
 
-        public async Task<DatacentersTimesIndexOutputModel> GetAllRegionsAndTheirTimezonesAsync()
+        public async Task<int> DeleteDcAsync(int id)
+        {
+            var result = 0;
+            var dc = await this.dbContext.Datacenters.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (dc != null)
+            {
+                this.dbContext.Datacenters.Remove(dc);
+                result = await this.dbContext.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+        public async Task<DatacentersTimesIndexOutputModel> GetAllRegionsAndTheirDatacentersAsync()
         {
             var result = new DatacentersTimesIndexOutputModel();
             result.TimeZoneRegions = await dbContext
                 .TimeZoneRegions
-                .Select(tr => new TimeZoneRegionViewModel
+                .Select(x => new TimeZoneRegionViewModel
                 {
-                    Name = tr.Name,
-                    Datacenters = tr.TimeZones
-                    .OrderBy(t => t.Name)
-                    .Select(t => new DatacenterViewModel
+                    Id = x.Id,
+                    Name = x.Name,
+                    Datacenters = x.Datacenters
+                    .OrderBy(y => y.Name)
+                    .Select(y => new DatacenterViewModel
                     {
-                        Name = t.Name,
-                        Tag = t.Tag,
-                        TzIanaName = t.TzIanaName,
-                        OpeningAtDay = t.OpeningAtDay,
-                        OpeningAtTime = t.OpeningAtTime,
-                        ClosingAtDay = t.ClosingAtDay,
-                        ClosingAtTime = t.ClosingAtTime,
+                        Id = y.Id,
+                        Name = y.Name,
+                        Tag = y.Tag,
+                        TzIanaName = y.TzIanaName,
+                        OpeningAtDay = y.OpeningAtDay,
+                        OpeningAtTime = y.OpeningAtTime,
+                        ClosingAtDay = y.ClosingAtDay,
+                        ClosingAtTime = y.ClosingAtTime,
                     })
                     .ToArray(),
                 })

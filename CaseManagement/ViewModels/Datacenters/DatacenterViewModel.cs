@@ -4,6 +4,8 @@ namespace CaseManagement.ViewModels.Datacenters
 {
     public class DatacenterViewModel
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Tag { get; set; }

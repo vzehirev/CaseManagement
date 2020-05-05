@@ -31,6 +31,20 @@ namespace CaseManagement.Services.TimeZoneRegions
             return timeZoneRegion.Id;
         }
 
+        public async Task<int> DeleteTimeZoneRegionAsync(int id)
+        {
+            var result = 0;
+            var timeZoneRegion = await this.dbContext.TimeZoneRegions.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (timeZoneRegion != null)
+            {
+                this.dbContext.TimeZoneRegions.Remove(timeZoneRegion);
+                result = await this.dbContext.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
         public async Task<IEnumerable<AddDcTimeZoneRegionSelectViewModel>> GetAllTimeZoneRegionsAsync()
         {
             var result = await this.dbContext.TimeZoneRegions

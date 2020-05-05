@@ -1,5 +1,20 @@
 ﻿@model CaseManagement.ViewModels.DatacentersTimes.DatacentersTimesIndexOutputModel
 
+@if (this.TempData["dcDeleted"] as bool? == true)
+{
+    <div class="row col-md-4 alert alert-dismissible alert-success mx-auto my-2">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Datacenter deleted successfully.
+    </div>
+}
+@if (this.TempData["timeZoneDeleted"] as bool? == true)
+{
+    <div class="row col-md-4 alert alert-dismissible alert-success mx-auto my-2">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        Time zone region deleted successfully.
+    </div>
+}
+
 <div class="row col-md-12 mx-auto">
     @foreach (var region in Model.TimeZoneRegions)
     {
@@ -14,6 +29,10 @@
                         <th class="padding01rem" scope="col">24-hr time</th>
                         <th class="padding01rem" scope="col">12-hr time</th>
                         <th class="padding01rem" scope="col"></th>
+                        @if (this.User.IsInRole("Lead"))
+                        {
+                            <th class="padding01rem" scope="col"></th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -32,11 +51,31 @@
                                 closingAtDay="@datacenter.ClosingAtDay" closingAtTime="@datacenter.ClosingAtTime"
                                 format="openClose">
                             </td>
+                            @if (this.User.IsInRole("Lead"))
+                            {
+                                <td class="padding01rem">
+                                    <form asp-area="" asp-controller="DatacentersTimes" asp-action="DeleteDc" asp-route-id="@datacenter.Id" method="post">
+                                        <input type="submit" value="&times;" title="Delete datacenter." class="btn btn-danger btn-sm px-2 py-1" />
+                                    </form>
+                                </td>
+                            }
                         </tr>
                     }
 
                 </tbody>
             </table>
+
+            @if (region.Datacenters.Count() == 0)
+            {
+                <h6 class="text-center mx-auto">No datacenters available.</h6>
+                @if (this.User.IsInRole("Lead"))
+                {
+                    <form asp-area="" asp-controller="DatacentersTimes" asp-action="DeleteTimeZoneRegion" asp-route-id="@region.Id" method="post" class="text-center mx-auto">
+                        <input type="submit" class="btn btn-danger btn-sm" value="Delete this time zone" />
+                    </form>
+                }
+            }
+
         </div>
     }
     <div class="col-md-3 position-absolute mt-4 p-0 text-center" style="right:3rem;">

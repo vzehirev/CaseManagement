@@ -24,6 +24,8 @@
     <Compile Remove="Data\Migrations\20200504153101_ChangeOpeningAndClosingTimesToNullable.Designer.cs" />
     <Compile Remove="Data\Migrations\20200504155409_asfkljasffklas.cs" />
     <Compile Remove="Data\Migrations\20200504155409_asfkljasffklas.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200505075043_jakfs.cs" />
+    <Compile Remove="Data\Migrations\20200505075043_jakfs.Designer.cs" />
   </ItemGroup>
 
 

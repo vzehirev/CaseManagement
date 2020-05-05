@@ -44,8 +44,8 @@
                 <span asp-validation-for="@Model.AddDcModel.Tag" class="text-danger"></span>
             </div>
             <div class="my-1">
-                <label asp-for="@Model.AddDcModel.TzIanaName"></label>
-                <input asp-for="@Model.AddDcModel.TzIanaName" class="form-control" />
+                <label>Time zone IANA identifier (can be found <a target="_blank" rel="noopener noreferrer" href="https://time.is/" class="underlined">here</a>)</label>
+                <input asp-for="@Model.AddDcModel.TzIanaName" placeholder="Example: America/New_York" class="form-control" />
                 <span asp-validation-for="@Model.AddDcModel.TzIanaName" class="text-danger"></span>
             </div>
             <div class="my-1">
@@ -60,7 +60,7 @@
                 <span asp-validation-for="@Model.AddDcModel.TimeZoneRegionId" class="text-danger"></span>
             </div>
             <div class="my-3 form-inline">
-                <label>Opening at:&nbsp;</label>
+                <label>Opening at (DC's local time):&nbsp;</label>
                 <select asp-for="@Model.AddDcModel.OpeningAtDay" class="form-control mr-2">
                     <option value="@null">Select day</option>
                     @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
@@ -71,7 +71,7 @@
                 <input asp-for="@Model.AddDcModel.OpeningAtTime" type="time" min="00:00" max="23:59" class="form-control" />
             </div>
             <div class="my-3 form-inline">
-                <label>Closing at:&nbsp;</label>
+                <label>Closing at (DC's local time):&nbsp;</label>
                 <select asp-for="@Model.AddDcModel.ClosingAtDay" class="form-control mr-2">
                     <option value="@null">Select day</option>
                     @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))

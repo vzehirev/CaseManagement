@@ -8,9 +8,11 @@ namespace CaseManagement.Services.DatacentersService
 {
     public interface IDatacentersService
     {
-        Task<DatacentersTimesIndexOutputModel> GetAllRegionsAndTheirTimezonesAsync();
+        Task<DatacentersTimesIndexOutputModel> GetAllRegionsAndTheirDatacentersAsync();
 
         Task<int> AddDcAsync(string name, string tag, string tzIanaName, int timeZoneRegionId,
             int? openingAtDay, TimeSpan openingAtTime, int? closingAtDay, TimeSpan closingAtTime);
+
+        Task<int> DeleteDcAsync(int id);
     }
 }

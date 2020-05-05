@@ -11,5 +11,7 @@ namespace CaseManagement.Services.TimeZoneRegions
         Task<int> AddTimeZoneRegionAsync(string name);
 
         Task<IEnumerable<AddDcTimeZoneRegionSelectViewModel>> GetAllTimeZoneRegionsAsync();
+
+        Task<int> DeleteTimeZoneRegionAsync(int id);
     }
 }

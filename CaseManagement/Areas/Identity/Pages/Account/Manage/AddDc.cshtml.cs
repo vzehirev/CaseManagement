@@ -41,7 +41,7 @@ namespace CaseManagement.Areas.Identity.Pages.Account.Manage
             public string Tag { get; set; }
 
             [Required]
-            [Display(Name = "Time zone IANA name")]
+            [Display(Name = "Time zone IANA identifier")]
             public string TzIanaName { get; set; }
 
             [Required, Range(1, double.MaxValue, ErrorMessage = "Please select time zone region.")]

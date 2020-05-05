@@ -11,6 +11,6 @@ namespace CaseManagement.Models.TimeZoneRegions
         [Required]
         public string Name { get; set; }
 
-        public virtual ICollection<Datacenter> TimeZones { get; set; }
+        public virtual ICollection<Datacenter> Datacenters { get; set; }
     }
 }
