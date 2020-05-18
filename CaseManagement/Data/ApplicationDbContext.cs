@@ -2,6 +2,7 @@
 using CaseManagement.Models.CaseModels;
 using CaseManagement.Models.Datacenters;
 using CaseManagement.Models.DateTimeConverter;
+using CaseManagement.Models.DCMOpsMonitoringTable;
 using CaseManagement.Models.TaskModels;
 using CaseManagement.Models.TimeZoneRegions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -51,5 +52,7 @@ namespace CaseManagement.Data
         public DbSet<Vendor> Vendors { get; set; }
 
         public DbSet<Region> Regions { get; set; }
+
+        public DbSet<DCMOpsMonitoringRow> DCMOpsMonitoring { get; set; }
     }
 }

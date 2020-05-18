@@ -98,6 +98,10 @@ body {
     padding: 0.1rem !important;
 }
 
+.padding02rem {
+    padding: 0.2rem !important;
+}
+
 .pointerOnHover {
     cursor: pointer;
 }

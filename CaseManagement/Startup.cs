@@ -5,6 +5,7 @@ using CaseManagement.Services.Announcements;
 using CaseManagement.Services.Cases;
 using CaseManagement.Services.DatacentersService;
 using CaseManagement.Services.DateTimeConverter;
+using CaseManagement.Services.Monitoring;
 using CaseManagement.Services.StatisticsAndReports;
 using CaseManagement.Services.Tasks;
 using CaseManagement.Services.TimeZoneRegions;
@@ -51,6 +52,7 @@ namespace CaseManagement
             services.AddTransient<IDateTimeConverterService, DateTimeConverterService>();
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<ITimeZoneRegionsService, TimeZoneRegionsService>();
+            services.AddTransient<IMonitoringService, MonitoringService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
