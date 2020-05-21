@@ -52,7 +52,7 @@ namespace CaseManagement.Models.DCMOpsMonitoringTable
         {
             get
             {
-                return ((TimeSpan)(Resumeat - UpdatedDate)).Hours;
+                    return (int)Math.Ceiling(((TimeSpan)(Resumeat - UpdatedDate)).TotalHours);
             }
         }
 

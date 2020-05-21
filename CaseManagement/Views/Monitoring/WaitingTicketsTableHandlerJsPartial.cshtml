@@ -1,0 +1,41 @@
+﻿<partial name="AddTableRowColoringByTicketPriorityJsPartial" />
+<partial name="PopoverHandlerJsPartial" />
+
+<script>
+    $(document).ready(function () {
+        populateTableWaitingTicketsTable($("#waitingTicketsTable"));
+    });
+
+    function populateTableWaitingTicketsTable(waitingTicketsTableBody) {
+        $.ajax({
+            url: "/api/MonitoringWaitingTickets"
+        }).done(function (data) {
+            $(waitingTicketsTableBody).html("");
+            for (waitingTicket of data) {
+                $(waitingTicketsTableBody).append(`<tr class=""></tr>`);
+
+                let tr = $(waitingTicketsTableBody).find("tr:last");
+
+                addColoringClass(tr, waitingTicket.priority);
+
+                $(tr).append(`<td class="padding02rem">${waitingTicket.uploadTimeIST}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.holdHours}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.ticketId}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.reportedDate}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.priority}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.status}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.waitingReason}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.subject}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.assigned}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.changedBy}</td>`);
+                $(tr).append(`<td class="padding02rem">${waitingTicket.resumeAt}</td>`);
+                $(tr).append(`<td class="padding02rem"></td>`);
+
+                if (waitingTicket.notes !== null && waitingTicket.notes.length > 0) {
+                    $(tr).find("td:last").append(`<button type="button" class="btn btn-link btn-sm" data-container="body" data-toggle="popover" data-placement="left" data-content="${waitingTicket.notes}">See notes</button>`);
+                }
+            }
+        })
+            .then(handlePopover);
+    }
+</script>

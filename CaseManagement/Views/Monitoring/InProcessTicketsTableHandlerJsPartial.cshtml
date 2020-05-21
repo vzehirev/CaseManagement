@@ -1,0 +1,41 @@
+﻿<partial name="AddTableRowColoringByTicketPriorityJsPartial" />
+<partial name="PopoverHandlerJsPartial" />
+
+<script>
+    $(document).ready(function () {
+        populateInProcessTicketsTable($("#inProcessTicketsTable"));
+    });
+
+    function populateInProcessTicketsTable(inProcessTicketsTableBody) {
+        $.ajax({
+            url: "/api/MonitoringInProcessTickets"
+        }).done(function (data) {
+            $(inProcessTicketsTableBody).html("");
+            for (inProcessTicket of data) {
+                $(inProcessTicketsTableBody).append(`<tr class=""></tr>`);
+
+                let tr = $(inProcessTicketsTableBody).find("tr:last");
+
+                addColoringClass(tr, inProcessTicket.priority);
+
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.uploadTimeIST}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.ticketId}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.reportedDate}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.priority}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.status}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.waitingReason}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.subject}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.assigned}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.changedBy}</td>`);
+                $(tr).append(`<td class="padding02rem">${inProcessTicket.resumeAt}</td>`);
+                $(tr).append(`<td class="padding02rem"></td>`);
+
+                if (inProcessTicket.notes !== null && inProcessTicket.notes.length > 0) {
+                    $(tr).find("td:last")
+                        .append(`<button type="button" class="btn btn-link btn-sm" data-container="body" data-toggle="popover" data-placement="left" data-content="${inProcessTicket.notes}">See notes</button>`);
+                }
+            }
+        })
+            .then(handlePopover);
+    }
+</script>

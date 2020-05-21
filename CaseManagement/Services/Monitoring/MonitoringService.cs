@@ -19,40 +19,29 @@ namespace CaseManagement.Services.Monitoring
 
         public async Task<IEnumerable<InProcessTicketViewModel>> GetInProcessTicketsAsync()
         {
-            var result = await this.dbContext.DCMOpsMonitoring
+            var inProcessTickets = await this.dbContext.DCMOpsMonitoring
                 .Where(x => x.Queue == "DATA CENTER MANAGEMENT OPERATIONS CENTER"
                     && (x.Status == "In Process" || x.Status == "New"))
-                .OrderByDescending(x => x.UpdatedDate)
-                .Select(x => new InProcessTicketViewModel
-                {
-                    UploadTimeIST = x.UploadTimeIST,
-                    TicketId = x.TicketID,
-                    ReportedDate = x.ReportedDate,
-                    Priority = x.Priority.Trim(),
-                    Status = x.Status.Trim(),
-                    WaitingReason = x.WaitingReason.Trim(),
-                    Subject = x.Subject.Trim(),
-                    Assigned = x.Assigned.Trim(),
-                    ChangedBy = x.Changedby.Trim(),
-                    ResumeAt = x.Resumeat,
-                    Notes = x.Notes.Trim(),
-                })
+                .OrderByDescending(x => x.SNo)
                 .ToArrayAsync();
 
-            result = result.GroupBy(x => x.TicketId)
+            var result = inProcessTickets.GroupBy(x => x.TicketID)
                 .Select(x => new InProcessTicketViewModel
                 {
-                    UploadTimeIST = x.Select(x => x.UploadTimeIST).FirstOrDefault(),
+                    UploadTimeIST = x.Select(x => x.UploadTimeIST).FirstOrDefault() == null ? ""
+                        : x.Select(x => (DateTime)x.UploadTimeIST).First().ToString("dd-MMM-yyyy HH:mm"),
                     TicketId = x.Key,
-                    ReportedDate = x.Select(x => x.ReportedDate).FirstOrDefault(),
-                    Priority = x.Select(x => x.Priority).FirstOrDefault(),
-                    Status = x.Select(x => x.Status).FirstOrDefault(),
-                    WaitingReason = x.Select(x => x.WaitingReason).FirstOrDefault(),
-                    Subject = x.Select(x => x.Subject).FirstOrDefault(),
-                    Assigned = x.Select(x => x.Assigned).FirstOrDefault(),
-                    ChangedBy = x.Select(x => x.ChangedBy).FirstOrDefault(),
-                    ResumeAt = x.Select(x => x.ResumeAt).FirstOrDefault(),
-                    Notes = x.Select(x => x.Notes).FirstOrDefault(),
+                    ReportedDate = x.Select(x => x.ReportedDate).FirstOrDefault() == null ? ""
+                        : x.Select(x => (DateTime)x.ReportedDate).First().ToString("dd-MMM-yyyy HH:mm"),
+                    Priority = x.Select(x => x.Priority).FirstOrDefault().Trim(),
+                    Status = x.Select(x => x.Status).FirstOrDefault().Trim(),
+                    WaitingReason = x.Select(x => x.WaitingReason).FirstOrDefault().Trim(),
+                    Subject = x.Select(x => x.Subject).FirstOrDefault().Trim(),
+                    Assigned = x.Select(x => x.Assigned).FirstOrDefault().Trim(),
+                    ChangedBy = x.Select(x => x.Changedby).FirstOrDefault().Trim(),
+                    ResumeAt = x.Select(x => x.Resumeat).FirstOrDefault() == null ? ""
+                        : x.Select(x => (DateTime)x.Resumeat).First().ToString("dd-MMM-yyyy HH:mm"),
+                    Notes = x.Select(x => x.Notes).FirstOrDefault().Trim(),
                 })
                 .OrderBy(x => x.UploadTimeIST)
                 .ThenBy(x => x.Priority)
@@ -63,42 +52,30 @@ namespace CaseManagement.Services.Monitoring
 
         public async Task<IEnumerable<WaitingTicketViewModel>> GetWaitingTicketsAsync()
         {
-            var result = await this.dbContext.DCMOpsMonitoring
+            var waitingTickets = await this.dbContext.DCMOpsMonitoring
                 .Where(x => x.Queue == "DATA CENTER MANAGEMENT OPERATIONS CENTER"
                     && x.Status == "Waiting")
-                .OrderByDescending(x => x.UpdatedDate)
-                .Select(x => new WaitingTicketViewModel
-                {
-                    UploadTimeIST = x.UploadTimeIST,
-                    HoldHours = x.HoldHours,
-                    TicketId = x.TicketID,
-                    ReportedDate = x.ReportedDate,
-                    Priority = x.Priority.Trim(),
-                    Status = x.Status.Trim(),
-                    WaitingReason = x.WaitingReason.Trim(),
-                    Subject = x.Subject.Trim(),
-                    Assigned = x.Assigned.Trim(),
-                    ChangedBy = x.Changedby.Trim(),
-                    ResumeAt = x.Resumeat,
-                    Notes = x.Notes.Trim(),
-                })
+                .OrderByDescending(x => x.SNo)
                 .ToArrayAsync();
 
-            result = result.GroupBy(x => x.TicketId)
+            var result = waitingTickets.GroupBy(x => x.TicketID)
                 .Select(x => new WaitingTicketViewModel
                 {
-                    UploadTimeIST = x.Select(x => x.UploadTimeIST).FirstOrDefault(),
+                    UploadTimeIST = x.Select(x => x.UploadTimeIST).FirstOrDefault() == null ? ""
+                        : x.Select(x => (DateTime)x.UploadTimeIST).First().ToString("dd-MMM-yyyy HH:mm"),
                     HoldHours = x.Select(x => x.HoldHours).FirstOrDefault(),
                     TicketId = x.Key,
-                    ReportedDate = x.Select(x => x.ReportedDate).FirstOrDefault(),
-                    Priority = x.Select(x => x.Priority).FirstOrDefault(),
-                    Status = x.Select(x => x.Status).FirstOrDefault(),
-                    WaitingReason = x.Select(x => x.WaitingReason).FirstOrDefault(),
-                    Subject = x.Select(x => x.Subject).FirstOrDefault(),
-                    Assigned = x.Select(x => x.Assigned).FirstOrDefault(),
-                    ChangedBy = x.Select(x => x.ChangedBy).FirstOrDefault(),
-                    ResumeAt = x.Select(x => x.ResumeAt).FirstOrDefault(),
-                    Notes = x.Select(x => x.Notes).FirstOrDefault(),
+                    ReportedDate = x.Select(x => x.ReportedDate).FirstOrDefault() == null ? ""
+                        : x.Select(x => (DateTime)x.ReportedDate).First().ToString("dd-MMM-yyyy HH:mm"),
+                    Priority = x.Select(x => x.Priority).FirstOrDefault().Trim(),
+                    Status = x.Select(x => x.Status).FirstOrDefault().Trim(),
+                    WaitingReason = x.Select(x => x.WaitingReason).FirstOrDefault().Trim(),
+                    Subject = x.Select(x => x.Subject).FirstOrDefault().Trim(),
+                    Assigned = x.Select(x => x.Assigned).FirstOrDefault().Trim(),
+                    ChangedBy = x.Select(x => x.Changedby).FirstOrDefault().Trim(),
+                    ResumeAt = x.Select(x => x.Resumeat).FirstOrDefault() == null ? ""
+                        : x.Select(x => (DateTime)x.Resumeat).First().ToString("dd-MMM-yyyy HH:mm"),
+                    Notes = x.Select(x => x.Notes).FirstOrDefault().Trim(),
                 })
                 .OrderBy(x => x.Priority)
                 .ToArray();

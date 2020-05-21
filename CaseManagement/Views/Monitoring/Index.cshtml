@@ -1,4 +1,4 @@
-﻿@model CaseManagement.ViewModels.Monitoring.MonitoringIndexViewModel
+﻿@*@model CaseManagement.ViewModels.Monitoring.MonitoringIndexViewModel*@
 
 @{
     ViewData["Title"] = "Monitoring";
@@ -42,28 +42,28 @@
                         <th class="padding02rem" scope="col">Notes</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var inProcessTicket in Model.InProcessTickets)
-                    {
-                        <tr class="@ColorRowByTicketPriority(inProcessTicket.Priority)">
-                            <td class="padding02rem">@inProcessTicket.UploadTimeIST</td>
-                            <td class="padding02rem">@inProcessTicket.TicketId</td>
-                            <td class="padding02rem">@inProcessTicket.ReportedDate</td>
-                            <td class="padding02rem">@inProcessTicket.Priority</td>
-                            <td class="padding02rem">@inProcessTicket.Status</td>
-                            <td class="padding02rem">@inProcessTicket.WaitingReason</td>
-                            <td class="padding02rem">@inProcessTicket.Subject</td>
-                            <td class="padding02rem">@inProcessTicket.Assigned</td>
-                            <td class="padding02rem">@inProcessTicket.ChangedBy</td>
-                            <td class="padding02rem">@inProcessTicket.ResumeAt</td>
-                            <td class="padding02rem">
-                                @if (inProcessTicket.Notes != null && inProcessTicket.Notes.Length > 0)
-                                {
-                                    <button type="button" class="btn btn-link btn-sm" data-container="body" data-toggle="popover" data-placement="left" data-content="@inProcessTicket.Notes">See notes</button>
-                                }
-                            </td>
-                        </tr>
-                    }
+                <tbody id="inProcessTicketsTable">
+                    @*@foreach (var inProcessTicket in Model.InProcessTickets)
+                        {
+                            <tr class="@ColorRowByTicketPriority(inProcessTicket.Priority)">
+                                <td class="padding02rem">@inProcessTicket.UploadTimeIST</td>
+                                <td class="padding02rem">@inProcessTicket.TicketId</td>
+                                <td class="padding02rem">@inProcessTicket.ReportedDate</td>
+                                <td class="padding02rem">@inProcessTicket.Priority</td>
+                                <td class="padding02rem">@inProcessTicket.Status</td>
+                                <td class="padding02rem">@inProcessTicket.WaitingReason</td>
+                                <td class="padding02rem">@inProcessTicket.Subject</td>
+                                <td class="padding02rem">@inProcessTicket.Assigned</td>
+                                <td class="padding02rem">@inProcessTicket.ChangedBy</td>
+                                <td class="padding02rem">@inProcessTicket.ResumeAt</td>
+                                <td class="padding02rem">
+                                    @if (inProcessTicket.Notes != null && inProcessTicket.Notes.Length > 0)
+                                    {
+                                        <button type="button" class="btn btn-link btn-sm" data-container="body" data-toggle="popover" data-placement="left" data-content="@inProcessTicket.Notes">See notes</button>
+                                    }
+                                </td>
+                            </tr>
+                        }*@
                 </tbody>
             </table>
         </div>
@@ -88,29 +88,29 @@
                         <th class="padding02rem" scope="col">Notes</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var waitingTicket in Model.WaitingTickets)
-                    {
-                        <tr class="@ColorRowByTicketPriority(waitingTicket.Priority)">
-                            <td class="padding02rem">@waitingTicket.UploadTimeIST</td>
-                            <td class="padding02rem">@waitingTicket.HoldHours</td>
-                            <td class="padding02rem">@waitingTicket.TicketId</td>
-                            <td class="padding02rem">@waitingTicket.ReportedDate</td>
-                            <td class="padding02rem">@waitingTicket.Priority</td>
-                            <td class="padding02rem">@waitingTicket.Status</td>
-                            <td class="padding02rem">@waitingTicket.WaitingReason</td>
-                            <td class="padding02rem">@waitingTicket.Subject</td>
-                            <td class="padding02rem">@waitingTicket.Assigned</td>
-                            <td class="padding02rem">@waitingTicket.ChangedBy</td>
-                            <td class="padding02rem">@waitingTicket.ResumeAt</td>
-                            <td class="padding02rem">
-                                @if (waitingTicket.Notes != null && waitingTicket.Notes.Length > 0)
-                                {
-                                    <button type="button" class="btn btn-link btn-sm" data-container="body" data-toggle="popover" data-placement="left" data-content="@waitingTicket.Notes">See notes</button>
-                                }
-                            </td>
-                        </tr>
-                    }
+                <tbody id="waitingTicketsTable">
+                    @*@foreach (var waitingTicket in Model.WaitingTickets)
+                        {
+                            <tr class="@ColorRowByTicketPriority(waitingTicket.Priority)">
+                                <td class="padding02rem">@waitingTicket.UploadTimeIST</td>
+                                <td class="padding02rem">@waitingTicket.HoldHours</td>
+                                <td class="padding02rem">@waitingTicket.TicketId</td>
+                                <td class="padding02rem">@waitingTicket.ReportedDate</td>
+                                <td class="padding02rem">@waitingTicket.Priority</td>
+                                <td class="padding02rem">@waitingTicket.Status</td>
+                                <td class="padding02rem">@waitingTicket.WaitingReason</td>
+                                <td class="padding02rem">@waitingTicket.Subject</td>
+                                <td class="padding02rem">@waitingTicket.Assigned</td>
+                                <td class="padding02rem">@waitingTicket.ChangedBy</td>
+                                <td class="padding02rem">@waitingTicket.ResumeAt</td>
+                                <td class="padding02rem">
+                                    @if (waitingTicket.Notes != null && waitingTicket.Notes.Length > 0)
+                                    {
+                                        <button type="button" class="btn btn-link btn-sm" data-container="body" data-toggle="popover" data-placement="left" data-content="@waitingTicket.Notes">See notes</button>
+                                    }
+                                </td>
+                            </tr>
+                        }*@
                 </tbody>
             </table>
         </div>
@@ -143,5 +143,7 @@
 }
 
 @section Scripts{
-    <partial name="PopoverHandlerJsPartial" />
+    <partial name="InProcessTicketsTableHandlerJsPartial" />
+    <partial name="WaitingTicketsTableHandlerJsPartial" />
+    <partial name="RefreshTablesDataJsPartial" />
 }

@@ -7,11 +7,11 @@ namespace CaseManagement.ViewModels.Monitoring
 {
     public class InProcessTicketViewModel
     {
-        public DateTime? UploadTimeIST { get; set; }
+        public string UploadTimeIST { get; set; }
 
         public double? TicketId { get; set; }
 
-        public DateTime? ReportedDate { get; set; }
+        public string ReportedDate { get; set; }
 
         public string Priority { get; set; }
 
@@ -25,7 +25,7 @@ namespace CaseManagement.ViewModels.Monitoring
 
         public string ChangedBy { get; set; }
 
-        public DateTime? ResumeAt { get; set; }
+        public string ResumeAt { get; set; }
 
         public string Notes { get; set; }
     }

@@ -1,0 +1,18 @@
+﻿<script>
+    function addColoringClass(tr, ticketPriority) {
+        switch (ticketPriority.toLowerCase()) {
+            case "low":
+                $(tr).addClass("table-success");
+                break;
+            case "normal":
+                $(tr).addClass("table-info");
+                break;
+            case "urgent":
+                $(tr).addClass("table-warning");
+                break;
+            case "immediate":
+                $(tr).addClass("table-danger");
+                break;
+        }
+    }
+</script>
