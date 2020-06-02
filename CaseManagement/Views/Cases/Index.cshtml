@@ -1,6 +1,6 @@
 ﻿@model CaseManagement.ViewModels.Cases.Output.AllCasesOutputModel
 
-@if (Model.Announcements.Length > 0)
+@if (Model.Announcements?.Length > 0)
 {
     <div class="marquee3k p-1"
          data-speed="0.9"
